@@ -17,5 +17,12 @@ class CustomUserAdmin(UserAdmin):
         "is_superuser",
     ]
 
+    # Define fieldsets for adding a new user
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'password1', 'password2'),
+        }),
+    )
 
 admin.site.register(CustomUser, CustomUserAdmin)

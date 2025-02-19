@@ -1,0 +1,24 @@
+{% extends "_base.html" %}
+
+{% block title %}{{ patient.last_name }} {{ patient.first_name }}{% endblock title %}
+
+{% block content %}
+  <div class="patient-detail">
+    <h2><a href="">{{ patient.last_name }} {{ patient.first_name }}</a></h2>
+    <p>Sex: {{ patient.sex }}</p>
+    <p>Date of birth: {{ patient.date_of_birth }}</p>
+    <p>Nation: {{ patient.nation }}</p>
+    <p>Region: {{ patient.region }}</p>
+    <p>Province: {{ patient.province }}</p>
+    <p>Type: {{ patient.patient_type }}</p>
+    <p>FIN: {{ patient.fin }}</p>
+    <div>
+      <h3>Data</h3>
+      <ul>
+        {% for data in patient.data.all  %}
+        <li>{{data.type}} ({{data.location}})</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock content %}

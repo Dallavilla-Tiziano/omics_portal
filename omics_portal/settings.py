@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'allauth.account',
     # Local
     'accounts.apps.AccountsConfig',
-    'pages.apps.PagesConfig'
+    'pages.apps.PagesConfig',
+    'patients.apps.PatientsConfig',
 ]
 
 MIDDLEWARE = [
