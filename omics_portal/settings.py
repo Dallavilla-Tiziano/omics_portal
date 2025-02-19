@@ -53,23 +53,6 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig'
 ]
 
-# django-allauth config
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_LOGIN_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
-LOGIN_REDIRECT_URL = "home"
-ACCOUNT_LOGOUT_REDIRECT = 'home'
-SITE_ID = 1
-AUTHENTICATION_BACKENDS = (
-        "django.contrib.auth.backends.ModelBackend",
-        "allauth.account.auth_backends.AuthenticationBackend"
-    )
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# django-crispy-forms
-CRISPY_ALLOWED_TEMNPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -155,6 +138,31 @@ USE_I18N = True
 USE_TZ = True
 
 
+# django-allauth config
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_REDIRECT = 'home'
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+        "django.contrib.auth.backends.ModelBackend",
+        "allauth.account.auth_backends.AuthenticationBackend"
+    )
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.mailersend.net"
+EMAIL_PORT = 587  # Use 465 for SSL
+EMAIL_USE_TLS = True  # Use False if using SSL (465)
+EMAIL_HOST_USER = "MS_KYa3yg@trial-z3m5jgr38j0gdpyo.mlsender.net"
+EMAIL_HOST_PASSWORD = "mssp.J2SLOXD.3vz9dlej0yn4kj50.F17wNuA"  # The API key is both username & password
+DEFAULT_FROM_EMAIL = "MS_KYa3yg@trial-z3m5jgr38j0gdpyo.mlsender.net"  # Use your verified MailerSend sender email
+
+
+# django-crispy-forms
+CRISPY_ALLOWED_TEMNPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -170,3 +178,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 LOGOUT_REDIRECT_URL = "home"
+
