@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from environs import Env
+
+# Environs set up
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oamf9qkhb60_qb4$xlkgg4+vab9-cc@+&aqb%9=lj%i8g5dn1-'
+SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = []
 
@@ -37,10 +42,33 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    # Third-party
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'allauth',
+    'allauth.account',
     # Local
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig'
 ]
+
+# django-allauth config
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+LOGIN_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_REDIRECT = 'home'
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+        "django.contrib.auth.backends.ModelBackend",
+        "allauth.account.auth_backends.AuthenticationBackend"
+    )
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# django-crispy-forms
+CRISPY_ALLOWED_TEMNPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,6 +78,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Third-party
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'omics_portal.urls'
@@ -77,15 +107,20 @@ WSGI_APPLICATION = 'omics_portal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "postgres",
+#         "USER": "postgres",
+#         "PASSWORD": "postgres",
+#         "HOST": "db",
+#         "PORT": 5432,
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "db",
-        "PORT": 5432,
-    }
+    "default": env.dj_db_url("DATABASE_URL",
+    default="postgres://postgres@db/postgres")
 }
 
 
@@ -123,10 +158,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR/"static"]
+STATIC_ROOT = BASE_DIR/"staticfiles"
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+LOGOUT_REDIRECT_URL = "home"
