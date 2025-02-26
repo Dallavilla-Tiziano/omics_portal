@@ -1,7 +1,59 @@
-h1{
-	color: red;
+/* General Page Layout */
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px; /* Spacing between filter, table, and settings */
+    padding: 20px;
+    max-width: 95vw; /* Prevent excessive whitespace */
+    margin: 0 auto; /* Centering */
 }
-.home{
-	height: 300px;
-	width: auto;
+
+/* Sidebar Filters */
+.filters-box {
+    width: 250px; /* Fixed width */
+    min-width: 250px;
+}
+
+/* Table Display Settings */
+.display-settings-box {
+    width: 250px;
+    min-width: 250px;
+}
+
+/* Table Section */
+.table-container {
+    flex-grow: 1;
+    min-width: 500px; /* Ensure table does not shrink too much */
+    overflow-x: auto;
+}
+
+/* Ensure Table Stays Wide */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .filters-box, .display-settings-box {
+        width: 90%;
+        min-width: unset;
+    }
+
+    .table-container {
+        width: 100%;
+    }
+}
+
+body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+    display: flex;
+    flex-direction: column;
 }
