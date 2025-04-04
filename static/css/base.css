@@ -1,17 +1,29 @@
-/* General Page Layout */
+/* ================================== */
+/*        GENERAL PAGE LAYOUT         */
+/* ================================== */
+
 .container {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px; /* Spacing between filter, table, and settings */
+    flex-direction: column;  /* Stack the rows vertically */
+    justify-content: center; /* Vertically center the content */
+    align-items: center;     /* Horizontally center the content */
+    gap: 20px;               /* Add some spacing between the rows */
     padding: 20px;
-    max-width: 95vw; /* Prevent excessive whitespace */
-    margin: 0 auto; /* Centering */
+    max-width: 95vw;         /* Adjusts width to prevent excessive whitespace */
+    margin: 0 auto;          /* Center the container */
+}
+
+.row.justify-content-center {
+    display: flex;
+    justify-content: center;  /* Center the columns inside the row */
+    gap: 20px;                /* Space between the columns */
+    flex-wrap: wrap;          /* Allow items to wrap when needed */
+    width: 100%;              /* Make sure the row takes full width */
 }
 
 /* Sidebar Filters */
 .filters-box {
-    width: 250px; /* Fixed width */
+    width: 250px;
     min-width: 250px;
 }
 
@@ -24,7 +36,7 @@
 /* Table Section */
 .table-container {
     flex-grow: 1;
-    min-width: 500px; /* Ensure table does not shrink too much */
+    min-width: 500px;
     overflow-x: auto;
 }
 
@@ -34,23 +46,49 @@ table {
     border-collapse: collapse;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 1024px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .filters-box, .display-settings-box {
-        width: 90%;
-        min-width: unset;
-    }
-
-    .table-container {
-        width: 100%;
-    }
+.table-responsive {
+    overflow-x: auto; /* Ensures better horizontal scroll management */
 }
 
+.table thead th {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table thead {
+    background-color: #f8f9fa; /* Light gray background */
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f7ff; /* Soft highlight on hover */
+}
+
+.btn-outline-primary {
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 0.9rem;
+}
+
+/* Body Settings */
 body {
     min-height: 75rem;
     padding-top: 4.5rem;
@@ -58,72 +96,134 @@ body {
     flex-direction: column;
 }
 
-.home{
-	height: auto;
-	width: 100vw;
+.card {
+    margin-bottom: 10px;
 }
 
 .card-header {
-    background-color: #38912a;
+    background-color: #007bff;  /* Bootstrap primary color */
+    color: #ffffff;             /* Ensures text is always white */
 }
 
-.btn {
-    background-color: #38912a;
+.card-body select {
+    max-width: 100%;
 }
 
+/* ================================== */
+/*         HOME PAGE STYLING         */
+/* ================================== */
 
-/* 1️⃣ Home Section (Full-width Hero Image) */
-.home-section {
-    position: relative;
-    width: 100%;
-    height: 450px;
+/* Apply styles only on login page */
+.home-page {
+    background: url("../images/omics_db_home.png") no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(5px);
+}
+
+/* ================================== */
+/*         LOGIN PAGE STYLING         */
+/* ================================== */
+
+/* Apply styles only on login page */
+.login-page {
+    background: url("../images/omics_db_login.png") no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(5px);
+    height: 100vh; /* Prevent scrolling */
     overflow: hidden;
 }
 
-.home-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.home-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 20px 30px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-/* 2️⃣ Statistics Section */
-.stat-card {
-    background: #fff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    width: 250px;
-}
-
-/* 3️⃣ Charts Section */
-.chart-card {
-    background: #fff;
+/* Centered login card */
+.login-container {
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.9); /* Light background for readability */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-    max-width: 350px;
-    height: 380px; /* Fixed Height */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo */
+.login-logo {
+    display: block;
+    margin: 0 auto 10px auto;
+    max-width: 150px; /* Adjust logo size */
+}
+
+/* ================================== */
+/*         LOGOUT PAGE STYLING        */
+/* ================================== */
+
+/* Apply styles only on login page */
+.logout-page {
+    background: url("../images/omics_db_logout.png") no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(5px);
+}
+
+/* ================================== */
+/*         PATIENT DETAIL PAGE STYLING         */
+/* ================================== */
+
+/* Apply styles only on login page */
+.patient-detail-page {
+    background: url("../images/omics_db_patient_detail.png") no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(5px);
+}
+
+/* ================================== */
+/*         PATIENT PAGE STYLING         */
+/* ================================== */
+
+/* Apply styles only on login page */
+.patient-page {
+    background: url("../images/omics_db_patient.png") no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(5px);
+}
+
+/* ================================== */
+/*         CHART CONTAINER FIX        */
+/* ================================== */
+
+.chart-card {
+    min-height: 350px;
+    max-height: 500px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
 }
 
 .chart-card canvas {
+    height: auto !important; /* Allow canvas to scale dynamically */
     width: 100% !important;
-    height: 320px !important;
-    max-height: 320px;
+    min-height: 350px;
+    max-height: 450px; /* Prevents flattening */
+} 
+
+/* ================================== */
+/*         STAT CARD FIX              */
+/* ================================== */
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 25px;
+    min-width: 200px;         /* Set a minimum width for each stat card */
+    flex: 1 1 150px;          /* Allow stat cards to grow and shrink */
+}
+
+.stat-card.stats{
+    max-width: 150px;
+}
+
+.stat-container {
+/*    display: flex;*/
+    justify-content: center;
 }

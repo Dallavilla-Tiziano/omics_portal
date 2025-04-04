@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_filters',
     'dal',
     'dal_select2',
+    'widget_tweaks',
     # Local
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
@@ -95,22 +96,16 @@ WSGI_APPLICATION = 'omics_portal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "postgres",
-#         "USER": "postgres",
-#         "PASSWORD": "postgres",
-#         "HOST": "db",
-#         "PORT": 5432,
-#     }
-# }
-
 DATABASES = {
-    "default": env.dj_db_url("DATABASE_URL",
-    default="postgres://postgres@db/postgres")
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "omics_portal",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "db",
+        "PORT": 5432,
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -149,7 +144,7 @@ ACCOUNT_LOGIN_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 LOGIN_REDIRECT_URL = "home"
-ACCOUNT_LOGOUT_REDIRECT = 'home'
+ACCOUNT_LOGOUT_REDIRECT = "account_login"
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = (
         "django.contrib.auth.backends.ModelBackend",
@@ -182,5 +177,5 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-LOGOUT_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "account_login"
 

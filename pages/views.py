@@ -1,26 +1,26 @@
-# from django.views.generic import TemplateView
-
-# class HomePageView(TemplateView):
-# 	template_name = "home.html"
-
-
-
 from django.views.generic import TemplateView
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.db.models import Count
 from collections import Counter
 import json
-
-from patients.models import Patient  # Ensure this matches your actual model import
+from patients.models import Patient, Sample, Analysis
 
 class HomePageView(TemplateView):
     template_name = "home.html"
+
+    # Redirect to login if user is not authenticated
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("account_login")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         # Get total counts
         total_patients = Patient.objects.count()
+        total_samples = Sample.objects.count()
+        total_analysis = Analysis.objects.count()
 
         # Get distribution data
         nations = Patient.objects.values_list("nation", flat=True)
@@ -35,6 +35,8 @@ class HomePageView(TemplateView):
         # Add data to context
         context.update({
             "total_patients": total_patients,
+            "total_samples": total_samples,
+            "total_analysis": total_analysis,
             "nation_distribution": json.dumps(nation_distribution),
             "sex_distribution": json.dumps(sex_distribution),
             "dob_distribution": json.dumps(dob_distribution),

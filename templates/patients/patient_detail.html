@@ -1,24 +1,45 @@
 {% extends "_base.html" %}
+{% load render_table from django_tables2 %}
 
 {% block title %}{{ patient.last_name }} {{ patient.first_name }}{% endblock title %}
+{% block body_class %}patient-detail-page{% endblock body_class %}
 
 {% block content %}
-  <div class="patient-detail">
-    <h2><a href="">{{ patient.last_name }} {{ patient.first_name }}</a></h2>
-    <p>Sex: {{ patient.sex }}</p>
-    <p>Date of birth: {{ patient.date_of_birth }}</p>
-    <p>Nation: {{ patient.nation }}</p>
-    <p>Region: {{ patient.region }}</p>
-    <p>Province: {{ patient.province }}</p>
-    <p>Type: {{ patient.patient_type }}</p>
-    <p>FIN: {{ patient.fin }}</p>
-    <div>
-      <h3>Data</h3>
-      <ul>
-        {% for data in patient.data.all  %}
-        <li>{{data.type}} ({{data.location}})</li>
-        {% endfor %}
-      </ul>
+<div class="container mt-4">
+  <div class="row">
+    <!-- Patient Info Card -->
+    <div class="col-lg-12 offset-lg-2">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h2 class="mb-0">{{ patient.last_name }} {{ patient.first_name }}</h2>
+        </div>
+        <div class="card-body">
+          <p><strong>Sex:</strong> {{ patient.sex }}</p>
+          <p><strong>Date of birth:</strong> {{ patient.date_of_birth }}</p>
+          <p><strong>Nation:</strong> {{ patient.nation }}</p>
+          <p><strong>Region:</strong> {{ patient.region }}</p>
+          <p><strong>Province:</strong> {{ patient.province }}</p>
+          <p><strong>Type:</strong> {{ patient.patient_type }}</p>
+          <p><strong>FIN:</strong> {{ patient.fin }}</p>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Primary Samples Section -->
+  <div class="row">
+    <div class="col-lg-12">
+      <h3>Primary Samples</h3>
+      {% render_table sample_table %}
+    </div>
+  </div>
+
+  <!-- Analyses Section -->
+  <div class="row mt-4">
+    <div class="col-lg-12">
+      <h3>Analyses</h3>
+      {% render_table analysis_table %}
+    </div>
+  </div>
+</div>
 {% endblock content %}

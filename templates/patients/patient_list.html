@@ -1,34 +1,64 @@
 {% extends '_base.html' %}
 {% load render_table from django_tables2 %}
+{% load widget_tweaks %}
 
 {% block title %}Patients{% endblock title %}
+
+{% block body_class %}patient-page{% endblock body_class %}
 
 {% block content %}
 <div class="container-fluid mt-4">
   <div class="row">
 
-    <!-- Left Sidebar (Filters) -->
+    <!-- Left Sidebar (Combined Filters) -->
     <div class="col-lg-2">
-        <div class="card shadow-sm">
-            <div class="card-header text-white">
-                Filters
-            </div>
-            <div class="card-body">
-                <form method="get"
-                      hx-get="{% url 'patient_list' %}"
-                      hx-target="#table-container"
-                      hx-trigger="change delay:500ms"
-                      hx-params="*"
-                      id="filter-form">
-                    {{ filter.form.as_p }}
-                    <button type="button" class="btn btn-secondary mt-3"
-                        onclick="document.getElementById('filter-form').reset(); htmx.trigger('#filter-form', 'change');">
-                        Reset Filters
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
+      <form method="get"
+            autocomplete="off"
+            hx-get="{% url 'patient_list' %}"
+            hx-target="#table-container"
+            hx-trigger="change delay:500ms"
+            hx-push-url="true"
+            hx-params="*"
+            id="combined-filter-form">
+          
+          <!-- Demographic Filters -->
+          <div class="card shadow-sm mb-3">
+              <div class="card-header">
+                  Demographic Filters
+              </div>
+              <div class="card-body">
+                  {{ demographic_filter.form.as_p }}
+              </div>
+          </div>
+          
+          <!-- Sample Filters -->
+          <div class="card shadow-sm mb-3">
+              <div class="card-header">
+                  Sample Filters
+              </div>
+              <div class="card-body">
+                  {{ sample_filter.form.as_p }}
+              </div>
+          </div>
+          
+          <!-- Analysis Filters -->
+          <div class="card shadow-sm mb-3">
+              <div class="card-header">
+                  Analysis Filters
+              </div>
+              <div class="card-body">
+                  {{ analysis_filter.form.as_p }}
+              </div>
+          </div>
+          
+          <!-- Reset All Filters Button -->
+          <button type="button" class="btn btn-secondary mt-3 w-100"
+                  onclick="resetCombinedForm();">
+              Reset All Filters
+          </button>
+      </form>
+    </div> <!-- End Left Sidebar -->
+
     <!-- Middle Section (Table) -->
     <div class="col-lg-8">
         <div id="table-container">
@@ -36,11 +66,10 @@
         </div>
     </div>
 
-    <!-- Right Sidebar (Display Settings) -->
+    <!-- Right Sidebar (Display Settings, Export, and Filter Counts) -->
     <div class="col-lg-2 d-flex flex-column">
-        <!-- Right Sidebar (Display Settings) -->
         <div class="card shadow-sm mb-3">
-            <div class="card-header text-white">
+            <div class="card-header">
                 Table Display Settings
             </div>
             <div class="card-body">
@@ -49,34 +78,71 @@
                         hx-get="{% url 'patient_list' %}"
                         hx-target="#table-container"
                         hx-trigger="change"
-                        hx-params="*">
+                        hx-vals="js:{ rows: document.getElementById('rows').value }">
                     <option value="10">10</option>
                     <option value="20" selected>20</option>
-                    <option value="25">50</option>
-                    <option value="50">100</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
                 </select>
             </div>
         </div>
 
         <!-- Export Cohort Box -->
         <div class="card shadow-sm mt-3">
-            <div class="card-header text-white">
-                Export cohort
+            <div class="card-header">
+                Export Cohort
             </div>
             <div class="card-body">
-                <a id="download-link" href="{% url 'patient_list_csv' %}" class="btn btn-primary">Download CSV</a>
+                <a id="download-link" href="{% url 'patient_list_csv' %}" class="btn btn-primary w-100">
+                    Download CSV
+                </a>
             </div>
         </div>
-    </div>
-  </div>
-</div>
 
-<!-- JavaScript to Update Download Link with Filters -->
+        <!-- Filter Counts Box -->
+        <div id="filter-counts"
+             hx-get="{% url 'filter_counts_partial' %}"
+             hx-trigger="load, change from:#combined-filter-form"
+             hx-include="#combined-filter-form">
+          {% include "patients/filter_counts.html" %}
+        </div>
+    </div> <!-- End Right Sidebar -->
+
+  </div> <!-- End Main Row -->
+</div> <!-- End Container -->
+
 <script>
-    document.addEventListener("htmx:afterRequest", function() {
-        let downloadLink = document.getElementById("download-link");
-        let params = new URLSearchParams(new FormData(document.getElementById("filter-form")));
-        downloadLink.href = "{% url 'patient_list_csv' %}?" + params.toString();
+function resetCombinedForm() {
+    const form = document.getElementById("combined-filter-form");
+    form.reset();
+    form.querySelectorAll("select, input").forEach(input => {
+        if (input.tagName === "SELECT") {
+            input.selectedIndex = -1;
+        } else {
+            input.value = "";
+        }
     });
+    htmx.trigger(form, 'change');
+}
+
+// Function to update the download link using the current URL query parameters.
+function updateDownloadLink() {
+    let downloadLink = document.getElementById("download-link");
+    downloadLink.href = "{% url 'patient_list_csv' %}" + window.location.search;
+    console.log("Download link updated:", downloadLink.href);
+}
+
+// Update the download link when the page loads.
+document.addEventListener("DOMContentLoaded", updateDownloadLink);
+
+// Listen for afterSettle events on the document body.
+document.body.addEventListener("htmx:afterSettle", function(event) {
+    // Check if the target is our table container.
+    if (event.detail.target && event.detail.target.id === "table-container") {
+        // Delay slightly to ensure the URL has updated.
+        setTimeout(updateDownloadLink, 100);
+    }
+});
 </script>
+
 {% endblock content %}

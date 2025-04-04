@@ -3,50 +3,119 @@
 
 {% block title %}Home{% endblock title %}
 
+{% block body_class %}home-page{% endblock body_class %}
+
 {% block content %}
 
-<!-- Home Section (Full-width Hero Image) -->
-<div class="home-section">
-    <img class="home-image" src="{% static 'images/omics_db_home.png' %}">
-    <div class="home-overlay">
-        <h1>Welcome to Omics DB</h1>
-        <p>Your comprehensive database for patient sample analysis.</p>
-    </div>
-</div>
-
-<!-- Statistics and Charts Section -->
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <!-- Total Patients Card -->
-        <div class="col-md-4 d-flex justify-content-center">
-            <div class="stat-card">
-                <h2 id="total-patients">{{ total_patients }}</h2>
+<div class="container">
+  <div class="col-12">
+    <div class="row justify-content-left">
+        <div class="col-md-3">
+            <div class="stat-card stats">
                 <p>Total Patients</p>
+                <h2 id="total-patients">{{ total_patients }}</h2>
             </div>
         </div>
     </div>
 
-    <!-- Charts Section -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-4 d-flex justify-content-center">
-            <div class="chart-card">
-                <h5>Distribution by Nation</h5>
-                <canvas id="nationChart"></canvas>
-            </div>
-        </div>
-        <div class="col-md-4 d-flex justify-content-center">
-            <div class="chart-card">
-                <h5>Distribution by Sex</h5>
-                <canvas id="sexChart"></canvas>
-            </div>
-        </div>
-        <div class="col-md-4 d-flex justify-content-center">
-            <div class="chart-card">
-                <h5>Date of Birth Distribution</h5>
-                <canvas id="dobChart"></canvas>
-            </div>
-        </div>
+    <div class="row justify-content-left">
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Distribution by Nation</h5>
+                  <canvas id="nationChart"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Distribution by Sex</h5>
+                  <canvas id="sexChart"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Date of Birth Distribution</h5>
+                  <canvas id="dobChart"></canvas>
+              </div>
+          </div>
+      </div>
     </div>
+
+    <div class="row justify-content-left">
+      <div class="col-md-3">
+          <div class="stat-card stats">
+              <p>Total Samples</p>
+              <h2 id="total-patients">{{ total_samples }}</h2>
+          </div>
+      </div>
+    </div>
+    <div class="row justify-content-left">
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Distribution by Nation</h5>
+                  <canvas id="nationChart"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Distribution by Sex</h5>
+                  <canvas id="sexChart"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Date of Birth Distribution</h5>
+                  <canvas id="dobChart"></canvas>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-left">
+      <div class="col-md-3">
+          <div class="stat-card stats">
+              <p>Total Analysis</p>
+              <h2 id="total-patients">{{ total_analysis }}</h2>
+          </div>
+      </div>
+    </div>
+    <div class="row justify-content-left">
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Distribution by Nation</h5>
+                  <canvas id="nationChart"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Distribution by Sex</h5>
+                  <canvas id="sexChart"></canvas>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-3">
+          <div class="stat-card">
+              <div class="chart-card">
+                  <h5>Date of Birth Distribution</h5>
+                  <canvas id="dobChart"></canvas>
+              </div>
+          </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- Chart.js Script -->
@@ -64,7 +133,7 @@
                 labels: Object.keys(data),
                 datasets: [{
                     data: Object.values(data),
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
                 }]
             },
             options: {
