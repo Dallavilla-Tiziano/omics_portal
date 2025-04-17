@@ -4,20 +4,33 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
+# "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
 class Patient(models.Model):
+    # UUIDField: campo che contiene un UUID (Universal Unique Identifier).
 	id = models.UUIDField(
+        # "primary_key=True": indica che questo è il campo identificativo unico della tabella.
 		primary_key = True,
+        # "default=uuid.uuid4": genera un nuovo UUID ogni volta che viene creato un oggetto.
 		default = uuid.uuid4,
+        # "editable=False": impedisce la modifica del campo tramite interfaccia admin o form.
 		editable = False
 		)
+      
+    # TextChoices: modo elegante per definire scelte enumerate leggibili dall'utente.
 	class Sex(models.TextChoices):
+        # M e F sono valori memorizzati nel DB.
+        # "Male" e "Female" sono le etichette leggibili.
 		MAN = "M", "Male"
 		WOMAN = "F", "Female"
 	class Patient_type(models.TextChoices):
 		PROBAND = "P", "Proband"
 		RELATIVE = "R", "Relative"
+            
+    # CharField: campo stringa, con lunghezza massima di 100 caratteri.        
 	last_name = models.CharField(max_length=100)
 	first_name = models.CharField(max_length=100)
+      
+    # choices=Sex: obbliga l’utente a selezionare uno dei valori definiti nella classe Sex.
 	sex = models.CharField(
 		max_length=1,
 		choices=Sex
@@ -27,15 +40,19 @@ class Patient(models.Model):
 	region = models.CharField(max_length=100, blank=True, default='')
 	province = models.CharField(max_length=100, blank=True, default='')
 	cardioref_id = models.CharField(max_length=100, blank=True, default='')
+    
 	patient_type = models.CharField(
 		max_length=1,
 		choices=Patient_type,
 		blank=True,
 		default=''
 		)
+    
+    # Campo numerico positivo opzionale. null=True consente di avere valori nulli nel database.
 	fin = models.PositiveIntegerField(null=True, blank=True)
 
 	class Meta:
+        # permissions: aggiunge un permesso personalizzato che potrà essere usato per controllare l’accesso a dati sensibili.
 		permissions = [
 		("access_sensible_info", "Can view patient sensible info")
 		]
@@ -43,6 +60,7 @@ class Patient(models.Model):
 	def __str__(self):
 		return f'{self.id}'
 
+    # Restituisce l’URL alla vista patient_detail, utile nei template per fare link diretti all’oggetto.
 	def get_absolute_url(self):
 		return reverse("patient_detail", args=[str(self.id)])
 
@@ -53,11 +71,16 @@ class Sample(models.Model):
         editable=False
     )
 
+    # UUID come identificatore unico.
+    # internal_id: identificativo leggibile o esterno del campione.
     internal_id = models.CharField(max_length=100)
 
+    # ForeignKey: relazione uno-a-molti (un paziente → molti campioni).
     patient = models.ForeignKey(
         "Patient",
+        # on_delete=models.CASCADE: se il paziente viene cancellato, anche i suoi campioni vengono eliminati.
         on_delete=models.CASCADE,
+        # related_name="samples": permette di accedere ai campioni da un paziente usando patient.samples.
         related_name="samples"
     )
 
@@ -65,8 +88,10 @@ class Sample(models.Model):
     location = models.CharField(max_length=100)
     collection_date = models.DateField()
 
+    # Indica l’utente che ha raccolto il campione.
     collected_by = models.ForeignKey(
         get_user_model(),
+        # Se l’utente viene cancellato, il campo diventa NULL.
         on_delete=models.SET_NULL,
         null=True    
     )
@@ -156,6 +181,7 @@ class Analysis(models.Model):
 
     date_performed = models.DateField(auto_now_add=True)
 
+    # Campo JSON per salvare i risultati (link, path, ID, ecc.).
     result_files = models.JSONField(
         blank=True,
         null=True,
@@ -168,3 +194,6 @@ class Analysis(models.Model):
 
     def __str__(self):
         return f"{self.get_type_display()} ({self.date_performed})"
+    
+    # Patient ↔ (1:n) ↔ Sample
+    # Sample ↔ (n:m) ↔ Analysis

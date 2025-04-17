@@ -1,4 +1,9 @@
 from django.urls import path
+# Importa le view dal file views.py della stessa app:
+# PatientListView: vista per mostrare la lista di pazienti.
+# PatientDetailView: vista per mostrare il dettaglio di un paziente.
+# download_filtered_csv: vista per scaricare un file CSV filtrato.
+# filter_counts_partial: vista che restituisce il conteggio dei filtri (di solito via AJAX).
 from .views import PatientListView, PatientDetailView, download_filtered_csv, filter_counts_partial
 
 urlpatterns = [
