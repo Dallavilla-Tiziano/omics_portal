@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
+# Salve
+
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
 class Patient(models.Model):
     # UUIDField: campo che contiene un UUID (Universal Unique Identifier).
