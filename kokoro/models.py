@@ -58,11 +58,15 @@ class Clinical_Status(models.Model):
 		editable = False
 		)
 	
+# !!! Vorrei che Clinical_evaluation fosse una sottoclasse di Clinical_Status ma non so se
+#     questa è la "sede giusta" / il codice appropiato per occuparsi di ciò  
 class Clinical_evaluation(models.Model):
+
+	# per ora va bene così, ma il formato di data che si vede è scomodissimo
 	date_of_visit = models.DateField()
 
 	class Symptoms(models.TextChoices):
-		CA = "CardiacArrest", "Cardiac arrest"
+		CA = "Cardiac arrest", "Cardiac arrest"
 		P = "Palpitations", "Palpitations"
 		A = "Asymptomatic", "Asymptomatic"
 		O = "Other", "Other"
@@ -71,29 +75,35 @@ class Clinical_evaluation(models.Model):
 		max_length=13,
 		choices=Symptoms
 	)
-
+ 
 	spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
 
+    # questo nasce dal desiderio di far comparire "spec_other_symptoms" solo se effettivamente
+	# si seleziona "Other" a "symptoms"
 	def clean(self):
 		if self.symptoms == self.Symptoms.O and not self.spec_other_symptoms:
 			raise ValidationError("You must specify 'Other' symptoms if 'Other' is selected.")
 
+    # ho messo solo queste opzioni perché sono le uniche attualmente esistenti,
+	# ma credo che sarà opportuno inserirne altre
 	class EVApreATC(models.TextChoices):
-		VF = "Ventricular Fibrillation", "Ventricular Fibrillation"
-		VTNS = "Non-sustained ventricular tachycardia", "Non-sustained ventricular tachycardia"
-		VT = "Ventricular tachycardia", "Ventricular tachycardia" 
-		VFNS = "Non-sustained ventricular fibrillation", "Non-sustained ventricular fibrillation"
+		VF = "VF", "Ventricular Fibrillation"
+		VTNS = "VTNS", "Non-sustained ventricular tachycardia"
+		VT = "VT", "Ventricular tachycardia" 
+		VFNS = "VFNS", "Non-sustained ventricular fibrillation"
 
 	EvaluationPreATC = models.CharField(
 		max_length=38,
 		choices=EVApreATC
 	)
 
+    # OPZIONE 1 per campo Yes/No
 	SVT = models.BooleanField(
         default=False,
         verbose_name=" SVT (SopraVentricular Tachycardia)"  # Etichetta leggibile nei form/admin
     )
 
+    # OPZIONE 2 per campo Yes/No
 	class AF(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"

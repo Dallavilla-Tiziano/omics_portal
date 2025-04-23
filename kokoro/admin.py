@@ -7,6 +7,8 @@ class Patient_profileAdmin(admin.ModelAdmin):
 	
 admin.site.register(Patient_profile, Patient_profileAdmin)
 
+# !!! Siccome vorrei che Clinical_evaluation fosse una sottoclasse di Clinical_Status,
+#     ho provato a gestire la situazione con "interlines", ma non so se è il modo più corretto 
 class ClinicalEvaluationInline(admin.TabularInline):
     model = Clinical_evaluation
     extra = 1
