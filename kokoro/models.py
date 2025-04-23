@@ -47,3 +47,54 @@ class Patient_profile(models.Model):
 
 	def __str__(self):
 		return f'{self.id}'
+
+class Sample(models.Model):
+    # Choices for procedure_type field
+    class ProcedureType(models.TextChoices):
+        ABLATION = "A", "Ablation"
+        ABLATION_FOLLOW_UP = "PA", "Post-ablation follow-up"
+        DIAGNOSIS = "DG", "Diagnosis"
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+
+    patient = models.ForeignKey(
+        "Patient_profile",
+        on_delete=models.CASCADE,
+        related_name="samples",
+    )
+
+    imtc_id = models.CharField(
+        max_length=20,  # id_sample in canva
+    )
+
+    # First registration date: what is that? I think it can be inherited from PatientProfile?
+    procedure_type = models.CharField(
+        max_length=2,
+        choices=ProcedureType.choices,
+        blank=True,
+        default="",
+    )
+
+    informed_consent = models.CharField(max_length=20)
+    collection_date = models.DateField(
+        # sample_collection_date in canva
+    )
+    pbmc_vials_n = models.PositiveIntegerField(null=True, blank=True)
+    # total_pbmc can be calculated in view, no need for an entry
+    pellet_vials_n = models.PositiveIntegerField(null=True, blank=True)
+    rna_vials_n = models.PositiveIntegerField(null=True, blank=True)
+    plasma_cold_vials_n = models.PositiveIntegerField(null=True, blank=True)
+    plasma_ambient_vials_n = models.PositiveIntegerField(null=True, blank=True)
+    # skipped ajmaline test result, this is not the right place
+    rin = models.PositiveIntegerField(null=True, blank=True)
+    notes = models.CharField(
+        max_length=250,
+        blank=True,  # Optional notes
+    )
+
+    def __str__(self):
+        return f"{self.imtc_id} ({self.get_procedure_type_display()})"
