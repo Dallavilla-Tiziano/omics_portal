@@ -47,3 +47,28 @@ class Patient_profile(models.Model):
 
 	def __str__(self):
 		return f'{self.id}'
+	
+class Clinical_Status(models.Model):
+
+    # mi serve ancora?
+	id = models.UUIDField(
+		primary_key = True,
+		default = uuid.uuid4,
+		editable = False
+		)
+	
+	class Clinical_evaluation(models.Model):
+		date_of_visit = models.DateField()
+
+		class Symptoms(models.TextChoices):
+			CA = "CardiacArrest", "Cardiac arrest"
+			P = "Palpitations", "Palpitations"
+			A = "Asymptomatic", "Asymptomatic"
+			O = "Other", "Other"
+		
+		symptoms = models.CharField(
+		max_length=1,
+		choices=Symptoms
+		)
+
+		spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
