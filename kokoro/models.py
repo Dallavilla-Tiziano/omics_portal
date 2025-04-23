@@ -195,4 +195,13 @@ class Clinical_evaluation(models.Model):
 		max_length=3,
 		choices=BEV
 	)
+
+	class PVT(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	premature_ventricular_contraction = models.CharField(
+		max_length=3,
+		choices=PVT
+	)
     
