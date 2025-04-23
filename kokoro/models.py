@@ -1,5 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+
+# libreria necessaria per opzioni a scelte multiple
+from multiselectfield import MultiSelectField
 import uuid
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -64,25 +67,43 @@ class Clinical_evaluation(models.Model):
 
 	# per ora va bene così, ma il formato di data che si vede è scomodissimo
 	date_of_visit = models.DateField()
-
-	class Symptoms(models.TextChoices):
-		CA = "Cardiac arrest", "Cardiac arrest"
-		P = "Palpitations", "Palpitations"
-		A = "Asymptomatic", "Asymptomatic"
-		O = "Other", "Other"
-		
-	symptoms = models.CharField(
-		max_length=14,
-		choices=Symptoms
-	)
- 
+	
+	SYMPTOM_CHOICES = (
+        ('CA', 'Cardiac arrest'),
+        ('S', 'Syncope'),
+        ('P', 'Palpitations'),
+        ('A', 'Asymptomatic'),
+        ('O', 'Other'),
+    )
+	
+	symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, max_length=20, blank=True)
 	spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
+	
+	def clean(self):
+		super().clean()  # mantiene pulizia generale
+		if 'O' in self.symptoms and not self.spec_other_symptoms:
+			raise ValidationError("You must specify 'Other' symptoms if 'Other' is selected.")
+    # questo sarebbe andato bene se avessi voluto selezionare solo una voce alla volta,
+	# ma io le voglio molteplicamente selezionabili!
+	#class Symptoms(models.TextChoices):
+	#	CA = "Cardiac arrest", "Cardiac arrest"
+	#	S = "Syncope", "Syncope"
+	#	P = "Palpitations", "Palpitations"
+	#	A = "Asymptomatic", "Asymptomatic"
+	#	O = "Other", "Other"
+		
+	#symptoms = models.CharField(
+	#	max_length=14,
+	#	choices=Symptoms
+	#)
+ 
+	#spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
 
     # questo nasce dal desiderio di far comparire "spec_other_symptoms" solo se effettivamente
 	# si seleziona "Other" a "symptoms"
-	def clean(self):
-		if self.symptoms == self.Symptoms.O and not self.spec_other_symptoms:
-			raise ValidationError("You must specify 'Other' symptoms if 'Other' is selected.")
+	#def clean(self):
+	#	if self.symptoms == self.Symptoms.O and not self.spec_other_symptoms:
+	#		raise ValidationError("You must specify 'Other' symptoms if 'Other' is selected.")
 
     # ho messo solo queste opzioni perché sono le uniche attualmente esistenti,
 	# ma credo che sarà opportuno inserirne altre
