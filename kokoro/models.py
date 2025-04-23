@@ -67,7 +67,7 @@ class Clinical_Status(models.Model):
 			O = "Other", "Other"
 		
 		symptoms = models.CharField(
-		max_length=1,
+		max_length=13,
 		choices=Symptoms
 		)
 
