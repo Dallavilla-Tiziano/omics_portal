@@ -73,3 +73,13 @@ class Clinical_evaluation(models.Model):
 
 	spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
 
+	class EVApreATC(models.TextChoices):
+		VF = "Ventricular Fibrillation", "Ventricular Fibrillation"
+		VTNS = "Non-sustained ventricular tachycardia", "Non-sustained ventricular tachycardia"
+		VT = "Ventricular tachycardia", "Ventricular tachycardia" 
+		VFNS = "Non-sustained ventricular fibrillation", "Non-sustained ventricular fibrillation"
+
+	EvaluationPreATC = models.CharField(
+		max_length=38,
+		choices=EVApreATC
+	)
