@@ -72,7 +72,7 @@ class Clinical_evaluation(models.Model):
 		O = "Other", "Other"
 		
 	symptoms = models.CharField(
-		max_length=13,
+		max_length=14,
 		choices=Symptoms
 	)
  
