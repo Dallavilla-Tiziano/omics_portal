@@ -57,18 +57,19 @@ class Clinical_Status(models.Model):
 		editable = False
 		)
 	
-	class Clinical_evaluation(models.Model):
-		date_of_visit = models.DateField()
+class Clinical_evaluation(models.Model):
+	date_of_visit = models.DateField()
 
-		class Symptoms(models.TextChoices):
-			CA = "CardiacArrest", "Cardiac arrest"
-			P = "Palpitations", "Palpitations"
-			A = "Asymptomatic", "Asymptomatic"
-			O = "Other", "Other"
+	class Symptoms(models.TextChoices):
+		CA = "CardiacArrest", "Cardiac arrest"
+		P = "Palpitations", "Palpitations"
+		A = "Asymptomatic", "Asymptomatic"
+		O = "Other", "Other"
 		
 		symptoms = models.CharField(
-		max_length=13,
-		choices=Symptoms
-		)
+	max_length=13,
+	choices=Symptoms
+	)
 
-		spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
+	spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
+
