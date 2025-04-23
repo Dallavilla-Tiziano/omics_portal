@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Patient_profile, Clinical_Status, Clinical_evaluation
+from .models import Patient_profile, Clinical_Status, Clinical_evaluation, Comorbidities
 
 class Patient_profileAdmin(admin.ModelAdmin):
     # "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
@@ -13,13 +13,22 @@ class ClinicalEvaluationInline(admin.TabularInline):
     model = Clinical_evaluation
     extra = 1
 
+class ComorbiditiesInline(admin.TabularInline):
+    model = Clinical_evaluation
+    extra = 1
+
 admin.site.register(Clinical_Status)
 class ClinicalStatusAdmin(admin.ModelAdmin):
-    inlines = [ClinicalEvaluationInline]
+    inlines = [ClinicalEvaluationInline, ComorbiditiesInline]
 
 admin.site.register(Clinical_evaluation)
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
     list_display = ['date_of_visit', 'EvaluationPreATC', 'symptoms', 'SVT', 'atrial_fibrillation', 'flutter',
                     'atrial_tachycardia', 'paroxysmal_supraventricular_tachycardia', 'wolff_parkinson_white', 
                     'besv', 'bev', 'premature_ventricular_contraction', 'thrombosis']
+    
+
+admin.site.register(Comorbidities)
+class ComorbiditiesAdmin(admin.ModelAdmin):
+    list_display = ['arterial_hypertension']
 

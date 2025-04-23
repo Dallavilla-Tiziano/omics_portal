@@ -214,4 +214,14 @@ class Clinical_evaluation(models.Model):
 		choices=Thrombosis
 	)
 	
-    
+
+class Comorbidities(models.Model):
+
+	class Hyper(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	arterial_hypertension = models.CharField(
+		max_length=3,
+		choices=Hyper
+	)
