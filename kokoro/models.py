@@ -109,6 +109,35 @@ class Clinical_evaluation(models.Model):
 		N = "No", "No"
 		
 	atrial_fibrillation = models.CharField(
-		max_length=13,
+		max_length=3,
 		choices=AF
 	)
+
+	class Flutter(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	flutter = models.CharField(
+		max_length=3,
+		choices=Flutter
+	)
+
+	class AT(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+
+	atrial_tachycardia = models.CharField(
+		max_length=3,
+		choices=AT
+	)
+
+	class TPSV(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	paroxysmal_supraventricular_tachycardia = models.CharField(
+		max_length=3,
+		choices=TPSV
+	)
+
+    
