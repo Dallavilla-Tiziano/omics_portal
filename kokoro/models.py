@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 import uuid
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -72,6 +73,10 @@ class Clinical_evaluation(models.Model):
 	)
 
 	spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
+
+	def clean(self):
+		if self.symptoms == self.Symptoms.O and not self.spec_other_symptoms:
+			raise ValidationError("You must specify 'Other' symptoms if 'Other' is selected.")
 
 	class EVApreATC(models.TextChoices):
 		VF = "Ventricular Fibrillation", "Ventricular Fibrillation"
