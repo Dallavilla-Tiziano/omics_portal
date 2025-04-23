@@ -66,9 +66,9 @@ class Clinical_evaluation(models.Model):
 		A = "Asymptomatic", "Asymptomatic"
 		O = "Other", "Other"
 		
-		symptoms = models.CharField(
-	max_length=13,
-	choices=Symptoms
+	symptoms = models.CharField(
+		max_length=13,
+		choices=Symptoms
 	)
 
 	spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
