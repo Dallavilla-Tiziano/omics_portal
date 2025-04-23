@@ -140,4 +140,30 @@ class Clinical_evaluation(models.Model):
 		choices=TPSV
 	)
 
+	class WPW(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	wolff_parkinson_white = models.CharField(
+		max_length=3,
+		choices=WPW
+	)
+
+	class BESV(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	besv = models.CharField(
+		max_length=3,
+		choices=BESV
+	)
+
+	class BEV(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	bev = models.CharField(
+		max_length=3,
+		choices=BEV
+	)
     
