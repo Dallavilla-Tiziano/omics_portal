@@ -5,17 +5,17 @@ class Patient_profileAdmin(admin.ModelAdmin):
     # "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
 	list_display = ("last_name", "first_name", "sex", "date_of_birth")
 	
-admin.site.register(Patient_profile, Patient_profileAdmin)
+@admin.site.register(Patient_profile, Patient_profileAdmin)
 
 class ClinicalEvaluationInline(admin.TabularInline):
     model = Clinical_evaluation
     extra = 1
 
-admin.register(Clinical_Status)
+@admin.register(Clinical_Status)
 class ClinicalStatusAdmin(admin.ModelAdmin):
     inlines = [ClinicalEvaluationInline]
 
-admin.register(Clinical_evaluation)
+@admin.register(Clinical_evaluation)
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
     list_display = ['date_of_visit', 'clinical_status', 'symptoms']
 
