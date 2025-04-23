@@ -88,3 +88,8 @@ class Clinical_evaluation(models.Model):
 		max_length=38,
 		choices=EVApreATC
 	)
+
+	SVT = models.BooleanField(
+        default=False,
+        verbose_name="SVT?"  # Etichetta leggibile nei form/admin
+    )

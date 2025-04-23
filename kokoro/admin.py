@@ -17,5 +17,5 @@ class ClinicalStatusAdmin(admin.ModelAdmin):
 
 admin.site.register(Clinical_evaluation)
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
-    list_display = ['date_of_visit', 'EvaluationPreATC', 'symptoms']
+    list_display = ['date_of_visit', 'EvaluationPreATC', 'symptoms', 'SVT']
 
