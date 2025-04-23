@@ -21,5 +21,5 @@ admin.site.register(Clinical_evaluation)
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
     list_display = ['date_of_visit', 'EvaluationPreATC', 'symptoms', 'SVT', 'atrial_fibrillation', 'flutter',
                     'atrial_tachycardia', 'paroxysmal_supraventricular_tachycardia', 'wolff_parkinson_white', 
-                    'besv', 'bev', 'premature_ventricular_contraction']
+                    'besv', 'bev', 'premature_ventricular_contraction', 'thrombosis']
 

@@ -204,4 +204,14 @@ class Clinical_evaluation(models.Model):
 		max_length=3,
 		choices=PVT
 	)
+
+	class Thrombosis(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	thrombosis = models.CharField(
+		max_length=3,
+		choices=Thrombosis
+	)
+	
     
