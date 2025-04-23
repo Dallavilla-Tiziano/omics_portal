@@ -1,8 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-# libreria necessaria per opzioni a scelte multiple
-from multiselectfield import MultiSelectField
+# libreria necessaria per opzioni a scelte multiple... spoiler, dà errore!
+#from multiselectfield import MultiSelectField
 
 import uuid
 import datetime
