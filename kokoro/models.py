@@ -91,5 +91,14 @@ class Clinical_evaluation(models.Model):
 
 	SVT = models.BooleanField(
         default=False,
-        verbose_name="SVT?"  # Etichetta leggibile nei form/admin
+        verbose_name=" SVT (SopraVentricular Tachycardia)"  # Etichetta leggibile nei form/admin
     )
+
+	class AF(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+		
+	atrial_fibrillation = models.CharField(
+		max_length=13,
+		choices=AF
+	)
