@@ -54,13 +54,22 @@ class Patient_profile(models.Model):
 		return f'{self.id}'
 	
 class Clinical_Status(models.Model):
+	
+	patient = models.ForeignKey(
+		"PatientProfile",
+		on_delete=models.CASCADE,
+	)
 
-    # mi serve ancora?
+	# mi serve ancora?
 	id = models.UUIDField(
 		primary_key = True,
 		default = uuid.uuid4,
 		editable = False
 		)
+	
+	
+	class Meta:
+		abstract = True # Tell django this is an abstract class, no table will be created
 	
 # !!! Vorrei che Clinical_evaluation fosse una sottoclasse di Clinical_Status ma non so se
 #     questa è la "sede giusta" / il codice appropiato per occuparsi di ciò  
