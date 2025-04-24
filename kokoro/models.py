@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 
 ## PATIENTS ##
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
-class Patient_profile(models.Model):
+class PatientProfile(models.Model):
 	# UUIDField: campo che contiene un UUID (Universal Unique Identifier).
 	id = models.UUIDField(
 		# "primary_key=True": indica che questo è il campo identificativo unico della tabella.
@@ -49,14 +49,96 @@ class Patient_profile(models.Model):
 	def __str__(self):
 		return f'{self.id}'
 
+## PROCEDURES ##
+# Procedures common fields are defined in a base class which is then inherited by single procedures
+class ProcedureBase(models.Model):
+
+	## IMPORTANT!!!
+	## Ablation is accessible as Profile_patient.ablation_set.all()
+	## DeviceImplant as Profile_patient.DeviceImplant_set.all()
+
+	patient = models.ForeignKey(
+		"PatientProfile",
+		on_delete=models.CASCADE,
+	)
+
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+	date = models.DateField() # This substitute ablation date, implant date and so on...
+
+	class Meta:
+		abstract = True # Tell django this is an abstract class, no table will be created
+
+class Ablation(ProcedureBase):
+
+	class Complication(models.TextChoices):
+		YES = "Y", "Yes"
+		NO = "N", "No"
+
+	# Ablation done is not needed
+	# Date is inherited
+	total_area = models.FloatField(null=True, blank=True)
+	bas_area_a_160 = models.FloatField(null=True, blank=True) # what bas means? 'a' means above (>160)
+	bas_area_a_180 = models.FloatField(null=True, blank=True) # what bas means? 'a' means above (>180)
+	bas_area_a_200 = models.FloatField(null=True, blank=True) # what bas means? 'a' means above (>200)
+	basal_pdm = models.FloatField(null=True, blank=True)
+	total_rf_time = models.FloatField(null=True, blank=True)
+	rf_w = models.FloatField(null=True, blank=True)
+
+	complication = models.CharField(
+		max_length=2,
+		choices=Complication.choices,
+		blank=True,
+		default="",
+	)
+
+	complication_type = models.CharField(max_length=250)
+	therapy = models.CharField(max_length=250)
+	# REDO ABLAZIONE is not needed anymore
+
+class DeviceImplant(ProcedureBase):
+
+	# CONDUCTION TIMES RV-PACED TO LV-SENSED
+	lv4_ring = models.FloatField(null=True, blank=True)
+	lv3_ring = models.FloatField(null=True, blank=True)
+	lv2_ring = models.FloatField(null=True, blank=True)
+	lv1_tip = models.FloatField(null=True, blank=True)
+	# CONDUCTION TIMES RV-SENSED TO LV-SENSED
+	# PACING CAPTURE THRESHOLD--1
+	v1 =  models.FloatField(null=True, blank=True)
+	ms1 = models.PositiveIntegerField(null=True, blank=True)
+	lv_pulse_configuration_2_lv2 = models.FloatField(null=True, blank=True)
+	pacing_impendance1 = models.FloatField(null=True, blank=True)
+	# PACING CAPTURE THRESHOLD--2
+	v2 =  models.FloatField(null=True, blank=True)
+	ms2 = models.PositiveIntegerField(null=True, blank=True)
+	# RV CHANNEL
+	pacing_impendance2 = models.FloatField(null=True, blank=True)
+	# PACING CAPTURE THRESHOLD--3
+	v3 =  models.FloatField(null=True, blank=True)
+	ms3 = models.PositiveIntegerField(null=True, blank=True)	
+	# Are these fieds (ms, V) repeated or are they needed, or this needs to be logged?
+	# A CHANNEL
+	pacing_impendance3 = models.FloatField(null=True, blank=True)
+
+	def __str__(self):
+		return f"Implant on {self.date} for {self.patient}"
+
 ## DEVICES ##
 class DeviceType(models.Model):
 
 	id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+	class Design(models.TextChoices):
+		SD_PACEMAKER = "Single\\Dual Pacemaker"
+		SD_CHAMBER_ICD = "Single\\Dual Chamber ICD"
+		OTHER = "Other"
 
 	class Model(models.TextChoices):
 		IN7F4IS4 = "INTICA 7 HF-TQPDF4/IS4"
@@ -77,138 +159,168 @@ class DeviceType(models.Model):
 		STJUDE = "SJ", "St. Jude"
 
 	type = models.CharField(
-        max_length=2,
-        choices=Type.choices,
-        blank=True,
-        default="",
-    )
+		max_length=2,
+		choices=Type.choices,
+		blank=True,
+		default="",
+	)
 	company = models.CharField(
-        max_length=2,
-        choices=Company.choices,
-        blank=True,
-        default="",
-    )
-    # Manufacturer should be the same as company?
-    # Dispositivo
-    # Tipologiaare these needed?
-    # Tipo di device has been joined with type above.
+		max_length=2,
+		choices=Company.choices,
+		blank=True,
+		default="",
+	)
+	# Dispositivo, Tipologia are these needed?
+	# Tipo di device has been joined with type above.
+	model = models.CharField(
+		max_length=50,
+		choices=Model.choices,
+		blank=True,
+		default="",
+	)
+	design = models.CharField(
+		max_length=50,
+		choices=Design.choices,
+		blank=True,
+		default="",
+		)# I'm calling it design because i can't find a more appropriate name rn
 
+	def __str__(self):
+		return f"{self.name} ({self.manufacturer})"
 
-     
-## PROCEDURES ##
-# Procedures common fields are defined in a base class which is then inherited by single procedures
-class ProcedureBase(models.Model):
+class DeviceInstance(models.Model):
+	
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
 
-    patient = models.ForeignKey(
-        "Patient_profile",
-        on_delete=models.CASCADE,
-        related_name="samples",
-    )
+	device_type = models.ForeignKey(
+		DeviceType,
+		on_delete=models.PROTECT,
+		related_name="device",
+	)	
 
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
-    date = models.DateField() # This substitute ablation date, implant date and so on...
+	serial_number = models.CharField( ## Most probably i didn't got which field contains the serial, i need to ask.
+		max_length=100, 
+		unique=True,
+		help_text="Unique identifier printed on the device"
+	)
 
-    class Meta:
-        abstract = True # Tell django this is an abstract class, no table will be created
+	implantation = models.OneToOneField(
+		DeviceImplant,
+		on_delete=models.CASCADE,
+		related_name="device",
+	)
 
-class Ablation(ProcedureBase):
+	patient = models.ForeignKey(
+		PatientProfile,
+		on_delete=models.CASCADE,
+		related_name="device",
+	)
+	def __str__(self):
+		return f"{self.device_type.name} SN:{self.serial_number}"
 
-    class Complication(models.TextChoices):
-    YES = "Y", "Yes"
-    NO = "N", "No"
+class DeviceEvent(models.Model):
 
-	# Ablation done is not needed
-	# Date is inherited
-	total_area = models.FloatField(null=True, blank=True)
-	bas_area_a_160 = models.FloatField(null=True, blank=True) # what bas means? 'a' means above (>160)
-	bas_area_a_180 = models.FloatField(null=True, blank=True) # what bas means? 'a' means above (>180)
-	bas_area_a_200 = models.FloatField(null=True, blank=True) # what bas means? 'a' means above (>200)
-	basal_pdm = models.FloatField(null=True, blank=True)
-	total_rf_time = models.FloatField(null=True, blank=True)
-	rf_w =  = models.FloatField(null=True, blank=True)
+	class Cause(models.TextChoices):
+		TPSV = "TSPV", "TPSV"
+		FA = "FA", "FA"
+		RV_LEAD_MAL = "LEMA", "Malfunzionamento elettrocatetere vd"
+		ATRIAL_FLUTTER = "FLU", "Flutter Atriale"
+		LEAD_MACRODISP = "MAC", "Macrodislocazione Elettrocatetere"
+		SINUS_TACHY = "SIN", "Tachicardia Sinusale"
+		NOISE = "N", "Rumore"
+		AIR_BUBBLE = "AB", "Bolla d'aria"
+		RV_LEAD_DISLO = "DIS", "Dislocazione elettrodo VD"
+		T_DOUBLE = "TD", "T double counting"
+		TV_A_FV = "TVTF", "TV>FV"
+		UNKNOWN = "UNK", "Sconosciuto"
 
-	complication = models.CharField(
-        max_length=2,
-        choices=Complication.choices,
-        blank=True,
-        default="",
-    )
+	# Link back to your unique device instance
+	device = models.ForeignKey(
+		"DeviceInstance",
+		on_delete=models.CASCADE,
+		related_name="event",
+	)
 
-    complication_type = models.CharField(max_length=250)
-    therapy = models.CharField(max_length=250)
-    # REDO ABLAZIONE is not needed anymore
+	# Internal Date, potentially can be used to check if dat was inserted correctly
+	timestamp = models.DateTimeField(auto_now_add=True)
+	date = models.DateField()
 
-class Device_Implant(ProcedureBase):
+	n_icd_shock_appropriate_pre_rf = models.PositiveIntegerField(null=True, blank=True)
+	n_icd_shock_inappropriate_pre_rf = models.PositiveIntegerField(null=True, blank=True)
+	inappropriate_pre_rf_shock_cause = models.CharField(
+		max_length=4,
+		choices=Cause.choices,
+		blank=True,
+		default="",
+	)
+	n_icd_shock_appropriate_post_brs_diagnosis = models.PositiveIntegerField(null=True, blank=True)
+	inappropriate_post_brs_shock_cause = models.CharField(
+		max_length=4,
+		choices=Cause.choices,
+		blank=True,
+		default="",
+	)
+	complications = models.CharField(max_length=250, blank=True, default='')
+	
+	class Meta:
+		ordering = ["-timestamp"]
 
-	# CONDUCTION TIMES RV-PACED TO LV-SENSED
-	lv4_ring = models.FloatField(null=True, blank=True)
-	lv3_ring = models.FloatField(null=True, blank=True)
-	lv2_ring = models.FloatField(null=True, blank=True)
-	lv1_tip = models.FloatField(null=True, blank=True)
-	# CONDUCTION TIMES RV-SENSED TO LV-SENSED
-	# PACING CAPTURE THRESHOLD
-	v =  models.FloatField(null=True, blank=True)
-	ms = models.PositiveIntegerField(null=True, blank=True)
-	lv_pulse_configuration_2_lv2 = models.FloatField(null=True, blank=True)
-	pacing_impendance = models.FloatField(null=True, blank=True)
-	# PACING CAPTURE THRESHOLD
-	# Are these fieds (ms, V) repeated or are they needed, or this needs to be logged?
-
-	#### shouldn't the implant be identified by an id?
+	def __str__(self):
+		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 
 ## SAMPLES ##
 
 class Sample(models.Model):
 	# Type may be missing (perfieral blood, pericardial fluid)
 
-    # Choices for procedure_type field
-    class ProcedureType(models.TextChoices):
-        ABLATION = "A", "Ablation"
-        ABLATION_FOLLOW_UP = "PA", "Post-ablation follow-up"
-        DIAGNOSIS = "DG", "Diagnosis"
+	# Choices for procedure_type field
+	class ProcedureType(models.TextChoices):
+		ABLATION = "A", "Ablation"
+		ABLATION_FOLLOW_UP = "PA", "Post-ablation follow-up"
+		DIAGNOSIS = "DG", "Diagnosis"
 
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False,
-    )
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
 
-    patient = models.ForeignKey(
-        "Patient_profile",
-        on_delete=models.CASCADE,
-        related_name="samples",
-    )
+	patient = models.ForeignKey(
+		"PatientProfile",
+		on_delete=models.CASCADE,
+		related_name="samples",
+	)
 
-    imtc_id = models.CharField(
-        max_length=20,  # id_sample in canva
-    )
+	imtc_id = models.CharField(
+		max_length=20,  # id_sample in canva
+	)
 
-    # First registration date: what is that? I think it can be inherited from PatientProfile?
-    procedure_type = models.CharField(
-        max_length=2,
-        choices=ProcedureType.choices,
-        blank=True,
-        default="",
-    )
+	# First registration date: what is that? I think it can be inherited from PatientProfile?
+	procedure_type = models.CharField(
+		max_length=2,
+		choices=ProcedureType.choices,
+		blank=True,
+		default="",
+	)
 
-    informed_consent = models.CharField(max_length=20)
-    collection_date = models.DateField() # sample_collection_date in canva
-    pbmc_vials_n = models.PositiveIntegerField(null=True, blank=True)
-    # total_pbmc can be calculated in view, no need for an entry
-    pellet_vials_n = models.PositiveIntegerField(null=True, blank=True)
-    rna_vials_n = models.PositiveIntegerField(null=True, blank=True)
-    plasma_cold_vials_n = models.PositiveIntegerField(null=True, blank=True)
-    plasma_ambient_vials_n = models.PositiveIntegerField(null=True, blank=True)
-    # skipped ajmaline test result, this is not the right place
-    rin = models.PositiveIntegerField(null=True, blank=True)
-    notes = models.CharField(
-        max_length=250,
-        blank=True,
-    )
+	informed_consent = models.CharField(max_length=20)
+	collection_date = models.DateField() # sample_collection_date in canva
+	pbmc_vials_n = models.PositiveIntegerField(null=True, blank=True)
+	# total_pbmc can be calculated in view, no need for an entry
+	pellet_vials_n = models.PositiveIntegerField(null=True, blank=True)
+	rna_vials_n = models.PositiveIntegerField(null=True, blank=True)
+	plasma_cold_vials_n = models.PositiveIntegerField(null=True, blank=True)
+	plasma_ambient_vials_n = models.PositiveIntegerField(null=True, blank=True)
+	# skipped ajmaline test result, this is not the right place
+	rin = models.PositiveIntegerField(null=True, blank=True)
+	notes = models.CharField(
+		max_length=250,
+		blank=True,
+	)
 
-    def __str__(self):
-        return f"{self.imtc_id} ({self.get_procedure_type_display()})"
+	def __str__(self):
+		return f"{self.imtc_id} ({self.get_procedure_type_display()})"
