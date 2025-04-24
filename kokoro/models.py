@@ -56,7 +56,7 @@ class Patient_profile(models.Model):
 class Clinical_Status(models.Model):
 	
 	patient = models.ForeignKey(
-		"PatientProfile",
+		"Patient_profile",
 		on_delete=models.CASCADE,
 	)
 
@@ -73,7 +73,7 @@ class Clinical_Status(models.Model):
 	
 # !!! Vorrei che Clinical_evaluation fosse una sottoclasse di Clinical_Status ma non so se
 #     questa è la "sede giusta" / il codice appropiato per occuparsi di ciò  
-class Clinical_evaluation(models.Model):
+class Clinical_evaluation(Clinical_Status):
 
 	# per ora va bene così, ma il formato di data che si vede è scomodissimo
 	date_of_visit = models.DateField()
@@ -224,7 +224,7 @@ class Clinical_evaluation(models.Model):
 	)
 	
 
-class Comorbidities(models.Model):
+class Comorbidities(Clinical_Status):
 
 	class Hyper(models.TextChoices):
 		Y = "Yes", "Yes"

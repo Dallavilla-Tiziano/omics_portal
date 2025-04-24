@@ -3,7 +3,7 @@ from .models import Patient_profile, Clinical_Status, Clinical_evaluation, Comor
 
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
-    list_display = ['date_of_visit', 'EvaluationPreATC', 'symptoms', 'SVT', 'atrial_fibrillation', 'flutter',
+    list_display = ['date_of_visit', 'EvaluationPreATC', 'SVT', 'atrial_fibrillation', 'flutter',
                     'atrial_tachycardia', 'paroxysmal_supraventricular_tachycardia', 'wolff_parkinson_white', 
                     'besv', 'bev', 'premature_ventricular_contraction', 'thrombosis']
 class ClinicalEvaluationInline(admin.TabularInline):
@@ -13,7 +13,7 @@ class ClinicalEvaluationInline(admin.TabularInline):
 class ComorbiditiesAdmin(admin.ModelAdmin):
     list_display = ['arterial_hypertension']
 class ComorbiditiesInline(admin.TabularInline):
-    model = Clinical_evaluation
+    model = Comorbidities
     extra = 1
 
 
@@ -27,6 +27,6 @@ class Patient_profileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Patient_profile, Patient_profileAdmin)
-admin.site.register(Clinical_evaluation)
-admin.site.register(Comorbidities)
+admin.site.register(Clinical_evaluation, ClinicalEvaluationAdmin)
+admin.site.register(Comorbidities, ComorbiditiesAdmin)
 
