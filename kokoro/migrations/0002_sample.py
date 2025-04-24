@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('plasma_ambient_vials_n', models.PositiveIntegerField(blank=True, null=True)),
                 ('rin', models.PositiveIntegerField(blank=True, null=True)),
                 ('notes', models.CharField(blank=True, max_length=250)),
-                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='samples', to='kokoro.patient_profile')),
+                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='samples', to='kokoro.PatientProfile')),
             ],
         ),
     ]

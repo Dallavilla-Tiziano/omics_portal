@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('bev', models.CharField(choices=[('Yes', 'Yes'), ('No', 'No')], max_length=3)),
                 ('premature_ventricular_contraction', models.CharField(choices=[('Yes', 'Yes'), ('No', 'No')], max_length=3)),
                 ('thrombosis', models.CharField(choices=[('Yes', 'Yes'), ('No', 'No')], max_length=3)),
-                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.patient_profile')),
+                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.PatientProfile')),
             ],
             options={
                 'abstract': False,
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('arterial_hypertension', models.CharField(choices=[('Yes', 'Yes'), ('No', 'No')], max_length=3)),
-                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.patient_profile')),
+                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.PatientProfile')),
             ],
             options={
                 'abstract': False,

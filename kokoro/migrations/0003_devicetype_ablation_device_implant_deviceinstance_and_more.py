@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('complication', models.CharField(blank=True, choices=[('Y', 'Yes'), ('N', 'No')], default='', max_length=2)),
                 ('complication_type', models.CharField(max_length=250)),
                 ('therapy', models.CharField(max_length=250)),
-                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.patient_profile')),
+                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.PatientProfile')),
             ],
             options={
                 'abstract': False,
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 ('v3', models.FloatField(blank=True, null=True)),
                 ('ms3', models.PositiveIntegerField(blank=True, null=True)),
                 ('pacing_impendance3', models.FloatField(blank=True, null=True)),
-                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.patient_profile')),
+                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='kokoro.PatientProfile')),
             ],
             options={
                 'abstract': False,
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('serial_number', models.CharField(help_text='Unique identifier printed on the device', max_length=100, unique=True)),
                 ('implantation', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='device', to='kokoro.device_implant')),
-                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='device', to='kokoro.patient_profile')),
+                ('patient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='device', to='kokoro.PatientProfile')),
                 ('device_type', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='device', to='kokoro.devicetype')),
             ],
         ),
