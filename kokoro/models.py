@@ -8,6 +8,22 @@ import uuid
 import datetime
 from dateutil.relativedelta import relativedelta
 
+## THERAPIES ##
+
+class Therapy(models.Model):
+	"""
+	A single therapy or medication.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Therapy'
+		verbose_name_plural = 'Therapies'
+
+	def __str__(self):
+		return self.name
+
 ## PATIENTS ##
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
 class PatientProfile(models.Model):
@@ -45,12 +61,12 @@ class PatientProfile(models.Model):
 	weight = models.PositiveIntegerField(null=True, blank=True)
 	cardioref_id = models.CharField(max_length=100, blank=True, default='')
 
-    therapies = models.ManyToManyField(
-        Therapy,
-        blank=True,
-        related_name='patients',
-        help_text='Therapies this patient is on.'
-    )
+	therapies = models.ManyToManyField(
+		Therapy,
+		blank=True,
+		related_name='patients',
+		help_text='Therapies this patient is on.'
+	)
 
 	class Meta:
 		# permissions: aggiunge un permesso personalizzato che potrà essere usato per controllare l’accesso a dati sensibili.
@@ -147,14 +163,14 @@ class ValveIntervention(ProcedureBase):
 
 	replacement = models.CharField(
 		max_length=1,
-		choices=Replacement.choices,
+		choices=ReplacementRepair.choices,
 		blank=True,
 		default="",
 	)
 
 	repair = models.CharField(
 		max_length=1,
-		choices=Replacement.choices,
+		choices=ReplacementRepair.choices,
 		blank=True,
 		default="",
 	)
@@ -168,7 +184,7 @@ class CoronaryIntervention(ProcedureBase):
 	# Coronary Artery Bypass Graft
 	cabg = models.CharField( 
 		max_length=1,
-		choices=Replacement.choices,
+		choices=CabgPci.choices,
 		blank=True,
 		default="",
 	)
@@ -176,7 +192,7 @@ class CoronaryIntervention(ProcedureBase):
 	# Percutaneous coronary intervention
 	pci = models.CharField(
 		max_length=1,
-		choices=Replacement.choices,
+		choices=CabgPci.choices,
 		blank=True,
 		default="",
 	)
@@ -326,22 +342,6 @@ class DeviceEvent(models.Model):
 	def __str__(self):
 		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 
-## THERAPIES ##
-
-class Therapy(models.Model):
-    """
-    A single therapy or medication.
-    """
-    name = models.CharField(max_length=100, unique=True)
-
-    class Meta:
-        ordering = ['name']
-        verbose_name = 'Therapy'
-        verbose_name_plural = 'Therapies'
-
-    def __str__(self):
-        return self.name
-
 ## SAMPLES ##
 
 class Sample(models.Model):
@@ -422,8 +422,8 @@ class Clinical_evaluation(Clinical_Status):
 	date_of_visit = models.DateField()
 	 
 	### SYMPTOMS - TRIAL 1:
-    ###################################################################################
-    # questo sarebbe andato bene se avessi voluto selezionare solo una voce alla volta,
+	###################################################################################
+	# questo sarebbe andato bene se avessi voluto selezionare solo una voce alla volta,
 	# ma io le voglio molteplicamente selezionabili!
 	#class Symptoms(models.TextChoices):
 	#	CA = "Cardiac arrest", "Cardiac arrest"
@@ -439,22 +439,22 @@ class Clinical_evaluation(Clinical_Status):
  
 	#spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
 
-    # questo nasce dal desiderio di far comparire "spec_other_symptoms" solo se effettivamente
+	# questo nasce dal desiderio di far comparire "spec_other_symptoms" solo se effettivamente
 	# si seleziona "Other" a "symptoms"
 	#def clean(self):
 	#	if self.symptoms == self.Symptoms.O and not self.spec_other_symptoms:
 	#		raise ValidationError("You must specify 'Other' symptoms if 'Other' is selected.")
 	#########################################################################################
 
-    ### SYMPTOMS - TRIAL 2:
+	### SYMPTOMS - TRIAL 2:
 	####################################################################
 	#SYMPTOM_CHOICES = (
-    #    ('CA', 'Cardiac arrest'),
-    #    ('S', 'Syncope'),
-    #    ('P', 'Palpitations'),
-    #    ('A', 'Asymptomatic'),
-    #    ('O', 'Other'),
-    #)
+	#    ('CA', 'Cardiac arrest'),
+	#    ('S', 'Syncope'),
+	#    ('P', 'Palpitations'),
+	#    ('A', 'Asymptomatic'),
+	#    ('O', 'Other'),
+	#)
 	
 	#symptoms = MultiSelectField(choices=SYMPTOM_CHOICES, max_length=20, blank=True)
 	#spec_other_symptoms = models.CharField(max_length=100, blank=True, default='')
@@ -463,9 +463,9 @@ class Clinical_evaluation(Clinical_Status):
 	#	super().clean()  # mantiene pulizia generale
 	#	if 'O' in self.symptoms and not self.spec_other_symptoms:
 	#		raise ValidationError("You must specify 'Other' symptoms if 'Other' is selected.")
-    ##########################################################################################
+	##########################################################################################
 
-    # ho messo solo queste opzioni perché sono le uniche attualmente esistenti,
+	# ho messo solo queste opzioni perché sono le uniche attualmente esistenti,
 	# ma credo che sarà opportuno inserirne altre
 	class EVApreATC(models.TextChoices):
 		VF = "VF", "Ventricular Fibrillation"
@@ -478,13 +478,13 @@ class Clinical_evaluation(Clinical_Status):
 		choices=EVApreATC
 	)
 
-    # OPZIONE 1 per campo Yes/No
+	# OPZIONE 1 per campo Yes/No
 	SVT = models.BooleanField(
-        default=False,
-        verbose_name=" SVT (SopraVentricular Tachycardia)"  # Etichetta leggibile nei form/admin
-    )
+		default=False,
+		verbose_name=" SVT (SopraVentricular Tachycardia)"  # Etichetta leggibile nei form/admin
+	)
 
-    # OPZIONE 2 per campo Yes/No
+	# OPZIONE 2 per campo Yes/No
 	class AF(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"
