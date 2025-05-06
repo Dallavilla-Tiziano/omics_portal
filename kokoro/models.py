@@ -396,7 +396,7 @@ class Sample(models.Model):
 		return f"{self.imtc_id} ({self.get_procedure_type_display()})"
 ## IMTC ##
 class ResearchAnalysis(models.Model):
-	
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     class AnalysisType(models.TextChoices):
@@ -421,13 +421,6 @@ class ResearchAnalysis(models.Model):
         Sample,
         related_name="analyses",
         help_text="Samples used in this analysis"
-    )
-
-    performed_by = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text="User who performed the analysis"
     )
 
     date_performed = models.DateField(auto_now_add=True)

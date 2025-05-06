@@ -44,6 +44,7 @@ class DeviceInstanceInline(admin.TabularInline):
 
 class SampleAdmin(admin.ModelAdmin):
 	list_display = ("imtc_id", "patient", "procedure_type", "collection_date")
+	search_fields = ['imtc_id']
 class SampleInline(admin.TabularInline):
 	model = Sample
 	extra = 1
