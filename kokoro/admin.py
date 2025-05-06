@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities, Therapy, ValveIntervention, CoronaryIntervention
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis
+
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
     list_display = ['date_of_visit', 'EvaluationPreATC', 'SVT', 'atrial_fibrillation', 'flutter',
                     'atrial_tachycardia', 'paroxysmal_supraventricular_tachycardia', 'wolff_parkinson_white', 
@@ -50,6 +51,10 @@ class SampleInline(admin.TabularInline):
 class TherapyAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
+class ResearchAnalysisAdmin(admin.ModelAdmin):
+	autocomplete_fields = ['samples']
+	list_display = ("analysis_name", "type")
+
 class ValveInterventionAdmin(admin.ModelAdmin):
 	list_display = ("replacement", "repair")
 class ValveInterventionInLine(admin.TabularInline):	
@@ -87,4 +92,5 @@ admin.site.register(Sample, SampleAdmin)
 admin.site.register(Clinical_evaluation, ClinicalEvaluationAdmin)
 admin.site.register(Comorbidities, ComorbiditiesAdmin)
 admin.site.register(Therapy, TherapyAdmin)
+admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
 
