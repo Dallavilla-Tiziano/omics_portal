@@ -45,6 +45,13 @@ class PatientProfile(models.Model):
 	weight = models.PositiveIntegerField(null=True, blank=True)
 	cardioref_id = models.CharField(max_length=100, blank=True, default='')
 
+    therapies = models.ManyToManyField(
+        Therapy,
+        blank=True,
+        related_name='patients',
+        help_text='Therapies this patient is on.'
+    )
+
 	class Meta:
 		# permissions: aggiunge un permesso personalizzato che potrà essere usato per controllare l’accesso a dati sensibili.
 		permissions = [
@@ -318,6 +325,22 @@ class DeviceEvent(models.Model):
 
 	def __str__(self):
 		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
+
+## THERAPIES ##
+
+class Therapy(models.Model):
+    """
+    A single therapy or medication.
+    """
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Therapy'
+        verbose_name_plural = 'Therapies'
+
+    def __str__(self):
+        return self.name
 
 ## SAMPLES ##
 
