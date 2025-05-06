@@ -132,6 +132,48 @@ class DeviceImplant(ProcedureBase):
 	def __str__(self):
 		return f"Implant on {self.date} for {self.patient}"
 
+class ValveIntervention(ProcedureBase):
+
+	class ReplacementRepair(models.TextChoices):
+		YES = "Y", "Yes"
+		NO = "N", "No"
+
+	replacement = models.CharField(
+		max_length=1,
+		choices=Replacement.choices,
+		blank=True,
+		default="",
+	)
+
+	repair = models.CharField(
+		max_length=1,
+		choices=Replacement.choices,
+		blank=True,
+		default="",
+	)
+
+class CoronaryIntervention(ProcedureBase):
+
+	class CabgPci(models.TextChoices):
+		YES = "Y", "Yes"
+		NO = "N", "No"
+
+	# Coronary Artery Bypass Graft
+	cabg = models.CharField( 
+		max_length=1,
+		choices=Replacement.choices,
+		blank=True,
+		default="",
+	)
+
+	# Percutaneous coronary intervention
+	pci = models.CharField(
+		max_length=1,
+		choices=Replacement.choices,
+		blank=True,
+		default="",
+	)
+
 ## DEVICES ##
 class DeviceType(models.Model):
 
