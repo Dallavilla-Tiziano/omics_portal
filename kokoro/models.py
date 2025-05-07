@@ -8,7 +8,7 @@ import uuid
 import datetime
 from dateutil.relativedelta import relativedelta
 
-## THERAPIES ##
+#################### THERAPIES ####################
 
 class Therapy(models.Model):
 	"""
@@ -24,8 +24,18 @@ class Therapy(models.Model):
 	def __str__(self):
 		return self.name
 
-## PATIENTS ##
+#################### PATIENTS ####################
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
+
+class Study(models.Model):
+
+	name = models.CharField(max_length=100, unique=True)
+	start_date = models.DateField()
+	end_date = models.DateField(null=True, blank=True)
+
+	def __str__(self):
+		return self.name
+
 class PatientProfile(models.Model):
 	# UUIDField: campo che contiene un UUID (Universal Unique Identifier).
 	id = models.UUIDField(
@@ -68,6 +78,14 @@ class PatientProfile(models.Model):
 		help_text='Therapies this patient is on.'
 	)
 
+	studies = models.ManyToManyField(
+		Study,
+		through='PatientStudy',
+		related_name='participants',
+		blank=True,
+		help_text='Which studies this patient is enrolled in'
+	)
+
 	class Meta:
 		# permissions: aggiunge un permesso personalizzato che potrà essere usato per controllare l’accesso a dati sensibili.
 		permissions = [
@@ -76,6 +94,26 @@ class PatientProfile(models.Model):
 
 	def __str__(self):
 		return f'{self.id}'
+
+class PatientStudy(models.Model):
+	patient         = models.ForeignKey(
+						  PatientProfile,
+						  on_delete=models.CASCADE,
+						  related_name='patient_studies'
+					  )
+	study           = models.ForeignKey(
+						  Study,
+						  on_delete=models.CASCADE,
+						  related_name='study_participants'
+					  )
+	enrollment_date = models.DateField()
+
+	class Meta:
+		unique_together = ('patient', 'study') # The same patient can't be enrolled twice in the same study
+		ordering        = ['-enrollment_date']
+
+	def __str__(self):
+		return f"{self.patient} ↔ {self.study} on {self.enrollment_date}"
 
 ## PROCEDURES ##
 # Procedures common fields are defined in a base class which is then inherited by single procedures
@@ -397,47 +435,47 @@ class Sample(models.Model):
 ## IMTC ##
 class ResearchAnalysis(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    class AnalysisType(models.TextChoices):
-        whole_genome_sequencing = "WGS", "Whole Genome Sequencing"
-        whole_exome_sequencing = "WES", "Whole Exome Sequencing"
-        rna_sequencing = "RNAseq", "RNA sequencing"
-        proteomics = "PRO", "Proteomics (Mass Spectrometry)"
+	class AnalysisType(models.TextChoices):
+		whole_genome_sequencing = "WGS", "Whole Genome Sequencing"
+		whole_exome_sequencing = "WES", "Whole Exome Sequencing"
+		rna_sequencing = "RNAseq", "RNA sequencing"
+		proteomics = "PRO", "Proteomics (Mass Spectrometry)"
 
-    analysis_name = models.CharField(
-        max_length=250,
-        blank=True,
-        help_text="Analysis name"
-    )
+	analysis_name = models.CharField(
+		max_length=250,
+		blank=True,
+		help_text="Analysis name"
+	)
 
-    type = models.CharField(
-        max_length=10,
-        choices=AnalysisType,
-        help_text="Type of omics analysis performed"
-    )
+	type = models.CharField(
+		max_length=10,
+		choices=AnalysisType,
+		help_text="Type of omics analysis performed"
+	)
 
-    samples = models.ManyToManyField(
-        Sample,
-        related_name="analyses",
-        help_text="Samples used in this analysis"
-    )
+	samples = models.ManyToManyField(
+		Sample,
+		related_name="analyses",
+		help_text="Samples used in this analysis"
+	)
 
-    date_performed = models.DateField(auto_now_add=True)
+	date_performed = models.DateField(auto_now_add=True)
 
-    # Campo JSON per salvare i risultati (link, path, ID, ecc.).
-    result_files = models.JSONField(
-        blank=True,
-        null=True,
-        help_text="Paths or identifiers for result files"
-    )
+	# Campo JSON per salvare i risultati (link, path, ID, ecc.).
+	result_files = models.JSONField(
+		blank=True,
+		null=True,
+		help_text="Paths or identifiers for result files"
+	)
 
-    class Meta:
-        verbose_name = "Analysis"
-        verbose_name_plural = "Analyses"  # Fixes incorrect pluralization
+	class Meta:
+		verbose_name = "Analysis"
+		verbose_name_plural = "Analyses"  # Fixes incorrect pluralization
 
-    def __str__(self):
-        return f"{self.get_type_display()} ({self.date_performed})"	
+	def __str__(self):
+		return f"{self.get_type_display()} ({self.date_performed})"	
 
 class Clinical_Status(models.Model):
 	

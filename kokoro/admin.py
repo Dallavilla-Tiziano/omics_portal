@@ -1,5 +1,15 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study
+
+class StudyAdmin(admin.ModelAdmin):
+    list_display  = ['name', 'start_date', 'end_date']
+    search_fields = ['name']
+
+class PatientStudyInline(admin.TabularInline):
+    model = PatientStudy
+    extra = 1
+    autocomplete_fields = ['study']
+    fields = ['study', 'enrollment_date']
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
     list_display = ['date_of_visit', 'EvaluationPreATC', 'SVT', 'atrial_fibrillation', 'flutter',
@@ -78,10 +88,17 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		ComorbiditiesInline,
 		ValveInterventionInLine,
 		CoronaryInterventionInLine,
+		PatientStudyInline,
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
 	autocomplete_fields = ['therapies']
 	list_display = ("last_name", "first_name", "sex", "date_of_birth")
+	search_fields = ['last_name', 'first_name']
+
+class PatientStudyAdmin(admin.ModelAdmin):
+    list_display       = ['patient', 'study', 'enrollment_date']
+    search_fields      = ['patient__last_name', 'study__name']
+    autocomplete_fields = ['patient', 'study']
 
 admin.site.register(PatientProfile, PatientProfileAdmin)
 admin.site.register(DeviceType, DeviceTypeAdmin)
@@ -94,4 +111,4 @@ admin.site.register(Clinical_evaluation, ClinicalEvaluationAdmin)
 admin.site.register(Comorbidities, ComorbiditiesAdmin)
 admin.site.register(Therapy, TherapyAdmin)
 admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
-
+admin.site.register(Study, StudyAdmin)
