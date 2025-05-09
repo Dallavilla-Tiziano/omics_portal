@@ -24,7 +24,8 @@ class Therapy(models.Model):
 	def __str__(self):
 		return self.name
 
-#################### PATIENTS ####################
+#################### PATIENT PROFILE ####################
+
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
 
 class Study(models.Model):
@@ -74,8 +75,15 @@ class PatientProfile(models.Model):
 	therapies = models.ManyToManyField(
 		Therapy,
 		blank=True,
-		related_name='patients',
+		related_name='patients_therapies',
 		help_text='Therapies this patient is on.'
+	)
+
+	allergies = models.ManyToManyField(
+		Therapy,
+		blank=True,
+		related_name='patient_allergies',
+		help_text='Patient\'s allergies'
 	)
 
 	studies = models.ManyToManyField(
@@ -95,6 +103,7 @@ class PatientProfile(models.Model):
 	def __str__(self):
 		return f'{self.id}'
 
+# Needed to be able to track enrollment date
 class PatientStudy(models.Model):
 	patient         = models.ForeignKey(
 						  PatientProfile,
@@ -115,7 +124,8 @@ class PatientStudy(models.Model):
 	def __str__(self):
 		return f"{self.patient} ↔ {self.study} on {self.enrollment_date}"
 
-## PROCEDURES ##
+#################### PROCEDURES ####################
+
 # Procedures common fields are defined in a base class which is then inherited by single procedures
 class ProcedureBase(models.Model):
 
@@ -380,7 +390,7 @@ class DeviceEvent(models.Model):
 	def __str__(self):
 		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 
-## SAMPLES ##
+#################### SAMPLES ####################
 
 class Sample(models.Model):
 	# Type may be missing (perfieral blood, pericardial fluid)
@@ -432,7 +442,8 @@ class Sample(models.Model):
 
 	def __str__(self):
 		return f"{self.imtc_id} ({self.get_procedure_type_display()})"
-## IMTC ##
+
+#################### IMTC ####################
 class ResearchAnalysis(models.Model):
 
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -477,6 +488,7 @@ class ResearchAnalysis(models.Model):
 	def __str__(self):
 		return f"{self.get_type_display()} ({self.date_performed})"	
 
+#################### CLINICAL STATUS ####################
 class Clinical_Status(models.Model):
 	
 	patient = models.ForeignKey(
