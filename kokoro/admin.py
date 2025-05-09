@@ -1,5 +1,15 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study
+
+class StudyAdmin(admin.ModelAdmin):
+    list_display  = ['name', 'start_date', 'end_date']
+    search_fields = ['name']
+
+class PatientStudyInline(admin.TabularInline):
+    model = PatientStudy
+    extra = 1
+    autocomplete_fields = ['study']
+    fields = ['study', 'enrollment_date']
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
     list_display = ['date_of_visit', 'EvaluationPreATC', 'SVT', 'atrial_fibrillation', 'flutter',
@@ -15,7 +25,7 @@ class ComorbiditiesInline(admin.TabularInline):
     model = Comorbidities
     extra = 1
 class AblationAdmin(admin.ModelAdmin):
-		list_display = ("date", "total_area", "total_rf_time")
+	list_display = ("date", "total_area", "total_rf_time")
 class AblationtInline(admin.TabularInline):
 	model = Ablation
 	extra = 1
@@ -44,9 +54,29 @@ class DeviceInstanceInline(admin.TabularInline):
 
 class SampleAdmin(admin.ModelAdmin):
 	list_display = ("imtc_id", "patient", "procedure_type", "collection_date")
+	search_fields = ['imtc_id']
 class SampleInline(admin.TabularInline):
 	model = Sample
 	extra = 1
+
+class TherapyAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class ResearchAnalysisAdmin(admin.ModelAdmin):
+	autocomplete_fields = ['samples']
+	list_display = ("analysis_name", "type")
+
+class ValveInterventionAdmin(admin.ModelAdmin):
+	list_display = ("replacement", "repair")
+class ValveInterventionInLine(admin.TabularInline):	
+    model = ValveIntervention
+    extra = 1
+
+class CoronaryInterventionAdmin(admin.ModelAdmin):
+	list_display = ("cabg", "pci")
+class CoronaryInterventionInLine(admin.TabularInline):	
+    model = CoronaryIntervention
+    extra = 1
 
 class PatientProfileAdmin(admin.ModelAdmin):
 	inlines = [
@@ -56,9 +86,19 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		DeviceImplantInline,
 		ClinicalEvaluationInline,
 		ComorbiditiesInline,
+		ValveInterventionInLine,
+		CoronaryInterventionInLine,
+		PatientStudyInline,
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
+	autocomplete_fields = ['therapies']
 	list_display = ("last_name", "first_name", "sex", "date_of_birth")
+	search_fields = ['last_name', 'first_name']
+
+class PatientStudyAdmin(admin.ModelAdmin):
+    list_display       = ['patient', 'study', 'enrollment_date']
+    search_fields      = ['patient__last_name', 'study__name']
+    autocomplete_fields = ['patient', 'study']
 
 admin.site.register(PatientProfile, PatientProfileAdmin)
 admin.site.register(DeviceType, DeviceTypeAdmin)
@@ -69,4 +109,6 @@ admin.site.register(DeviceImplant, DeviceImplantAdmin)
 admin.site.register(Sample, SampleAdmin)
 admin.site.register(Clinical_evaluation, ClinicalEvaluationAdmin)
 admin.site.register(Comorbidities, ComorbiditiesAdmin)
-
+admin.site.register(Therapy, TherapyAdmin)
+admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
+admin.site.register(Study, StudyAdmin)
