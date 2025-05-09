@@ -91,7 +91,7 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		PatientStudyInline,
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
-	autocomplete_fields = ['therapies']
+	autocomplete_fields = ['therapies','allergies']
 	list_display = ("last_name", "first_name", "sex", "date_of_birth")
 	search_fields = ['last_name', 'first_name']
 
