@@ -1,34 +1,57 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_evaluation, Symptoms, Cardiomiopathies, Riskfactors, Comorbidities, Events, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
-    list_display = ['date_of_visit', 'EvaluationPreATC', 'SVT', 'atrial_fibrillation', 'flutter',
-                    'atrial_tachycardia', 'paroxysmal_supraventricular_tachycardia', 'wolff_parkinson_white', 
-                    'besv', 'bev', 'premature_ventricular_contraction', 'thrombosis']
+	autocomplete_fields = ['symptoms', 'cardiomiopathies', 'riskfactors', 'comorbidities']
+	
+	list_display = ['date_of_visit']
 class ClinicalEvaluationInline(admin.TabularInline):
     model = Clinical_evaluation
     extra = 1
 
+class SymptomsAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+	list_display = ['name']
+
+class CardiomiopathiesAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+	list_display = ['name']
+
+class RiskfactorsAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+	list_display = ['name']
+
 class ComorbiditiesAdmin(admin.ModelAdmin):
-    list_display = ['arterial_hypertension']
-class ComorbiditiesInline(admin.TabularInline):
-    model = Comorbidities
+	search_fields = ['name']
+	list_display = ['name']
+
+class EventsAdmin(admin.ModelAdmin):
+    list_display = ['death']
+class EventsInline(admin.TabularInline):
+    model = Events
     extra = 1
+
+
+
 class AblationAdmin(admin.ModelAdmin):
 		list_display = ("date", "total_area", "total_rf_time")
 class AblationtInline(admin.TabularInline):
 	model = Ablation
 	extra = 1
+
 class DeviceImplantAdmin(admin.ModelAdmin):
 		list_display = ("date", "lv4_ring", "lv3_ring", "lv2_ring", "lv1_tip")
 class DeviceImplantInline(admin.TabularInline):
 	model = DeviceImplant
 	extra = 1
+
 class DeviceEventAdmin(admin.ModelAdmin):
 		list_display = ("timestamp", "date", "inappropriate_pre_rf_shock_cause", "inappropriate_post_brs_shock_cause")
 class DeviceEventInline(admin.TabularInline):
 	model = DeviceEvent
 	extra = 1
+
+
 
 class DeviceTypeAdmin(admin.ModelAdmin):
 		list_display = ("Model", "Design", "Company")
@@ -42,11 +65,67 @@ class DeviceInstanceInline(admin.TabularInline):
 	model = DeviceInstance
 	extra = 1
 
+
+
 class SampleAdmin(admin.ModelAdmin):
 	list_display = ("imtc_id", "patient", "procedure_type", "collection_date")
 class SampleInline(admin.TabularInline):
 	model = Sample
 	extra = 1
+
+
+
+class EPStudyAdmin(admin.ModelAdmin):
+	list_display = ("ep_result", "induced_arrhythmia")
+class EPStudyInline(admin.TabularInline):
+	model = EP_study
+	extra = 1
+
+class FlecainideTestAdmin(admin.ModelAdmin):
+	list_display = ("flecainide_result", "flecainide_dose")
+class FlecainideTestInline(admin.TabularInline):
+	model = Flecainide_test
+	extra = 1
+
+class AdrenalineTestAdmin(admin.ModelAdmin):
+	list_display = ("adrenaline_result", "adrenaline_dose")
+class AdrenalineTestInline(admin.TabularInline):
+	model = Adrenaline_test
+	extra = 1
+
+class AjmalineTestAdmin(admin.ModelAdmin):
+	list_display = ("ajmaline_result", "ajmaline_dose")
+class AjmalineTestInline(admin.TabularInline):
+	model = Ajmaline_test
+	extra = 1
+
+
+
+class ECGAdmin(admin.ModelAdmin):
+	list_display = ["atrial_rhythmh"]
+class ECGInline(admin.TabularInline):
+	model = ECG
+	extra = 1
+
+class ECHOAdmin(admin.ModelAdmin):
+	list_display = ["anatomical_alterations"]
+class ECHOInline(admin.TabularInline):
+	model = ECHO
+	extra = 1
+
+class LatePotentialsAdmin(admin.ModelAdmin):
+	list_display = ["basal_lp1"]
+class LatePotentialsInline(admin.TabularInline):
+	model = Late_potentials
+	extra = 1
+
+class RMTCPHAdmin(admin.ModelAdmin):
+	list_display = ["anatomical_alterations"]
+class RMTCPHInline(admin.TabularInline):
+	model = RMN_TC_PH
+	extra = 1
+
+
 
 class PatientProfileAdmin(admin.ModelAdmin):
 	inlines = [
@@ -55,7 +134,13 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		DeviceInstanceInline,
 		DeviceImplantInline,
 		ClinicalEvaluationInline,
-		ComorbiditiesInline,
+		EventsInline,
+		EPStudyInline,
+		FlecainideTestInline,
+		ECGInline,
+		ECHOInline,
+		LatePotentialsInline,
+		RMTCPHInline,
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
 	list_display = ("last_name", "first_name", "sex", "date_of_birth")
@@ -68,5 +153,18 @@ admin.site.register(Ablation, AblationAdmin)
 admin.site.register(DeviceImplant, DeviceImplantAdmin)
 admin.site.register(Sample, SampleAdmin)
 admin.site.register(Clinical_evaluation, ClinicalEvaluationAdmin)
+admin.site.register(Symptoms, SymptomsAdmin)
+admin.site.register(Cardiomiopathies, CardiomiopathiesAdmin)
+admin.site.register(Riskfactors, RiskfactorsAdmin)
 admin.site.register(Comorbidities, ComorbiditiesAdmin)
+admin.site.register(Events, EventsAdmin)
+admin.site.register(EP_study, EPStudyAdmin)
+admin.site.register(Flecainide_test, FlecainideTestAdmin)
+admin.site.register(Adrenaline_test, AdrenalineTestAdmin)
+admin.site.register(Ajmaline_test, AjmalineTestAdmin)
+admin.site.register(ECG, ECGAdmin)
+admin.site.register(ECHO, ECHOAdmin)
+admin.site.register(Late_potentials, LatePotentialsAdmin)
+admin.site.register(RMN_TC_PH, RMTCPHAdmin)
+
 
