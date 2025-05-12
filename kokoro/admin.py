@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study #Events
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies #Events
 
 
 class StudyAdmin(admin.ModelAdmin):
@@ -165,7 +165,7 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		DeviceInstanceInline,
 		DeviceImplantInline,
 		ClinicalEvaluationInline,
-		EventsInline,
+		# EventsInline,
 		EPStudyInline,
 		FlecainideTestInline,
 		ECGInline,
@@ -198,7 +198,7 @@ admin.site.register(Symptoms, SymptomsAdmin)
 admin.site.register(Cardiomiopathies, CardiomiopathiesAdmin)
 admin.site.register(Riskfactors, RiskfactorsAdmin)
 admin.site.register(Comorbidities, ComorbiditiesAdmin)
-admin.site.register(Events, EventsAdmin)
+# admin.site.register(Events, EventsAdmin)
 admin.site.register(EP_study, EPStudyAdmin)
 admin.site.register(Flecainide_test, FlecainideTestAdmin)
 admin.site.register(Adrenaline_test, AdrenalineTestAdmin)
@@ -210,5 +210,3 @@ admin.site.register(RMN_TC_PH, RMTCPHAdmin)
 admin.site.register(Therapy, TherapyAdmin)
 admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
 admin.site.register(Study, StudyAdmin)
-
-
