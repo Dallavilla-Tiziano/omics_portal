@@ -510,6 +510,18 @@ class Clinical_Status(models.Model):
 # !!! Vorrei che Clinical_evaluation fosse una sottoclasse di Clinical_Status ma non so se
 #     questa è la "sede giusta" / il codice appropiato per occuparsi di ciò  
 
+class Symptoms(models.Model):
+
+	name = models.CharField(max_length=100, unique=True, default='')
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Therapy'
+		verbose_name_plural= 'Therapies'
+
+	def _str_(self):
+		return self.name
+		
 class Clinical_evaluation(Clinical_Status):
 
 	# per ora va bene così, ma il formato di data che si vede è scomodissimo

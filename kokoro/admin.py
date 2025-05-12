@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_evaluation, Symptoms, Cardiomiopathies, Riskfactors, Comorbidities, Events, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Comorbidities, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study #Events
+
 
 class StudyAdmin(admin.ModelAdmin):
     list_display  = ['name', 'start_date', 'end_date']
@@ -36,11 +36,11 @@ class ComorbiditiesAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 	list_display = ['name']
 
-class EventsAdmin(admin.ModelAdmin):
-    list_display = ['death']
-class EventsInline(admin.TabularInline):
-    model = Events
-    extra = 1
+# class EventsAdmin(admin.ModelAdmin):
+#     list_display = ['death']
+# class EventsInline(admin.TabularInline):
+#     model = Events
+#     extra = 1
 
 
 
