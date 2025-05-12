@@ -172,7 +172,6 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		ECHOInline,
 		LatePotentialsInline,
 		RMTCPHInline,
-		ComorbiditiesInline,
 		ValveInterventionInLine,
 		CoronaryInterventionInLine,
 		PatientStudyInline,
