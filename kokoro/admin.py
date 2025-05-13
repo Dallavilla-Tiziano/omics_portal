@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies #Events
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies, Genetic_profile
 
 
 class StudyAdmin(admin.ModelAdmin):
@@ -158,6 +158,12 @@ class CoronaryInterventionInLine(admin.TabularInline):
     model = CoronaryIntervention
     extra = 1
 
+class GeneticProfileAdmin(admin.ModelAdmin):
+	list_display = ("FIN_number")
+class GeneticProfileInLine(admin.TabularInline):	
+    model = Genetic_profile
+    extra = 1
+
 class PatientProfileAdmin(admin.ModelAdmin):
 	inlines = [
 		SampleInline,
@@ -175,6 +181,7 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		ValveInterventionInLine,
 		CoronaryInterventionInLine,
 		PatientStudyInline,
+		GeneticProfileInLine,
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
 	autocomplete_fields = ['therapies','allergies']
@@ -210,3 +217,4 @@ admin.site.register(RMN_TC_PH, RMTCPHAdmin)
 admin.site.register(Therapy, TherapyAdmin)
 admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
 admin.site.register(Study, StudyAdmin)
+admin.site.register(Genetic_profile, GeneticProfileAdmin)

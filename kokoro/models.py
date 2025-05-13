@@ -1104,6 +1104,13 @@ class Genetics(models.Model):
 		editable = False
 		)
 
-
 	class Meta:
 		abstract = True # Tell django this is an abstract class, no table will be created
+
+
+class Genetic_profile(Genetics):
+
+	FIN_progressive_genetics = models.PositiveIntegerField(null=True, blank=True)
+	FIN_number = models.CharField(max_length=100)
+	PIN_number = models.CharField(max_length=100)
+	
