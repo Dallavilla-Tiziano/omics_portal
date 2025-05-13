@@ -1082,3 +1082,28 @@ class RMN_TC_PH(Diagnostic_exams):
 		choices=LGElocation,
 		default=''
 	)
+
+
+	#########################################################################################
+### \\\\\ GENTICS: 
+### \\\ It should contain a model for each type of exam:
+### \\\ - Genetic profile
+### \\\ - Genetic status
+### \\\ - Genetic tests
+class Genetics(models.Model):
+	
+	patient = models.ForeignKey(
+		"PatientProfile",
+		on_delete=models.CASCADE,
+	)
+
+	# mi serve ancora?
+	id = models.UUIDField(
+		primary_key = True,
+		default = uuid.uuid4,
+		editable = False
+		)
+
+
+	class Meta:
+		abstract = True # Tell django this is an abstract class, no table will be created
