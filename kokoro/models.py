@@ -1121,7 +1121,7 @@ class Genetic_status(Genetics):
 		P = "Proband", "Proband"
 		F = "Familiar", "Familiar"	
 	patient_status = models.CharField(
-		max_length=3,
+		max_length=100,
 		choices=Patient_status,
 		default=''
 	)
@@ -1154,7 +1154,7 @@ class Genetic_status(Genetics):
 		GF = "Grand-father", "Grand-father"	
 		GM = "Grand-mother", "Grand-mother"
 	sd_family_degree = models.CharField(
-		max_length=13,
+		max_length=100,
 		choices=SD_family_degree,
 		default=''
 	)
@@ -1200,7 +1200,7 @@ class Genetic_status(Genetics):
 		GF = "Grand-father", "Grand-father"	
 		GM = "Grand-mother", "Grand-mother"
 	sd_family_degree = models.CharField(
-		max_length=13,
+		max_length=100,
 		choices=SD_family_degree,
 		default=''
 	)
@@ -1234,4 +1234,3 @@ class Genetic_test(Genetics):
 	)
 
 
-	
