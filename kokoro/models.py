@@ -1114,3 +1114,124 @@ class Genetic_profile(Genetics):
 	FIN_number = models.CharField(max_length=100)
 	PIN_number = models.CharField(max_length=100)
 	
+
+class Genetic_status(Genetics):
+
+	class Patient_status(models.TextChoices):
+		P = "Proband", "Proband"
+		F = "Familiar", "Familiar"	
+	patient_status = models.CharField(
+		max_length=3,
+		choices=Patient_status,
+		default=''
+	)
+
+
+	class FamilyBrS(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"	
+	family_brs = models.CharField(
+		max_length=3,
+		choices=FamilyBrS,
+		default=''
+	)
+	brs_family_members = models.PositiveIntegerField(null=True, blank=True)
+
+
+
+	class FamilySD(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"	
+	family_brs = models.CharField(
+		max_length=3,
+		choices=FamilyBrS,
+		default=''
+	)
+	# !!! Only if "Yes" is selected, these should be compiled !!!
+	class SD_family_degree(models.TextChoices):
+		Mo = "Mother", "Mother"
+		Fa = "Father", "Father"
+		GF = "Grand-father", "Grand-father"	
+		GM = "Grand-mother", "Grand-mother"
+	sd_family_degree = models.CharField(
+		max_length=13,
+		choices=SD_family_degree,
+		default=''
+	)
+	sd_family_members = models.PositiveIntegerField(null=True, blank=True)
+
+
+	class FamilyLQTS(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"	
+	family_lqts = models.CharField(
+		max_length=3,
+		choices=FamilyLQTS,
+		default=''
+	)
+	lqts_family_members = models.PositiveIntegerField(null=True, blank=True)
+
+
+
+	class FamilyER(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"	
+	family_er = models.CharField(
+		max_length=3,
+		choices=FamilyER,
+		default=''
+	)
+	er_family_members = models.PositiveIntegerField(null=True, blank=True)
+
+
+	class FamilyCardiomiopathy(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"	
+	family_cardiomiopathy = models.CharField(
+		max_length=3,
+		choices=FamilyCardiomiopathy,
+		default=''
+	)
+	cardiomiopathy_family_members = models.PositiveIntegerField(null=True, blank=True)
+	# !!! Only if "Yes" is selected, these should be compiled !!!
+	class cardiomiopathy_family_degree(models.TextChoices):
+		Mo = "Mother", "Mother"
+		Fa = "Father", "Father"
+		GF = "Grand-father", "Grand-father"	
+		GM = "Grand-mother", "Grand-mother"
+	sd_family_degree = models.CharField(
+		max_length=13,
+		choices=SD_family_degree,
+		default=''
+	)
+
+
+class Genetic_test(Genetics):
+
+	consent_date = models.DateField()
+	# !!! age at the moment of consent: do we need it? !!!
+
+	class TestCategory(models.TextChoices):
+		On = "Oncology", "Oncology"
+		Ch = "Channellopathies", "Channellopathies"
+		Ca = "Cardiomiopathies", "Cardiomiopathies" 
+		ND = "Neuromuscolar dystrophies"
+		Col = "Collagenopathies", "Collagenopathies"
+		Coa = "Coagulopathies", "Coagulopathies"
+		SyDys = "Syndromes / Dysmorphisms", "Syndromes / Dysmorphisms"
+		Me = "Metabolic", "Metabolic" 
+		Sc = "Screening", "Screening"
+		BrK = "Breast K", "Breast K"
+		Nep = "Nephropathy", "Nephropathy"
+		Neu = "Neuropathy", "Neuropathy"
+		He = "Hematopathy", "Hematopathy"
+		Ar = "Arrhythmias", "Arrhythmias"
+
+	test_category = models.CharField(
+		max_length=100,
+		choices=TestCategory,
+		default=''
+	)
+
+
+	
