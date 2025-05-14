@@ -197,6 +197,7 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		PatientStudyInline,
 		GeneticProfileInLine,
 		GeneticStatusInLine,
+		GeneticTestInLine
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
 	autocomplete_fields = ['therapies','allergies']
@@ -234,3 +235,4 @@ admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
 admin.site.register(Study, StudyAdmin)
 admin.site.register(Genetic_profile, GeneticProfileAdmin)
 admin.site.register(Genetic_status, GeneticStatusAdmin)
+admin.site.register(Genetic_test, GeneticTestAdmin)
