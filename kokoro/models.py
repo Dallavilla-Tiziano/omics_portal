@@ -1208,7 +1208,7 @@ class Genetic_status(Genetics):
 
 class Genetic_test(Genetics):
 
-	consent_date = models.DateField()
+	Consent_date = models.DateField()
 	# !!! age at the moment of consent: do we need it? !!!
 
 	class TestCategory(models.TextChoices):
