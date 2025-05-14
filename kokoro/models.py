@@ -1115,6 +1115,7 @@ class Genetic_profile(Genetics):
 	PIN_number = models.CharField(max_length=100)
 	
 
+
 class Genetic_status(Genetics):
 
 	class Patient_status(models.TextChoices):
@@ -1209,6 +1210,7 @@ class Genetic_status(Genetics):
 class Genetic_test(Genetics):
 
 	Consent_date = models.DateField()
+	Blood_sample_date = models.DateField()
 	# !!! age at the moment of consent: do we need it? !!!
 
 	class TestCategory(models.TextChoices):
@@ -1242,11 +1244,14 @@ class Genetic_test(Genetics):
 		BBB = "BBB", "BBB"
 		CPVT = "CPVT", "CPVT"
 		AF = "AF", "AF"
+		BrS = "BrS", "BrS"
 	chan_subcategory = models.CharField(
 		max_length=100,
 		choices=ChanSubCategory,
 		default=''
 	)
+	# !!! Only if "BRs" is selected, these should be compiled !!!
+
 
 	# !!! Only if "Cardiomiopathies" is selected, these should be compiled !!!
 	class CardSubCategory(models.TextChoices):
@@ -1347,6 +1352,25 @@ class Genetic_test(Genetics):
 	onco_subcategory = models.CharField(
 		max_length=100,
 		choices=OncoSubCategory,
+		default=''
+	)
+
+	class TestResult(models.TextChoices):
+		P = "Positive", "Positive"
+		N = "Negative", "Negative"
+		NC = "Not concluded", "Not concluded"	
+	test_result = models.CharField(
+		max_length=100,
+		choices=TestResult,
+		default=''
+	)
+
+	class ProcessingType(models.TextChoices):
+		Os = "OSR", "OSR"
+		Im = "IMTC", "IMTC"
+	processing_type = models.CharField(
+		max_length=100,
+		choices=ProcessingType,
 		default=''
 	)
 
