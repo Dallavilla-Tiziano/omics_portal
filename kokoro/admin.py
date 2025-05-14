@@ -171,7 +171,7 @@ class GeneticStatusInLine(admin.TabularInline):
     extra = 1
 
 class GeneticTestAdmin(admin.ModelAdmin):
-	list_display = ["Consent_date"]
+	list_display = ["test_result"]
 class GeneticTestInLine(admin.TabularInline):	
     model = Genetic_test
     extra = 1
