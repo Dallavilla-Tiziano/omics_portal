@@ -1213,7 +1213,7 @@ class Genetic_test(Genetics):
 
 	class TestCategory(models.TextChoices):
 		On = "Oncology", "Oncology"
-		Ch = "Channellopathies", "Channellopathies"
+		ChAr = "Channellopathies / Arrhythmias", "Channellopathies / Arrhythmias"
 		Ca = "Cardiomiopathies", "Cardiomiopathies" 
 		ND = "Neuromuscolar dystrophies"
 		Col = "Collagenopathies", "Collagenopathies"
@@ -1225,12 +1225,136 @@ class Genetic_test(Genetics):
 		Nep = "Nephropathy", "Nephropathy"
 		Neu = "Neuropathy", "Neuropathy"
 		He = "Hematopathy", "Hematopathy"
-		Ar = "Arrhythmias", "Arrhythmias"
-
 	test_category = models.CharField(
 		max_length=100,
 		choices=TestCategory,
 		default=''
 	)
+
+    # !!! Only if "Cannelopathies" is selected, these should be compiled !!!
+	class ChanSubCategory(models.TextChoices):
+		LQTS = "LQTS", "LQTS"
+		ERS = "ERS", "ERS"
+		JWS = "JWS", "JWS"
+		Git = "Gitelman", "Gitelman"
+		WPW = "WPW", "WPW"
+		BAV = "BAV", "BAV" 
+		BBB = "BBB", "BBB"
+		CPVT = "CPVT", "CPVT"
+		AF = "AF", "AF"
+	chan_subcategory = models.CharField(
+		max_length=100,
+		choices=ChanSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Cardiomiopathies" is selected, these should be compiled !!!
+	class CardSubCategory(models.TextChoices):
+		HMC = "HMC", "HMC"
+		ARVD = "ARVD", "ARVD"
+		NCM = "NCM", "NCM"
+		CMIO = "CMIO DILATED", "CMIO DILATED"
+		Stru = "Stuctural", "Structural"
+		Amilo = "Amilo", "Amilo" 
+		Osi = "Osi", "Osi"
+		Fab = "Fabry", "Fabry"
+		ARVC = "ARVC", "ARVC"
+		Guch = "Guch", "Guch"
+	card_subcategory = models.CharField(
+		max_length=100,
+		choices=CardSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Collagenopathies" is selected, these should be compiled !!!
+	class CollSubCategory(models.TextChoices):
+		Ma = "Marfan", "Marfan"
+		Eb = "Ebstein", "Ebstein"
+		EhDa = "Ehler-danlos", "Ehler-danlos"
+		AoAn = "Aorta Aneurysm", "Aorta Aneurysm"
+	coll_subcategory = models.CharField(
+		max_length=100,
+		choices=CollSubCategory,
+		default=''
+	)
+
+    # !!! Only if "Syndromes / Dysmorphisms" is selected, these should be compiled !!!
+	class DysSubCategory(models.TextChoices):
+		No = "Noonan", "Noonan"
+		Tu = "Turner", "Turner"
+		Kl = "Klinefelter", "Klinefelter"
+	dys_subcategory = models.CharField(
+		max_length=100,
+		choices=DysSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Coagulopathies" is selected, these should be compiled !!!
+	class CollSubCategory(models.TextChoices):
+		II = "Factor II", "MFactor II"
+		V = "Factor V", "Factor V"
+		Thr = "Thrombophilia", "Thrombophilia"
+		MTHFR = "MTHFR", "MTHFR"
+		He = "Hemophilia", "Hemophilia"
+		VaWi = "Van Willebrandt", "Van Willebrandt" 
+	coll_subcategory = models.CharField(
+		max_length=100,
+		choices=CollSubCategory,
+		default=''
+	)
+	
+
+	# !!! Only if "Neuromuscolar dystrophies" is selected, these should be compiled !!!
+	class NeuroSubCategory(models.TextChoices):
+		St = "Steinert", "Steinert"
+		Ata = "Ataxia", "Ataxia"
+		Hun = "Huntington", "Huntington"
+		ScaHu = "Scapulus humeral", "Scapulus humeral"
+		Epi = "Epilepsy", "Epilepsy"
+		ChaMaTo = "Charcot-Marie Tooth", "Charcot-Marie Tooth"
+		LGMD = "LGMD", "LGMD"
+	neuro_subcategory = models.CharField(
+		max_length=100,
+		choices=NeuroSubCategory,
+		default=''
+	)
+
+
+	# !!! Only if "Metabolic dystrophies" is selected, these should be compiled !!!
+	class MetabolicSubCategory(models.TextChoices):
+		Di = "Diabetes", "Diabetes"
+		Mo = "Mody", "Mody"
+		Dip = "Dislipidemia", "Dislipidemia"
+		MetAc = "Metal accumulation", "Metal accumulation"
+		Ala = "Alagille", "Alagille"
+		Gau = "Gaucher", "Gaucher"
+		Po = "Pompe", "Pompe"
+	metabolic_subcategory = models.CharField(
+		max_length=100,
+		choices=MetabolicSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Oncology" is selected, these should be compiled !!!
+	class OncoSubCategory(models.TextChoices):
+		Br = "Breast", "Breast"
+		Pa = "Pancreas", "Pancreas"
+		Ov = "Ovary", "Ovary"
+		Co = "Colon", "Metal accumulation"
+		Th = "Thyroid", "Thyroid"
+		NF1 = "NF1", "NF1"
+		Me = "Melanoma", "Melanoma"
+	onco_subcategory = models.CharField(
+		max_length=100,
+		choices=OncoSubCategory,
+		default=''
+	)
+
+
+
+
+#OTHER ->
+#CYSTIC FIBROSIS/INFERTILITY/ ADPKD/ RETINITIS PIGMENTOSA/ ANGIOMAS/ ALBINISM/ ASPERGER/ CROHN/ ULCERATIVE COLITIS/ HYPOGONADISM/ PERIODIC FEVERS
+
 
 
