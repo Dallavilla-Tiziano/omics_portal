@@ -1,12 +1,12 @@
 from django.db import models
-
-
-# libreria necessaria per opzioni a scelte multiple... spoiler, dà errore!
-#from multiselectfield import MultiSelectField
-
 import uuid
 import datetime
 from dateutil.relativedelta import relativedelta
+
+################################################################################
+############################## AUXILIARY CLASSES ###############################
+################################################################################
+
 
 #################### THERAPIES ####################
 
@@ -25,6 +25,8 @@ class Therapy(models.Model):
 		return self.name
 
 
+#################### GENES ####################
+
 class Gene(models.Model):
 	"""
 	A single gene.
@@ -39,6 +41,8 @@ class Gene(models.Model):
 	def __str__(self):
 		return self.name
 	
+
+#################### MUTATIONS ####################
 
 class Mutation(models.Model):
 	"""
@@ -55,6 +59,7 @@ class Mutation(models.Model):
 		return self.name
 	
 
+#################### AMINOACID CHANGES ####################
 #class Aminoacidchange(models.Model):
 #	"""
 #	A single aminoacid change.
@@ -69,7 +74,12 @@ class Mutation(models.Model):
 #	def __str__(self):
 #		return self.name
 
-#################### PATIENT PROFILE ####################
+
+
+
+###############################################################################
+############################### PATIENT PROFILE ###############################
+###############################################################################
 
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
 
@@ -169,7 +179,12 @@ class PatientStudy(models.Model):
 	def __str__(self):
 		return f"{self.patient} ↔ {self.study} on {self.enrollment_date}"
 
-#################### PROCEDURES ####################
+
+
+
+###############################################################################
+################################# PROCEDURES ##################################
+###############################################################################
 
 # Procedures common fields are defined in a base class which is then inherited by single procedures
 class ProcedureBase(models.Model):
@@ -290,7 +305,13 @@ class CoronaryIntervention(ProcedureBase):
 		default="",
 	)
 
-## DEVICES ##
+
+
+
+###############################################################################
+################################### DEVICES ###################################
+###############################################################################
+
 class DeviceType(models.Model):
 
 	id = models.UUIDField(
@@ -435,7 +456,12 @@ class DeviceEvent(models.Model):
 	def __str__(self):
 		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 
-#################### SAMPLES ####################
+
+
+
+###############################################################################
+################################### SAMPLES ###################################
+###############################################################################
 
 class Sample(models.Model):
 	# Type may be missing (perfieral blood, pericardial fluid)
@@ -533,7 +559,13 @@ class ResearchAnalysis(models.Model):
 	def __str__(self):
 		return f"{self.get_type_display()} ({self.date_performed})"	
 
-#################### CLINICAL STATUS ####################
+
+
+
+######################################################################################
+################################### CLINICAL STATUS ##################################
+#####################################################################################
+
 class Clinical_Status(models.Model):
 	
 	patient = models.ForeignKey(
@@ -694,13 +726,18 @@ class Clinical_evaluation(Clinical_Status):
 		default=''
 	)	
 
-	#########################################################################################
-### \\\\\ PROVOCATIVE TESTS: 
+
+
+
+#####################################################################################
+################################ PROVOCATIVE TESTS ##################################
+#####################################################################################
 ### \\\ It should contain a model for each type of test:
 ### \\\ - Electrophysiological study (EP study)
 ### \\\ - Ajmaline test
 ### \\\ - Flecainide test
 ### \\\ - Adrenaline test
+
 class Provocative_tests(models.Model):
 	
 	patient = models.ForeignKey(
@@ -826,8 +863,12 @@ class Ajmaline_test(Provocative_tests):
 	dose_to_positive_ecg = models.FloatField(null=True, blank=True)	
 	time_to_positive_ecg = models.DurationField(null=True, blank=True)
 
-#########################################################################################
-### \\\\\ DIAGNOSTIC EXAMS: 
+
+
+
+#####################################################################################
+################################### DIAGNOSTIC EXAMS ################################
+#####################################################################################
 ### \\\ It should contain a model for each type of exam:
 ### \\\ - ECG
 ### \\\ - ECHO
@@ -1129,8 +1170,11 @@ class RMN_TC_PH(Diagnostic_exams):
 	)
 
 
-	#########################################################################################
-### \\\\\ GENTICS: 
+
+
+###############################################################################
+################################### GENETICS ##################################
+###############################################################################
 ### \\\ It should contain a model for each type of exam:
 ### \\\ - Genetic profile
 ### \\\ - Genetic status
