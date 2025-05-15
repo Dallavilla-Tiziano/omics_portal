@@ -187,6 +187,7 @@ class AminoacidChangeAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
 
+
 class PatientProfileAdmin(admin.ModelAdmin):
 	inlines = [
 		SampleInline,
