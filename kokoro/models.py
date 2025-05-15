@@ -24,6 +24,21 @@ class Therapy(models.Model):
 	def __str__(self):
 		return self.name
 
+
+class Gene(models.Model):
+	"""
+	A single therapy or medication.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Gene'
+		verbose_name_plural = 'Genes'
+
+	def __str__(self):
+		return self.name
+
 #################### PATIENT PROFILE ####################
 
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
@@ -1372,6 +1387,13 @@ class Genetic_test(Genetics):
 		max_length=100,
 		choices=ProcessingType,
 		default=''
+	)
+
+	genes = models.ManyToManyField(
+		Therapy,
+		blank=True,
+		related_name='genes',
+		help_text='Gene of this patient test.'
 	)
 
 
