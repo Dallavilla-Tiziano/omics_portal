@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies, Genetic_profile, Genetic_status, Genetic_test, Gene, Mutation, Class
-#, Aminoacidchange
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies, Genetic_profile, Genetic_status, Genetic_test, Gene, Mutation, ACMG, Cardio_Fenotypes, Patho_Fenotypes, TestType, SampleType, ProcessingType, Cromo_anomality, Eredity, Doctors
 
 
 class StudyAdmin(admin.ModelAdmin):
@@ -172,7 +171,7 @@ class GeneticStatusInLine(admin.TabularInline):
     extra = 1
 
 class GeneticTestAdmin(admin.ModelAdmin):
-	autocomplete_fields = ['genes', 'mutations', 'classes'] #, 'aminoacidchanges']
+	autocomplete_fields = ['genes', 'mutations', 'acmg', 'cardiofenotypes', 'pathofenotypes', 'testtype', 'sampletype', 'processingtype', 'cromoanomality', 'eredity', 'doctors'] #, 'aminoacidchanges']
 	list_display = ["test_result"]
 class GeneticTestInLine(admin.TabularInline):	
     model = Genetic_test
@@ -184,7 +183,31 @@ class GeneAdmin(admin.ModelAdmin):
 class MutationAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
-class ClassAdmin(admin.ModelAdmin):
+class ACMGAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class CardioFenotypesAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class PathoFenotypesAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class TestTypeAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class SampleTypeAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class ProcessingTypeAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class CromoanomalityAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class EredityAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class DoctorsAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
 #class AminoacidchangeAdmin(admin.ModelAdmin):
@@ -252,5 +275,13 @@ admin.site.register(Genetic_status, GeneticStatusAdmin)
 admin.site.register(Genetic_test, GeneticTestAdmin)
 admin.site.register(Gene, GeneAdmin)
 admin.site.register(Mutation, MutationAdmin)
-admin.site.register(Class, ClassAdmin)
+admin.site.register(ACMG, ACMGAdmin)
+admin.site.register(Cardio_Fenotypes, CardioFenotypesAdmin)
+admin.site.register(Patho_Fenotypes, PathoFenotypesAdmin)
+admin.site.register(TestType, TestTypeAdmin)
+admin.site.register(SampleType, SampleTypeAdmin)
+admin.site.register(ProcessingType, ProcessingTypeAdmin)
+admin.site.register(Cromo_anomality, CromoanomalityAdmin)
+admin.site.register(Eredity, EredityAdmin)
+admin.site.register(Doctors, DoctorsAdmin)
 #admin.site.register(Aminoacidchange, AminoacidchangeAdmin)
