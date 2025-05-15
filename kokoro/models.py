@@ -57,7 +57,7 @@ class Mutation(models.Model):
 
 class AminoacidChange(models.Model):
 	"""
-	A single mutation.
+	A single aminoacid change.
 	"""
 	name = models.CharField(max_length=100, unique=True)
 
