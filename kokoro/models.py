@@ -27,7 +27,7 @@ class Therapy(models.Model):
 
 class Gene(models.Model):
 	"""
-	A single therapy or medication.
+	A single gene.
 	"""
 	name = models.CharField(max_length=100, unique=True)
 
@@ -35,6 +35,36 @@ class Gene(models.Model):
 		ordering = ['name']
 		verbose_name = 'Gene'
 		verbose_name_plural = 'Genes'
+
+	def __str__(self):
+		return self.name
+	
+
+class Mutation(models.Model):
+	"""
+	A single mutation.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Mutation'
+		verbose_name_plural = 'Mutations'
+
+	def __str__(self):
+		return self.name
+	
+
+class AminoacidChange(models.Model):
+	"""
+	A single mutation.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'AminoacidChange'
+		verbose_name_plural = 'AminoacidChanges'
 
 	def __str__(self):
 		return self.name
@@ -1393,9 +1423,24 @@ class Genetic_test(Genetics):
 		Therapy,
 		blank=True,
 		related_name='genes',
-		help_text='Gene of this patient test.'
+		help_text='Gene of this test.'
 	)
 
+
+	mutations = models.ManyToManyField(
+		Therapy,
+		blank=True,
+		related_name='mutations',
+		help_text='Mutation of this test.'
+	)
+
+
+	aminoacidChange = models.ManyToManyField(
+		Therapy,
+		blank=True,
+		related_name='aminoacidchanges',
+		help_text='aminoacid change of this test.'
+	)
 
 
 
