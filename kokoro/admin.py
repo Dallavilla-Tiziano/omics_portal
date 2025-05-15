@@ -183,7 +183,7 @@ class GeneAdmin(admin.ModelAdmin):
 class MutationAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
-class AminoacidchangeAdmin(admin.ModelAdmin):
+class AminoacidChangeAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
 
@@ -247,4 +247,4 @@ admin.site.register(Genetic_status, GeneticStatusAdmin)
 admin.site.register(Genetic_test, GeneticTestAdmin)
 admin.site.register(Gene, GeneAdmin)
 admin.site.register(Mutation, MutationAdmin)
-admin.site.register(AminoacidChange, AminoacidchangeAdmin)
+admin.site.register(AminoacidChange, AminoacidChangeAdmin)
