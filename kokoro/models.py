@@ -1420,7 +1420,7 @@ class Genetic_test(Genetics):
 	)
 
 	genes = models.ManyToManyField(
-		Therapy,
+		Gene,
 		blank=True,
 		related_name='genes',
 		help_text='Gene of this test.'
@@ -1428,7 +1428,7 @@ class Genetic_test(Genetics):
 
 
 	mutations = models.ManyToManyField(
-		Therapy,
+		Mutation,
 		blank=True,
 		related_name='mutations',
 		help_text='Mutation of this test.'
@@ -1436,7 +1436,7 @@ class Genetic_test(Genetics):
 
 
 	aminoacidChange = models.ManyToManyField(
-		Therapy,
+		AminoacidChange,
 		blank=True,
 		related_name='aminoacidchanges',
 		help_text='aminoacid change of this test.'
