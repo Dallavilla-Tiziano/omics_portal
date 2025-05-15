@@ -55,19 +55,19 @@ class Mutation(models.Model):
 		return self.name
 	
 
-class Aminoacidchange(models.Model):
-	"""
-	A single aminoacid change.
-	"""
-	name = models.CharField(max_length=100, unique=True)
-
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'Aminoacidchange'
-		verbose_name_plural = 'Aminoacidchanges'
-
-	def __str__(self):
-		return self.name
+#class Aminoacidchange(models.Model):
+#	"""
+#	A single aminoacid change.
+#	"""
+#	name = models.CharField(max_length=100, unique=True)
+#
+#	class Meta:
+#		ordering = ['name']
+#		verbose_name = 'Aminoacidchange'
+#		verbose_name_plural = 'Aminoacidchanges'
+#
+#	def __str__(self):
+#		return self.name
 
 #################### PATIENT PROFILE ####################
 
@@ -1426,12 +1426,12 @@ class Genetic_test(Genetics):
 		help_text='Gene of this test.'
 	)
 
-	aminoacidChanges = models.ManyToManyField(
-		Aminoacidchange,
-		blank=True,
-		related_name='aminoacidchanges',
-		help_text='aminoacid change of this test.'
-	)
+#	aminoacidChanges = models.ManyToManyField(
+#		Aminoacidchange,
+#		blank=True,
+#		related_name='aminoacidchanges',
+#		help_text='aminoacid change of this test.'
+#	)
 
 	mutations = models.ManyToManyField(
 		Mutation,

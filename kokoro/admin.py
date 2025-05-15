@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies, Genetic_profile, Genetic_status, Genetic_test, Gene, Mutation, Aminoacidchange
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies, Genetic_profile, Genetic_status, Genetic_test, Gene, Mutation
+#, Aminoacidchange
 
 
 class StudyAdmin(admin.ModelAdmin):
@@ -171,7 +172,7 @@ class GeneticStatusInLine(admin.TabularInline):
     extra = 1
 
 class GeneticTestAdmin(admin.ModelAdmin):
-	autocomplete_fields = ['genes', 'mutations', 'aminoacidchanges']
+	autocomplete_fields = ['genes', 'mutations'] #, 'aminoacidchanges']
 	list_display = ["test_result"]
 class GeneticTestInLine(admin.TabularInline):	
     model = Genetic_test
@@ -183,8 +184,8 @@ class GeneAdmin(admin.ModelAdmin):
 class MutationAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
-class AminoacidchangeAdmin(admin.ModelAdmin):
-	search_fields = ['name']
+#class AminoacidchangeAdmin(admin.ModelAdmin):
+#	search_fields = ['name']
 
 
 
@@ -248,4 +249,4 @@ admin.site.register(Genetic_status, GeneticStatusAdmin)
 admin.site.register(Genetic_test, GeneticTestAdmin)
 admin.site.register(Gene, GeneAdmin)
 admin.site.register(Mutation, MutationAdmin)
-admin.site.register(Aminoacidchange, AminoacidchangeAdmin)
+#admin.site.register(Aminoacidchange, AminoacidchangeAdmin)
