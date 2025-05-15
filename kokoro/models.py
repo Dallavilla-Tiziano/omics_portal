@@ -55,7 +55,7 @@ class Mutation(models.Model):
 		return self.name
 	
 
-class AminoacidChange(models.Model):
+class Aminoacidchange(models.Model):
 	"""
 	A single aminoacid change.
 	"""
@@ -63,8 +63,8 @@ class AminoacidChange(models.Model):
 
 	class Meta:
 		ordering = ['name']
-		verbose_name = 'AminoacidChange'
-		verbose_name_plural = 'AminoacidChanges'
+		verbose_name = 'Aminoacidchange'
+		verbose_name_plural = 'Aminoacidchanges'
 
 	def __str__(self):
 		return self.name
@@ -1426,6 +1426,12 @@ class Genetic_test(Genetics):
 		help_text='Gene of this test.'
 	)
 
+	aminoacidChanges = models.ManyToManyField(
+		Aminoacidchange,
+		blank=True,
+		related_name='aminoacidchanges',
+		help_text='aminoacid change of this test.'
+	)
 
 	mutations = models.ManyToManyField(
 		Mutation,
@@ -1433,15 +1439,6 @@ class Genetic_test(Genetics):
 		related_name='mutations',
 		help_text='Mutation of this test.'
 	)
-
-
-	aminoacidChanges = models.ManyToManyField(
-		AminoacidChange,
-		blank=True,
-		related_name='aminoacidchanges',
-		help_text='aminoacid change of this test.'
-	)
-
 
 
 #OTHER ->
