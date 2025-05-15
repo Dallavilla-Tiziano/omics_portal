@@ -1435,7 +1435,7 @@ class Genetic_test(Genetics):
 	)
 
 
-	aminoacidChange = models.ManyToManyField(
+	aminoacidChanges = models.ManyToManyField(
 		AminoacidChange,
 		blank=True,
 		related_name='aminoacidchanges',
