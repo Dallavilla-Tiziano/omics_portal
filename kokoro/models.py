@@ -1440,6 +1440,15 @@ class Genetic_test(Genetics):
 		help_text='Mutation of this test.'
 	)
 
+	class Zygosity(models.TextChoices):
+		HZ = "HZ", "HZ"
+		OZ = "OZ", "OZ"
+		HA = "HA", "HA"
+	zygosity = models.CharField(
+		max_length=100,
+		choices=Zygosity,
+		default=''
+	)
 
 #OTHER ->
 #CYSTIC FIBROSIS/INFERTILITY/ ADPKD/ RETINITIS PIGMENTOSA/ ANGIOMAS/ ALBINISM/ ASPERGER/ CROHN/ ULCERATIVE COLITIS/ HYPOGONADISM/ PERIODIC FEVERS
