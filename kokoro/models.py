@@ -3,6 +3,9 @@ import uuid
 import datetime
 from dateutil.relativedelta import relativedelta
 
+
+
+
 ################################################################################
 ############################## AUXILIARY CLASSES ###############################
 ################################################################################
@@ -60,6 +63,7 @@ class Mutation(models.Model):
 	
 
 #################### AMINOACID CHANGES ####################
+
 #class Aminoacidchange(models.Model):
 #	"""
 #	A single aminoacid change.
@@ -75,6 +79,23 @@ class Mutation(models.Model):
 #		return self.name
 
 
+#################### CLASS ####################
+
+class Class(models.Model):
+	"""
+	A single class.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Class'
+		verbose_name_plural = 'Classes'
+
+	def __str__(self):
+		return self.name
+
+
 
 
 ###############################################################################
@@ -82,7 +103,6 @@ class Mutation(models.Model):
 ###############################################################################
 
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
-
 class Study(models.Model):
 
 	name = models.CharField(max_length=100, unique=True)
@@ -91,6 +111,7 @@ class Study(models.Model):
 
 	def __str__(self):
 		return self.name
+
 
 class PatientProfile(models.Model):
 	# UUIDField: campo che contiene un UUID (Universal Unique Identifier).
@@ -158,6 +179,7 @@ class PatientProfile(models.Model):
 	def __str__(self):
 		return f'{self.id}'
 
+
 # Needed to be able to track enrollment date
 class PatientStudy(models.Model):
 	patient         = models.ForeignKey(
@@ -208,6 +230,7 @@ class ProcedureBase(models.Model):
 	class Meta:
 		abstract = True # Tell django this is an abstract class, no table will be created
 
+
 class Ablation(ProcedureBase):
 
 	class Complication(models.TextChoices):
@@ -234,6 +257,7 @@ class Ablation(ProcedureBase):
 	complication_type = models.CharField(max_length=250)
 	therapy = models.CharField(max_length=250)
 	# REDO ABLAZIONE is not needed anymore
+
 
 class DeviceImplant(ProcedureBase):
 
@@ -263,6 +287,7 @@ class DeviceImplant(ProcedureBase):
 	def __str__(self):
 		return f"Implant on {self.date} for {self.patient}"
 
+
 class ValveIntervention(ProcedureBase):
 
 	class ReplacementRepair(models.TextChoices):
@@ -282,6 +307,7 @@ class ValveIntervention(ProcedureBase):
 		blank=True,
 		default="",
 	)
+
 
 class CoronaryIntervention(ProcedureBase):
 
@@ -372,6 +398,7 @@ class DeviceType(models.Model):
 	def __str__(self):
 		return f"{self.name} ({self.manufacturer})"
 
+
 class DeviceInstance(models.Model):
 	
 	id = models.UUIDField(
@@ -405,6 +432,7 @@ class DeviceInstance(models.Model):
 	)
 	def __str__(self):
 		return f"{self.device_type.name} SN:{self.serial_number}"
+
 
 class DeviceEvent(models.Model):
 
@@ -513,6 +541,7 @@ class Sample(models.Model):
 
 	def __str__(self):
 		return f"{self.imtc_id} ({self.get_procedure_type_display()})"
+
 
 #################### IMTC ####################
 class ResearchAnalysis(models.Model):
@@ -625,6 +654,7 @@ class Riskfactors(models.Model):
 	def _str_(self):
 		return self.name
 
+
 class Comorbidities(models.Model):
 
 	name = models.CharField(max_length=100, unique=True, default='')
@@ -636,7 +666,8 @@ class Comorbidities(models.Model):
 
 	def _str_(self):
 		return self.name
-		
+
+
 class Clinical_evaluation(Clinical_Status):
 
 	symptoms = models.ManyToManyField(
@@ -799,6 +830,7 @@ class Flecainide_test(Provocative_tests):
 		default=''
 	)
 
+
 class Adrenaline_test(Provocative_tests):
 
 	adrenaline_dose = models.FloatField(null=True, blank=True)
@@ -812,6 +844,7 @@ class Adrenaline_test(Provocative_tests):
 		default=''
 	)
 	# !!! In Canva there are other options.. do we want to include them? (e.g. LQT 3)
+
 
 class Ajmaline_test(Provocative_tests):
 
@@ -897,7 +930,6 @@ class Diagnostic_exams(models.Model):
 
 	class Meta:
 		abstract = True # Tell django this is an abstract class, no table will be created
-
 
 
 class ECG(Diagnostic_exams):
@@ -991,7 +1023,6 @@ class ECG(Diagnostic_exams):
 		choices=AVblock,
 		default=''
 	)
-
 
 
 class ECHO(Diagnostic_exams):
@@ -1118,7 +1149,6 @@ class ECHO(Diagnostic_exams):
 	# !!! what are TIPO_34 and EF ? Do we need them ? !!!
 
 
-
 class Late_potentials(Diagnostic_exams):
 
 	basal_lp1 = models.FloatField(null=True, blank=True)
@@ -1126,8 +1156,7 @@ class Late_potentials(Diagnostic_exams):
 	basal_lp3 = models.FloatField(null=True, blank=True)
 	basal_lp4 = models.FloatField(null=True, blank=True)
 	# !!! I wrote only 4 values (the basal one), but they should be re-collected during each follow-up...
-	# how to create a log ? !!!
-	
+	# how to create a log ? !!!	
 
 
 class RMN_TC_PH(Diagnostic_exams):
@@ -1203,7 +1232,6 @@ class Genetic_profile(Genetics):
 	FIN_number = models.CharField(max_length=100)
 	PIN_number = models.CharField(max_length=100)
 	
-
 
 class Genetic_status(Genetics):
 
@@ -1463,27 +1491,25 @@ class Genetic_test(Genetics):
 		default=''
 	)
 
+    # !!! Only if "OSR" is selected, these should be compiled !!!
 	genes = models.ManyToManyField(
 		Gene,
 		blank=True,
 		related_name='genes',
 		help_text='Gene of this test.'
 	)
-
 #	aminoacidChanges = models.ManyToManyField(
 #		Aminoacidchange,
 #		blank=True,
 #		related_name='aminoacidchanges',
 #		help_text='aminoacid change of this test.'
 #	)
-
 	mutations = models.ManyToManyField(
 		Mutation,
 		blank=True,
 		related_name='mutations',
 		help_text='Mutation of this test.'
 	)
-
 	class Zygosity(models.TextChoices):
 		HZ = "HZ", "HZ"
 		OZ = "OZ", "OZ"
@@ -1492,6 +1518,12 @@ class Genetic_test(Genetics):
 		max_length=100,
 		choices=Zygosity,
 		default=''
+	)
+	classes = models.ManyToManyField(
+		Class,
+		blank=True,
+		related_name='classes',
+		help_text='Class of this test.'
 	)
 
 #OTHER ->
