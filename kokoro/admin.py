@@ -7,6 +7,7 @@ from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
 						CoronaryIntervention, ResearchAnalysis, PatientStudy,
 						Study, Riskfactors, Cardiomiopathies, ClinicalEvent #Events
 					)
+from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies, Genetic_profile, Genetic_status, Genetic_test, Gene, Mutation, Doctors
 
 
 class StudyAdmin(admin.ModelAdmin):
@@ -166,6 +167,39 @@ class CoronaryInterventionInLine(admin.TabularInline):
     model = CoronaryIntervention
     extra = 1
 
+class GeneticProfileAdmin(admin.ModelAdmin):
+	list_display = ["FIN_number"]
+class GeneticProfileInLine(admin.TabularInline):	
+    model = Genetic_profile
+    extra = 1
+
+class GeneticStatusAdmin(admin.ModelAdmin):
+	list_display = ["Patient_status"]
+class GeneticStatusInLine(admin.TabularInline):	
+    model = Genetic_status
+    extra = 1
+
+class GeneticTestAdmin(admin.ModelAdmin):
+	autocomplete_fields = ('genes', 'var_p', 'var_c', 'editing_doctor', 'reporting_doctor') 
+	list_display = ["Consent_date"]
+class GeneticTestInLine(admin.TabularInline):	
+    model = Genetic_test
+    extra = 1
+
+class GeneAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class MutationAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+class DoctorsAdmin(admin.ModelAdmin):
+	search_fields = ['name']
+
+#class AminoacidchangeAdmin(admin.ModelAdmin):
+#	search_fields = ['name']
+
+
+
 class PatientProfileAdmin(admin.ModelAdmin):
 	inlines = [
 		SampleInline,
@@ -183,6 +217,9 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		ValveInterventionInLine,
 		CoronaryInterventionInLine,
 		PatientStudyInline,
+		GeneticProfileInLine,
+		GeneticStatusInLine,
+		GeneticTestInLine
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
 	autocomplete_fields = ['therapies','allergies']
@@ -218,4 +255,10 @@ admin.site.register(RMN_TC_PH, RMTCPHAdmin)
 admin.site.register(Therapy, TherapyAdmin)
 admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
 admin.site.register(Study, StudyAdmin)
+admin.site.register(Genetic_profile, GeneticProfileAdmin)
+admin.site.register(Genetic_status, GeneticStatusAdmin)
+admin.site.register(Genetic_test, GeneticTestAdmin)
+admin.site.register(Gene, GeneAdmin)
+admin.site.register(Mutation, MutationAdmin)
+admin.site.register(Doctors, DoctorsAdmin)
 admin.site.register(ClinicalEvent, ClinicalEventAdmin)

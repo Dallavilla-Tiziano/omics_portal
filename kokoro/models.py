@@ -1,14 +1,14 @@
 from django.db import models
-
-
-# libreria necessaria per opzioni a scelte multiple... spoiler, dà errore!
-#from multiselectfield import MultiSelectField
-
 import uuid
 import datetime
 from dateutil.relativedelta import relativedelta
 
-#################### THERAPIES ####################
+
+
+
+#######################################################################
+############################## THERAPIES ##############################
+#######################################################################
 
 class Therapy(models.Model):
 	"""
@@ -24,10 +24,14 @@ class Therapy(models.Model):
 	def __str__(self):
 		return self.name
 
-#################### PATIENT PROFILE ####################
+
+
+
+###############################################################################
+############################### PATIENT PROFILE ###############################
+###############################################################################
 
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
-
 class Study(models.Model):
 
 	name = models.CharField(max_length=100, unique=True)
@@ -36,6 +40,7 @@ class Study(models.Model):
 
 	def __str__(self):
 		return self.name
+
 
 class PatientProfile(models.Model):
 	# UUIDField: campo che contiene un UUID (Universal Unique Identifier).
@@ -103,6 +108,7 @@ class PatientProfile(models.Model):
 	def __str__(self):
 		return f'{self.id}'
 
+
 # Needed to be able to track enrollment date
 class PatientStudy(models.Model):
 	patient         = models.ForeignKey(
@@ -124,7 +130,12 @@ class PatientStudy(models.Model):
 	def __str__(self):
 		return f"{self.patient} ↔ {self.study} on {self.enrollment_date}"
 
-#################### PROCEDURES ####################
+
+
+
+###############################################################################
+################################# PROCEDURES ##################################
+###############################################################################
 
 # Procedures common fields are defined in a base class which is then inherited by single procedures
 class ProcedureBase(models.Model):
@@ -147,6 +158,7 @@ class ProcedureBase(models.Model):
 
 	class Meta:
 		abstract = True # Tell django this is an abstract class, no table will be created
+
 
 class Ablation(ProcedureBase):
 
@@ -174,6 +186,7 @@ class Ablation(ProcedureBase):
 	complication_type = models.CharField(max_length=250)
 	therapy = models.CharField(max_length=250)
 	# REDO ABLAZIONE is not needed anymore
+
 
 class DeviceImplant(ProcedureBase):
 
@@ -203,6 +216,7 @@ class DeviceImplant(ProcedureBase):
 	def __str__(self):
 		return f"Implant on {self.date} for {self.patient}"
 
+
 class ValveIntervention(ProcedureBase):
 
 	class ReplacementRepair(models.TextChoices):
@@ -222,6 +236,7 @@ class ValveIntervention(ProcedureBase):
 		blank=True,
 		default="",
 	)
+
 
 class CoronaryIntervention(ProcedureBase):
 
@@ -245,7 +260,13 @@ class CoronaryIntervention(ProcedureBase):
 		default="",
 	)
 
-## DEVICES ##
+
+
+
+###############################################################################
+################################### DEVICES ###################################
+###############################################################################
+
 class DeviceType(models.Model):
 
 	id = models.UUIDField(
@@ -306,6 +327,7 @@ class DeviceType(models.Model):
 	def __str__(self):
 		return f"{self.name} ({self.manufacturer})"
 
+
 class DeviceInstance(models.Model):
 	
 	id = models.UUIDField(
@@ -339,6 +361,7 @@ class DeviceInstance(models.Model):
 	)
 	def __str__(self):
 		return f"{self.device_type.name} SN:{self.serial_number}"
+
 
 class DeviceEvent(models.Model):
 
@@ -390,7 +413,12 @@ class DeviceEvent(models.Model):
 	def __str__(self):
 		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 
-#################### SAMPLES ####################
+
+
+
+###############################################################################
+################################### SAMPLES ###################################
+###############################################################################
 
 class Sample(models.Model):
 	# Type may be missing (perfieral blood, pericardial fluid)
@@ -443,6 +471,7 @@ class Sample(models.Model):
 	def __str__(self):
 		return f"{self.imtc_id} ({self.get_procedure_type_display()})"
 
+
 #################### IMTC ####################
 class ResearchAnalysis(models.Model):
 
@@ -488,7 +517,13 @@ class ResearchAnalysis(models.Model):
 	def __str__(self):
 		return f"{self.get_type_display()} ({self.date_performed})"	
 
-#################### CLINICAL STATUS ####################
+
+
+
+######################################################################################
+################################### CLINICAL STATUS ##################################
+#####################################################################################
+
 class Clinical_Status(models.Model):
 	
 	patient = models.ForeignKey(
@@ -547,6 +582,7 @@ class Riskfactors(models.Model):
 
 	def _str_(self):
 		return self.name
+
 
 class Comorbidities(models.Model):
 
@@ -692,13 +728,18 @@ class Clinical_evaluation(Clinical_Status):
 		default=''
 	)	
 
-	#########################################################################################
-### \\\\\ PROVOCATIVE TESTS: 
+
+
+
+#####################################################################################
+################################ PROVOCATIVE TESTS ##################################
+#####################################################################################
 ### \\\ It should contain a model for each type of test:
 ### \\\ - Electrophysiological study (EP study)
 ### \\\ - Ajmaline test
 ### \\\ - Flecainide test
 ### \\\ - Adrenaline test
+
 class Provocative_tests(models.Model):
 	
 	patient = models.ForeignKey(
@@ -760,6 +801,7 @@ class Flecainide_test(Provocative_tests):
 		default=''
 	)
 
+
 class Adrenaline_test(Provocative_tests):
 
 	adrenaline_dose = models.FloatField(null=True, blank=True)
@@ -773,6 +815,7 @@ class Adrenaline_test(Provocative_tests):
 		default=''
 	)
 	# !!! In Canva there are other options.. do we want to include them? (e.g. LQT 3)
+
 
 class Ajmaline_test(Provocative_tests):
 
@@ -824,8 +867,12 @@ class Ajmaline_test(Provocative_tests):
 	dose_to_positive_ecg = models.FloatField(null=True, blank=True)	
 	time_to_positive_ecg = models.DurationField(null=True, blank=True)
 
-#########################################################################################
-### \\\\\ DIAGNOSTIC EXAMS: 
+
+
+
+#####################################################################################
+################################### DIAGNOSTIC EXAMS ################################
+#####################################################################################
 ### \\\ It should contain a model for each type of exam:
 ### \\\ - ECG
 ### \\\ - ECHO
@@ -854,7 +901,6 @@ class Diagnostic_exams(models.Model):
 
 	class Meta:
 		abstract = True # Tell django this is an abstract class, no table will be created
-
 
 
 class ECG(Diagnostic_exams):
@@ -948,7 +994,6 @@ class ECG(Diagnostic_exams):
 		choices=AVblock,
 		default=''
 	)
-
 
 
 class ECHO(Diagnostic_exams):
@@ -1075,7 +1120,6 @@ class ECHO(Diagnostic_exams):
 	# !!! what are TIPO_34 and EF ? Do we need them ? !!!
 
 
-
 class Late_potentials(Diagnostic_exams):
 
 	basal_lp1 = models.FloatField(null=True, blank=True)
@@ -1083,8 +1127,7 @@ class Late_potentials(Diagnostic_exams):
 	basal_lp3 = models.FloatField(null=True, blank=True)
 	basal_lp4 = models.FloatField(null=True, blank=True)
 	# !!! I wrote only 4 values (the basal one), but they should be re-collected during each follow-up...
-	# how to create a log ? !!!
-	
+	# how to create a log ? !!!	
 
 
 class RMN_TC_PH(Diagnostic_exams):
@@ -1125,3 +1168,649 @@ class RMN_TC_PH(Diagnostic_exams):
 		choices=LGElocation,
 		default=''
 	)
+
+
+
+
+
+#####################################################################################
+################################### AUXILIAR FUNCTIONS ##############################
+#####################################################################################
+
+
+#################### CARDIO FENOTYPES ####################
+
+# class Cardio_Fenotypes(models.Model):
+# 	"""
+# 	A single cardiopathy fenotype.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Cardiopathy Fenotype'
+# 		verbose_name_plural = 'Cardiopathy Fenotypes'
+
+# 	def __str__(self):
+# 		return self.name
+
+
+#################### PATHO FENOTYPES ####################
+
+# class Patho_Fenotypes(models.Model):
+# 	"""
+# 	A single pathology fenotype.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Pathology Fenotype'
+# 		verbose_name_plural = 'Pathology Fenotypes'
+
+# 	def __str__(self):
+# 		return self.name	
+
+
+#################### TEST TYPE ####################
+# N.B. Possible options are "NGS", "Mutuna", "OTHER"
+# class TestType(models.Model):
+# 	"""
+# 	A single TestType.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'TestType'
+# 		verbose_name_plural = 'TestTypes'
+
+# 	def __str__(self):
+# 		return self.name
+
+
+#################### SAMPLE TYPE ####################
+# N.B. Possible options are "Blood", "DNA", "OTHER"
+# class SampleType(models.Model):
+# 	"""
+# 	A single SampleType.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'SampleType'
+# 		verbose_name_plural = 'SampleTypes'
+
+# 	def __str__(self):
+# 		return self.name
+
+
+#################### PROCESSING TYPE ####################
+# N.B. Possible options are "OSR", "IMTC", "OTHER"
+# class ProcessingType(models.Model):
+# 	"""
+# 	A single ProcessingType.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'ProcessingType'
+# 		verbose_name_plural = 'ProcessingTypes'
+
+# 	def __str__(self):
+# 		return self.name
+	
+
+#################### GENES ####################
+class Gene(models.Model):
+	"""
+	A single gene.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Gene'
+		verbose_name_plural = 'Genes'
+
+	def __str__(self):
+		return self.name
+	
+
+#################### MUTATIONS ####################
+class Mutation(models.Model):
+	"""
+	A single mutation.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Mutation'
+		verbose_name_plural = 'Mutations'
+
+	def __str__(self):
+		return self.name
+	
+
+#################### AMINOACID CHANGES ####################
+#class Aminoacidchange(models.Model):
+#	"""
+#	A single aminoacid change.
+#	"""
+#	name = models.CharField(max_length=100, unique=True)
+#
+#	class Meta:
+#		ordering = ['name']
+#		verbose_name = 'Aminoacidchange'
+#		verbose_name_plural = 'Aminoacidchanges'
+#
+#	def __str__(self):
+#		return self.name
+
+
+#################### ACMG ####################
+
+# class ACMG(models.Model):
+# 	"""
+# 	A single class.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'ACMG'
+# 		verbose_name_plural = 'ACMGs'
+
+# 	def __str__(self):
+# 		return self.name
+
+
+#################### Cromo anomalities ####################
+
+# class Cromo_anomality(models.Model):
+# 	"""
+# 	A single class.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Cromo anomality'
+# 		verbose_name_plural = 'Cromo anomalities'
+
+# 	def __str__(self):
+# 		return self.name
+	
+
+#################### Eredity ####################
+
+# class Eredity(models.Model):
+# 	"""
+# 	A single class.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
+
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Eredity'
+# 		verbose_name_plural = 'Eredities'
+
+# 	def __str__(self):
+# 		return self.name
+
+
+#################### DOCTORS ####################
+
+class Doctors(models.Model):
+	"""
+	A single cardiopathy fenotype.
+	"""
+	name = models.CharField(max_length=100, unique=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Doctor'
+		verbose_name_plural = 'Doctors'
+
+	def __str__(self):
+		return self.name
+
+
+
+###############################################################################
+################################### GENETICS ##################################
+###############################################################################
+### \\\ It should contain a model for each type of exam:
+### \\\ - Genetic profile
+### \\\ - Genetic status
+### \\\ - Genetic sample --> from each sample we can proceed with multiple tests!
+### \\\ - Genetic tests
+class Genetics(models.Model):
+	
+	patient = models.ForeignKey(
+		"PatientProfile",
+		on_delete=models.CASCADE,
+	)
+
+	# mi serve ancora?
+	id = models.UUIDField(
+		primary_key = True,
+		default = uuid.uuid4,
+		editable = False
+		)
+
+	class Meta:
+		abstract = True # Tell django this is an abstract class, no table will be created
+
+
+class Genetic_profile(Genetics):
+
+	FIN_progressive_genetics = models.PositiveIntegerField(null=True, blank=True)
+	FIN_number = models.CharField(max_length=100)
+	PIN_number = models.CharField(max_length=100)
+	
+
+class Genetic_status(Genetics):
+
+	class Patient_status(models.TextChoices):
+		P = "Proband", "Proband"
+		F = "Familiar", "Familiar"	
+	patient_status = models.CharField(
+		max_length=100,
+		choices=Patient_status,
+		default=''
+	)
+	class proband_family_degree(models.TextChoices):
+		Mo = "Mother", "Mother"
+		Fa = "Father", "Father"
+		GF = "Grand-father", "Grand-father"	
+		GM = "Grand-mother", "Grand-mother"
+	proband_familiarity = models.CharField(
+		max_length=100,
+		choices=proband_family_degree,
+		default=''
+	)
+
+	class FamiliarityType(models.TextChoices):
+		SD = "SD", "SD"
+		C = "Cardiopathy", "Cardiopathy"	
+		O = "Other pathologies", "Other pathologies"
+	familiarityType = models.CharField(
+		max_length=100,
+		choices=FamiliarityType,
+		default=''
+	)
+	cardio_fenotypes = models.CharField(max_length=100, default='')
+	pato_fenotypes = models.CharField(max_length=100, default='')
+	
+	family_members = models.PositiveIntegerField(null=True, blank=True)
+	class family_degree(models.TextChoices):
+		Mo = "Mother", "Mother"
+		Fa = "Father", "Father"
+		GF = "Grand-father", "Grand-father"	
+		GM = "Grand-mother", "Grand-mother"
+	family_degree = models.CharField(
+		max_length=100,
+		choices=family_degree,
+		default=''
+	)
+
+	children = models.PositiveIntegerField(null=True, blank=True)
+
+
+
+class Genetic_sample(Genetics):
+	
+	# !!! it must have an ID !!!
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+	)
+
+	blood_sample_date = models.DateField()
+
+
+class Genetic_test(Genetics):
+
+	Consent_date = models.DateField()
+	# !!! age at the moment of consent: do we need it? !!!
+	
+	class processing_Type(models.TextChoices):
+		OSR = "OSR", "OSR"
+		IMTC = "IMTC", "IMTC"
+	processingType = models.CharField(
+		max_length=100,
+		choices=processing_Type,
+		default=''
+	)
+	class test_Type(models.TextChoices):
+		NGS = "NGS", "NGS"
+		Mutuna = "Mutuna", "Mutuna"
+	testType = models.CharField(
+		max_length=100,
+		choices=test_Type,
+		default=''
+	)
+
+
+    ########## !!! Only if "NGS" is selected, these should be compiled !!! ############
+	class TestCategory(models.TextChoices):
+		On = "Oncology", "Oncology"
+		ChAr = "Channellopathies / Arrhythmias", "Channellopathies / Arrhythmias"
+		Ca = "Cardiomiopathies", "Cardiomiopathies" 
+		ND = "Neuromuscolar dystrophies"
+		Col = "Collagenopathies", "Collagenopathies"
+		Coa = "Coagulopathies", "Coagulopathies"
+		SyDys = "Syndromes / Dysmorphisms", "Syndromes / Dysmorphisms"
+		Me = "Metabolic", "Metabolic" 
+		Sc = "Screening", "Screening"
+		BrK = "Breast K", "Breast K"
+		Nep = "Nephropathy", "Nephropathy"
+		Neu = "Neuropathy", "Neuropathy"
+		He = "Hematopathy", "Hematopathy"
+	test_category = models.CharField(
+		max_length=100,
+		choices=TestCategory,
+		default=''
+	)
+
+    # !!! Only if "Cannelopathies" is selected, these should be compiled !!!
+	class ChanSubCategory(models.TextChoices):
+		LQTS = "LQTS", "LQTS"
+		ERS = "ERS", "ERS"
+		JWS = "JWS", "JWS"
+		Git = "Gitelman", "Gitelman"
+		WPW = "WPW", "WPW"
+		BAV = "BAV", "BAV" 
+		BBB = "BBB", "BBB"
+		CPVT = "CPVT", "CPVT"
+		AF = "AF", "AF"
+		BrS = "BrS", "BrS"
+	chan_subcategory = models.CharField(
+		max_length=100,
+		choices=ChanSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Cardiomiopathies" is selected, these should be compiled !!!
+	class CardSubCategory(models.TextChoices):
+		HMC = "HMC", "HMC"
+		ARVD = "ARVD", "ARVD"
+		NCM = "NCM", "NCM"
+		CMIO = "CMIO DILATED", "CMIO DILATED"
+		Stru = "Stuctural", "Structural"
+		Amilo = "Amilo", "Amilo" 
+		Osi = "Osi", "Osi"
+		Fab = "Fabry", "Fabry"
+		ARVC = "ARVC", "ARVC"
+		Guch = "Guch", "Guch"
+	card_subcategory = models.CharField(
+		max_length=100,
+		choices=CardSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Collagenopathies" is selected, these should be compiled !!!
+	class CollSubCategory(models.TextChoices):
+		Ma = "Marfan", "Marfan"
+		Eb = "Ebstein", "Ebstein"
+		EhDa = "Ehler-danlos", "Ehler-danlos"
+		AoAn = "Aorta Aneurysm", "Aorta Aneurysm"
+	coll_subcategory = models.CharField(
+		max_length=100,
+		choices=CollSubCategory,
+		default=''
+	)
+
+    # !!! Only if "Syndromes / Dysmorphisms" is selected, these should be compiled !!!
+	class DysSubCategory(models.TextChoices):
+		No = "Noonan", "Noonan"
+		Tu = "Turner", "Turner"
+		Kl = "Klinefelter", "Klinefelter"
+	dys_subcategory = models.CharField(
+		max_length=100,
+		choices=DysSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Coagulopathies" is selected, these should be compiled !!!
+	class CollSubCategory(models.TextChoices):
+		II = "Factor II", "MFactor II"
+		V = "Factor V", "Factor V"
+		Thr = "Thrombophilia", "Thrombophilia"
+		MTHFR = "MTHFR", "MTHFR"
+		He = "Hemophilia", "Hemophilia"
+		VaWi = "Van Willebrandt", "Van Willebrandt" 
+	coll_subcategory = models.CharField(
+		max_length=100,
+		choices=CollSubCategory,
+		default=''
+	)
+	
+
+	# !!! Only if "Neuromuscolar dystrophies" is selected, these should be compiled !!!
+	class NeuroSubCategory(models.TextChoices):
+		St = "Steinert", "Steinert"
+		Ata = "Ataxia", "Ataxia"
+		Hun = "Huntington", "Huntington"
+		ScaHu = "Scapulus humeral", "Scapulus humeral"
+		Epi = "Epilepsy", "Epilepsy"
+		ChaMaTo = "Charcot-Marie Tooth", "Charcot-Marie Tooth"
+		LGMD = "LGMD", "LGMD"
+	neuro_subcategory = models.CharField(
+		max_length=100,
+		choices=NeuroSubCategory,
+		default=''
+	)
+
+
+	# !!! Only if "Metabolic dystrophies" is selected, these should be compiled !!!
+	class MetabolicSubCategory(models.TextChoices):
+		Di = "Diabetes", "Diabetes"
+		Mo = "Mody", "Mody"
+		Dip = "Dislipidemia", "Dislipidemia"
+		MetAc = "Metal accumulation", "Metal accumulation"
+		Ala = "Alagille", "Alagille"
+		Gau = "Gaucher", "Gaucher"
+		Po = "Pompe", "Pompe"
+	metabolic_subcategory = models.CharField(
+		max_length=100,
+		choices=MetabolicSubCategory,
+		default=''
+	)
+
+	# !!! Only if "Oncology" is selected, these should be compiled !!!
+	class OncoSubCategory(models.TextChoices):
+		Br = "Breast", "Breast"
+		Pa = "Pancreas", "Pancreas"
+		Ov = "Ovary", "Ovary"
+		Co = "Colon", "Metal accumulation"
+		Th = "Thyroid", "Thyroid"
+		NF1 = "NF1", "NF1"
+		Me = "Melanoma", "Melanoma"
+	onco_subcategory = models.CharField(
+		max_length=100,
+		choices=OncoSubCategory,
+		default=''
+	)
+
+
+
+	class NGSTestResult(models.TextChoices):
+		P = "Positive", "Positive"
+		N = "Negative", "Negative"
+		NC = "Not concluded", "Not concluded"	
+	NGStest_result = models.CharField(
+		max_length=100,
+		choices=NGSTestResult,
+		default=''
+	)
+	class geneType(models.TextChoices):
+		P = "Clinical", "Clinical"
+		N = "Incidental", "Incidental"
+	gene_type = models.CharField(
+		max_length=100,
+		choices=geneType,
+		default=''
+	)
+	genes = models.ManyToManyField(
+		Gene,
+		blank=True,
+		related_name='genes',
+		help_text='Gene of this test.'
+	)
+	var_p = models.ManyToManyField(
+		Mutation,
+		blank=True,
+		related_name='v1p',
+		help_text='v1p'
+	)
+	var_c = models.ManyToManyField(
+		Mutation,
+		blank=True,
+		related_name='v1c',
+		help_text='v1c'
+	)
+	class Zygosity(models.TextChoices):
+		HZ = "HZ", "HZ"
+		OZ = "OZ", "OZ"
+		HA = "HA", "HA"
+	zygosity = models.CharField(
+		max_length=100,
+		choices=Zygosity,
+		default=''
+	)
+	
+    ########## !!! Only if "Mutuna" is selected, these should be compiled !!! ############
+	class ACMG(models.TextChoices):
+		I = "I", "I"
+		II = "II", "II"
+		III = "III", "III"
+		IV = "IV", "IV"
+		V = "V", "V"
+	ACMG = models.CharField(
+		max_length=100,
+		choices=ACMG,
+		default=''
+	)
+
+	class MutunaTestResult(models.TextChoices):
+		P = "Positive", "Positive"
+		N = "Negative", "Negative"
+		NC = "Not concluded", "Not concluded"	
+	Mutunatest_result = models.CharField(
+		max_length=100,
+		choices=MutunaTestResult,
+		default=''
+	)
+	class geneType(models.TextChoices):
+		P = "Clinical", "Clinical"
+		N = "Incidental", "Incidental"
+	gene_type = models.CharField(
+		max_length=100,
+		choices=geneType,
+		default=''
+	)
+	genes = models.ManyToManyField(
+		Gene,
+		blank=True,
+		related_name='genes',
+		help_text='Gene of this test.'
+	)
+	var_p = models.ManyToManyField(
+		Mutation,
+		blank=True,
+		related_name='v1p',
+		help_text='v1p'
+	)
+	var_c = models.ManyToManyField(
+		Mutation,
+		blank=True,
+		related_name='v1c',
+		help_text='v1c'
+	)
+	class Zygosity(models.TextChoices):
+		HZ = "HZ", "HZ"
+		OZ = "OZ", "OZ"
+		HA = "HA", "HA"
+	zygosity = models.CharField(
+		max_length=100,
+		choices=Zygosity,
+		default=''
+	)
+
+
+
+########## !!! Only if "IMTC" is selected, these should be compiled !!! ############
+	class sample_Type(models.TextChoices):
+		B = "blood", "blood"
+		D = "DNA", "DNA"
+	sampleType = models.CharField(
+		max_length=100,
+		choices=sample_Type,
+		default=''
+	)
+	aliquota = models.PositiveIntegerField(null=True, blank=True)
+
+	class corsaNGS(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"	
+	corsa_NGS = models.CharField(
+		max_length=3,
+		choices=corsaNGS,
+		default=''
+	)
+
+	corsa_name = models.CharField(max_length=100, default='')
+
+	editing_doctor = models.ManyToManyField(
+		Doctors,
+		blank=True,
+		related_name='Editing_doctor'
+	)
+
+
+	class Sangen(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+	sangen = models.CharField(
+		max_length=100,
+		choices=Sangen,
+		default=''
+	)
+	class SangenResult(models.TextChoices):
+		P = "Positive", "Positive"
+		N = "Negative", "Negative"
+		NC = "Not concluded", "Not concluded"	
+	Sangen_result = models.CharField(
+		max_length=100,
+		choices=SangenResult,
+		default=''
+	)
+
+	class Reported(models.TextChoices):
+		Y = "Yes", "Yes"
+		N = "No", "No"
+	reported = models.CharField(
+		max_length=100,
+		choices=Reported,
+		default=''
+	)
+	report_data = models.DateField()
+
+	reporting_doctor = models.ManyToManyField(
+		Doctors,
+		blank=True,
+		related_name='Reporting_doctor'
+	)
+
+
+
+########## !!! Only if "OTHER" is selected, these should be compiled !!! ############
+
+	eredity =  models.CharField(max_length=100, default='')
+	cromo_anomality =  models.CharField(max_length=100, default='')
+
