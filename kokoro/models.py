@@ -34,12 +34,25 @@ class Therapy(models.Model):
 # "Patient" eredita da "models.Model", quindi sarà mappato in una tabella del database.
 class Study(models.Model):
 
-	name = models.CharField(max_length=100, unique=True)
+	id = models.UUIDField(
+	# "primary_key=True": indica che questo è il campo identificativo unico della tabella.
+	primary_key = True,
+	# "default=uuid.uuid4": genera un nuovo UUID ogni volta che viene creato un oggetto.
+	default = uuid.uuid4,
+	# "editable=False": impedisce la modifica del campo tramite interfaccia admin o form.
+	editable = False
+	)
+	project_code = models.CharField(max_length=100, unique=True)
+	project_id = models.CharField(max_length=100)
 	start_date = models.DateField()
 	end_date = models.DateField(null=True, blank=True)
+	
+	class Meta:
+		verbose_name = 'Study'
+		verbose_name_plural = 'Studies'
 
 	def __str__(self):
-		return self.name
+		return self.project_id
 
 
 class PatientProfile(models.Model):
@@ -93,7 +106,6 @@ class PatientProfile(models.Model):
 
 	studies = models.ManyToManyField(
 		Study,
-		through='PatientStudy',
 		related_name='participants',
 		blank=True,
 		help_text='Which studies this patient is enrolled in'
@@ -1443,8 +1455,8 @@ class Genetic_status(Genetics):
 		choices=FamiliarityType,
 		default=''
 	)
-	cardio_fenotypes = models.CharField(max_length=100, default='')
-	pato_fenotypes = models.CharField(max_length=100, default='')
+	cardio_fenotypes = models.CharField(max_length=100, null=True, default='')
+	pato_fenotypes = models.CharField(max_length=100, null=True, default='')
 	
 	family_members = models.PositiveIntegerField(null=True, blank=True)
 	class family_degree(models.TextChoices):

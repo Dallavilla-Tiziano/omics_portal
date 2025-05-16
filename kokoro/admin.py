@@ -11,22 +11,22 @@ from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEv
 
 
 class StudyAdmin(admin.ModelAdmin):
-    list_display  = ['name', 'start_date', 'end_date']
-    search_fields = ['name']
+	list_display  = ['id','project_code','project_id','start_date','end_date']
+	search_fields = ['project_code', 'project_id']
 
 class PatientStudyInline(admin.TabularInline):
-    model = PatientStudy
-    extra = 1
-    autocomplete_fields = ['study']
-    fields = ['study', 'enrollment_date']
+	model = PatientStudy
+	extra = 0
+	autocomplete_fields = ['study']
+	fields = ['study', 'enrollment_date']
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
 	autocomplete_fields = ['symptoms', 'cardiomiopathies', 'riskfactors', 'comorbidities']
 	
 	list_display = ['date_of_visit']
 class ClinicalEvaluationInline(admin.TabularInline):
-    model = Clinical_evaluation
-    extra = 1
+	model = Clinical_evaluation
+	extra = 0
 
 class SymptomsAdmin(admin.ModelAdmin):
 	search_fields = ['name']
@@ -57,19 +57,19 @@ class AblationAdmin(admin.ModelAdmin):
 	list_display = ("date", "total_area", "total_rf_time")
 class AblationtInline(admin.TabularInline):
 	model = Ablation
-	extra = 1
+	extra = 0
 
 class DeviceImplantAdmin(admin.ModelAdmin):
 		list_display = ("date", "lv4_ring", "lv3_ring", "lv2_ring", "lv1_tip")
 class DeviceImplantInline(admin.TabularInline):
 	model = DeviceImplant
-	extra = 1
+	extra = 0
 
 class DeviceEventAdmin(admin.ModelAdmin):
 		list_display = ("timestamp", "date", "inappropriate_pre_rf_shock_cause", "inappropriate_post_brs_shock_cause")
 class DeviceEventInline(admin.TabularInline):
 	model = DeviceEvent
-	extra = 1
+	extra = 0
 
 
 
@@ -83,7 +83,7 @@ class DeviceInstanceAdmin(admin.ModelAdmin):#
 	list_display = ("device_type", "serial_number", "implantation")
 class DeviceInstanceInline(admin.TabularInline):
 	model = DeviceInstance
-	extra = 1
+	extra = 0
 
 
 
@@ -92,7 +92,9 @@ class SampleAdmin(admin.ModelAdmin):
 	search_fields = ['imtc_id']
 class SampleInline(admin.TabularInline):
 	model = Sample
-	extra = 1
+	extra = 0
+	def has_add_permission(self, request, obj=None):
+		return False  # disables "Add another Patient study"
 
 
 
@@ -100,25 +102,25 @@ class EPStudyAdmin(admin.ModelAdmin):
 	list_display = ("ep_result", "induced_arrhythmia")
 class EPStudyInline(admin.TabularInline):
 	model = EP_study
-	extra = 1
+	extra = 0
 
 class FlecainideTestAdmin(admin.ModelAdmin):
 	list_display = ("flecainide_result", "flecainide_dose")
 class FlecainideTestInline(admin.TabularInline):
 	model = Flecainide_test
-	extra = 1
+	extra = 0
 
 class AdrenalineTestAdmin(admin.ModelAdmin):
 	list_display = ("adrenaline_result", "adrenaline_dose")
 class AdrenalineTestInline(admin.TabularInline):
 	model = Adrenaline_test
-	extra = 1
+	extra = 0
 
 class AjmalineTestAdmin(admin.ModelAdmin):
 	list_display = ("ajmaline_result", "ajmaline_dose")
 class AjmalineTestInline(admin.TabularInline):
 	model = Ajmaline_test
-	extra = 1
+	extra = 0
 
 
 
@@ -126,25 +128,25 @@ class ECGAdmin(admin.ModelAdmin):
 	list_display = ["atrial_rhythmh"]
 class ECGInline(admin.TabularInline):
 	model = ECG
-	extra = 1
+	extra = 0
 
 class ECHOAdmin(admin.ModelAdmin):
 	list_display = ["anatomical_alterations"]
 class ECHOInline(admin.TabularInline):
 	model = ECHO
-	extra = 1
+	extra = 0
 
 class LatePotentialsAdmin(admin.ModelAdmin):
 	list_display = ["basal_lp1"]
 class LatePotentialsInline(admin.TabularInline):
 	model = Late_potentials
-	extra = 1
+	extra = 0
 
 class RMTCPHAdmin(admin.ModelAdmin):
 	list_display = ["anatomical_alterations"]
 class RMTCPHInline(admin.TabularInline):
 	model = RMN_TC_PH
-	extra = 1
+	extra = 0
 
 
 
@@ -158,33 +160,33 @@ class ResearchAnalysisAdmin(admin.ModelAdmin):
 class ValveInterventionAdmin(admin.ModelAdmin):
 	list_display = ("replacement", "repair")
 class ValveInterventionInLine(admin.TabularInline):	
-    model = ValveIntervention
-    extra = 1
+	model = ValveIntervention
+	extra = 0
 
 class CoronaryInterventionAdmin(admin.ModelAdmin):
 	list_display = ("cabg", "pci")
 class CoronaryInterventionInLine(admin.TabularInline):	
-    model = CoronaryIntervention
-    extra = 1
+	model = CoronaryIntervention
+	extra = 0
 
 class GeneticProfileAdmin(admin.ModelAdmin):
 	list_display = ["FIN_number"]
 class GeneticProfileInLine(admin.TabularInline):	
-    model = Genetic_profile
-    extra = 1
+	model = Genetic_profile
+	extra = 0
 
 class GeneticStatusAdmin(admin.ModelAdmin):
 	list_display = ["Patient_status"]
 class GeneticStatusInLine(admin.TabularInline):	
-    model = Genetic_status
-    extra = 1
+	model = Genetic_status
+	extra = 0
 
 class GeneticTestAdmin(admin.ModelAdmin):
 	autocomplete_fields = ('genes', 'var_p', 'var_c', 'editing_doctor', 'reporting_doctor') 
 	list_display = ["Consent_date"]
 class GeneticTestInLine(admin.TabularInline):	
-    model = Genetic_test
-    extra = 1
+	model = Genetic_test
+	extra = 0
 
 class GeneAdmin(admin.ModelAdmin):
 	search_fields = ['name']
@@ -206,20 +208,20 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		AblationtInline,
 		DeviceInstanceInline,
 		DeviceImplantInline,
-		ClinicalEvaluationInline,
+		# ClinicalEvaluationInline,
 		# EventsInline,
-		EPStudyInline,
-		FlecainideTestInline,
-		ECGInline,
-		ECHOInline,
+		# EPStudyInline,
+		# FlecainideTestInline,
+		# ECGInline,
+		# ECHOInline,
 		LatePotentialsInline,
-		RMTCPHInline,
+		# RMTCPHInline,
 		ValveInterventionInLine,
 		CoronaryInterventionInLine,
 		PatientStudyInline,
 		GeneticProfileInLine,
 		GeneticStatusInLine,
-		GeneticTestInLine
+		# GeneticTestInLine
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
 	autocomplete_fields = ['therapies','allergies']
@@ -227,9 +229,9 @@ class PatientProfileAdmin(admin.ModelAdmin):
 	search_fields = ['last_name', 'first_name']
 
 class PatientStudyAdmin(admin.ModelAdmin):
-    list_display       = ['patient', 'study', 'enrollment_date']
-    search_fields      = ['patient__last_name', 'study__name']
-    autocomplete_fields = ['patient', 'study']
+	list_display       = ['patient', 'study', 'enrollment_date']
+	search_fields      = ['patient__last_name', 'study__project_id']
+	autocomplete_fields = ['patient', 'study']
 
 admin.site.register(PatientProfile, PatientProfileAdmin)
 admin.site.register(DeviceType, DeviceTypeAdmin)
