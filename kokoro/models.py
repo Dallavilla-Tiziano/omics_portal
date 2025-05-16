@@ -1132,93 +1132,93 @@ class RMN_TC_PH(Diagnostic_exams):
 
 
 #####################################################################################
-################################### DIAGNOSTIC EXAMS ################################
+################################### AUXILIAR FUNCTIONS ##############################
 #####################################################################################
 
 
 #################### CARDIO FENOTYPES ####################
 
-class Cardio_Fenotypes(models.Model):
-	"""
-	A single cardiopathy fenotype.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class Cardio_Fenotypes(models.Model):
+# 	"""
+# 	A single cardiopathy fenotype.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'Cardiopathy Fenotype'
-		verbose_name_plural = 'Cardiopathy Fenotypes'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Cardiopathy Fenotype'
+# 		verbose_name_plural = 'Cardiopathy Fenotypes'
 
-	def __str__(self):
-		return self.name
+# 	def __str__(self):
+# 		return self.name
 
 
 #################### PATHO FENOTYPES ####################
 
-class Patho_Fenotypes(models.Model):
-	"""
-	A single pathology fenotype.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class Patho_Fenotypes(models.Model):
+# 	"""
+# 	A single pathology fenotype.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'Pathology Fenotype'
-		verbose_name_plural = 'Pathology Fenotypes'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Pathology Fenotype'
+# 		verbose_name_plural = 'Pathology Fenotypes'
 
-	def __str__(self):
-		return self.name	
+# 	def __str__(self):
+# 		return self.name	
 
 
 #################### TEST TYPE ####################
 # N.B. Possible options are "NGS", "Mutuna", "OTHER"
-class TestType(models.Model):
-	"""
-	A single TestType.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class TestType(models.Model):
+# 	"""
+# 	A single TestType.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'TestType'
-		verbose_name_plural = 'TestTypes'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'TestType'
+# 		verbose_name_plural = 'TestTypes'
 
-	def __str__(self):
-		return self.name
+# 	def __str__(self):
+# 		return self.name
 
 
 #################### SAMPLE TYPE ####################
 # N.B. Possible options are "Blood", "DNA", "OTHER"
-class SampleType(models.Model):
-	"""
-	A single SampleType.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class SampleType(models.Model):
+# 	"""
+# 	A single SampleType.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'SampleType'
-		verbose_name_plural = 'SampleTypes'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'SampleType'
+# 		verbose_name_plural = 'SampleTypes'
 
-	def __str__(self):
-		return self.name
+# 	def __str__(self):
+# 		return self.name
 
 
 #################### PROCESSING TYPE ####################
 # N.B. Possible options are "OSR", "IMTC", "OTHER"
-class ProcessingType(models.Model):
-	"""
-	A single ProcessingType.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class ProcessingType(models.Model):
+# 	"""
+# 	A single ProcessingType.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'ProcessingType'
-		verbose_name_plural = 'ProcessingTypes'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'ProcessingType'
+# 		verbose_name_plural = 'ProcessingTypes'
 
-	def __str__(self):
-		return self.name
+# 	def __str__(self):
+# 		return self.name
 	
 
 #################### GENES ####################
@@ -1271,53 +1271,53 @@ class Mutation(models.Model):
 
 #################### ACMG ####################
 
-class ACMG(models.Model):
-	"""
-	A single class.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class ACMG(models.Model):
+# 	"""
+# 	A single class.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'ACMG'
-		verbose_name_plural = 'ACMGs'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'ACMG'
+# 		verbose_name_plural = 'ACMGs'
 
-	def __str__(self):
-		return self.name
+# 	def __str__(self):
+# 		return self.name
 
 
 #################### Cromo anomalities ####################
 
-class Cromo_anomality(models.Model):
-	"""
-	A single class.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class Cromo_anomality(models.Model):
+# 	"""
+# 	A single class.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'Cromo anomality'
-		verbose_name_plural = 'Cromo anomalities'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Cromo anomality'
+# 		verbose_name_plural = 'Cromo anomalities'
 
-	def __str__(self):
-		return self.name
+# 	def __str__(self):
+# 		return self.name
 	
 
 #################### Eredity ####################
 
-class Eredity(models.Model):
-	"""
-	A single class.
-	"""
-	name = models.CharField(max_length=100, unique=True)
+# class Eredity(models.Model):
+# 	"""
+# 	A single class.
+# 	"""
+# 	name = models.CharField(max_length=100, unique=True)
 
-	class Meta:
-		ordering = ['name']
-		verbose_name = 'Eredity'
-		verbose_name_plural = 'Eredities'
+# 	class Meta:
+# 		ordering = ['name']
+# 		verbose_name = 'Eredity'
+# 		verbose_name_plural = 'Eredities'
 
-	def __str__(self):
-		return self.name
+# 	def __str__(self):
+# 		return self.name
 
 
 #################### DOCTORS ####################
@@ -1401,18 +1401,9 @@ class Genetic_status(Genetics):
 		choices=FamiliarityType,
 		default=''
 	)
-	cardio_fenotypes = models.ManyToManyField(
-		Cardio_Fenotypes,
-		blank=True,
-		related_name='cardiopathy_fenotype',
-		help_text='Therapies this patient is on.'
-	)
-	pato_fenotypes = models.ManyToManyField(
-		Patho_Fenotypes,
-		blank=True,
-		related_name='pathology_fenotype',
-		help_text='Therapies this patient is on.'
-	)
+	cardio_fenotypes = models.CharField(max_length=100, default='')
+	pato_fenotypes = models.CharField(max_length=100, default='')
+	
 	family_members = models.PositiveIntegerField(null=True, blank=True)
 	class family_degree(models.TextChoices):
 		Mo = "Mother", "Mother"
@@ -1436,8 +1427,6 @@ class Genetic_sample(Genetics):
 		primary_key=True,
 		default=uuid.uuid4,
 	)
-	# !!! which way of ID is better? !!!
-	blood_sample_id = models.CharField(max_length=100)
 
 	blood_sample_date = models.DateField()
 
@@ -1447,21 +1436,22 @@ class Genetic_test(Genetics):
 	Consent_date = models.DateField()
 	# !!! age at the moment of consent: do we need it? !!!
 	
-	processingType = models.ManyToManyField(
-		ProcessingType,
-		blank=True,
-		related_name='processing_type',
-		help_text='Processing type.'
+	class processing_Type(models.TextChoices):
+		OSR = "OSR", "OSR"
+		IMTC = "IMTC", "IMTC"
+	processingType = models.CharField(
+		max_length=100,
+		choices=processing_Type,
+		default=''
 	)
-
-    # NGS or MUTUNA or ALTRO
-	testType = models.ManyToManyField(
-		TestType,
-		blank=True,
-		related_name='test_type',
-		help_text='Test type.'
+	class test_Type(models.TextChoices):
+		NGS = "NGS", "NGS"
+		Mutuna = "Mutuna", "Mutuna"
+	testType = models.CharField(
+		max_length=100,
+		choices=test_Type,
+		default=''
 	)
-
 
 
     ########## !!! Only if "NGS" is selected, these should be compiled !!! ############
@@ -1633,14 +1623,14 @@ class Genetic_test(Genetics):
 	var_p = models.ManyToManyField(
 		Mutation,
 		blank=True,
-		related_name='1p',
-		help_text='1p.'
+		related_name='v1p',
+		help_text='v1p'
 	)
 	var_c = models.ManyToManyField(
 		Mutation,
 		blank=True,
-		related_name='1c',
-		help_text='1c.'
+		related_name='v1c',
+		help_text='v1c'
 	)
 	class Zygosity(models.TextChoices):
 		HZ = "HZ", "HZ"
@@ -1651,40 +1641,18 @@ class Genetic_test(Genetics):
 		choices=Zygosity,
 		default=''
 	)
-
-
-
-
+	
     ########## !!! Only if "Mutuna" is selected, these should be compiled !!! ############
-	genes = models.ManyToManyField(
-		Gene,
-		blank=True,
-		related_name='genes',
-		help_text='Gene of this test.'
-	)
-	#	aminoacidChanges = models.ManyToManyField(
-#		Aminoacidchange,
-#		blank=True,
-#		related_name='aminoacidchanges',
-#		help_text='aminoacid change of this test.'
-#	)
-	var_p = models.ManyToManyField(
-		Mutation,
-		blank=True,
-		related_name='1p',
-		help_text='1p.'
-	)
-	var_c = models.ManyToManyField(
-		Mutation,
-		blank=True,
-		related_name='1c',
-		help_text='1c.'
-	)
-	ACMG = models.ManyToManyField(
-		ACMG,
-		blank=True,
-		related_name='ACMG',
-		help_text='Class of this test.'
+	class ACMG(models.TextChoices):
+		I = "I", "I"
+		II = "II", "II"
+		III = "III", "III"
+		IV = "IV", "IV"
+		V = "V", "V"
+	ACMG = models.CharField(
+		max_length=100,
+		choices=ACMG,
+		default=''
 	)
 
 	class MutunaTestResult(models.TextChoices):
@@ -1713,14 +1681,14 @@ class Genetic_test(Genetics):
 	var_p = models.ManyToManyField(
 		Mutation,
 		blank=True,
-		related_name='1p',
-		help_text='1p.'
+		related_name='v1p',
+		help_text='v1p'
 	)
 	var_c = models.ManyToManyField(
 		Mutation,
 		blank=True,
-		related_name='1c',
-		help_text='1c.'
+		related_name='v1c',
+		help_text='v1c'
 	)
 	class Zygosity(models.TextChoices):
 		HZ = "HZ", "HZ"
@@ -1735,11 +1703,13 @@ class Genetic_test(Genetics):
 
 
 ########## !!! Only if "IMTC" is selected, these should be compiled !!! ############
-	sampleType = models.ManyToManyField(
-		SampleType,
-		blank=True,
-		related_name='test_type',
-		help_text='Test type.'
+	class sample_Type(models.TextChoices):
+		B = "blood", "blood"
+		D = "DNA", "DNA"
+	sampleType = models.CharField(
+		max_length=100,
+		choices=sample_Type,
+		default=''
 	)
 	aliquota = models.PositiveIntegerField(null=True, blank=True)
 
@@ -1752,12 +1722,12 @@ class Genetic_test(Genetics):
 		default=''
 	)
 
-	corsa_name = models.CharField(max_length=100)
+	corsa_name = models.CharField(max_length=100, default='')
 
 	editing_doctor = models.ManyToManyField(
 		Doctors,
 		blank=True,
-		related_name='Editing doctor'
+		related_name='Editing_doctor'
 	)
 
 
@@ -1792,27 +1762,13 @@ class Genetic_test(Genetics):
 	reporting_doctor = models.ManyToManyField(
 		Doctors,
 		blank=True,
-		related_name='Reporting doctor'
+		related_name='Reporting_doctor'
 	)
 
 
 
 ########## !!! Only if "OTHER" is selected, these should be compiled !!! ############
 
-	eredity = models.ManyToManyField(
-		Eredity,
-		blank=True,
-		related_name='eredities'
-	)
-	cromo_anomality = models.ManyToManyField(
-		Cromo_anomality,
-		blank=True,
-		related_name='Cromo anomality'
-	)
+	eredity =  models.CharField(max_length=100, default='')
+	cromo_anomality =  models.CharField(max_length=100, default='')
 
-
-
-
-
-
-	
