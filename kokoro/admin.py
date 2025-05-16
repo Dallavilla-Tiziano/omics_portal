@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies #Events
+from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
+						DeviceEvent, Ablation, DeviceImplant, Clinical_Status,
+						Clinical_evaluation, Symptoms, Comorbidities, EP_study,
+						Flecainide_test, Adrenaline_test, Ajmaline_test, ECG,
+						ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention,
+						CoronaryIntervention, ResearchAnalysis, PatientStudy,
+						Study, Riskfactors, Cardiomiopathies, ClinicalEvent #Events
+					)
 
 
 class StudyAdmin(admin.ModelAdmin):
@@ -42,7 +49,8 @@ class ComorbiditiesAdmin(admin.ModelAdmin):
 #     model = Events
 #     extra = 1
 
-
+class ClinicalEventAdmin(admin.ModelAdmin):
+	list_display = ("patient", "date", "clinical_event")
 
 class AblationAdmin(admin.ModelAdmin):
 	list_display = ("date", "total_area", "total_rf_time")
@@ -210,3 +218,4 @@ admin.site.register(RMN_TC_PH, RMTCPHAdmin)
 admin.site.register(Therapy, TherapyAdmin)
 admin.site.register(ResearchAnalysis, ResearchAnalysisAdmin)
 admin.site.register(Study, StudyAdmin)
+admin.site.register(ClinicalEvent, ClinicalEventAdmin)

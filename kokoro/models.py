@@ -559,6 +559,49 @@ class Comorbidities(models.Model):
 
 	def _str_(self):
 		return self.name
+
+class ClinicalEvent(models.Model):
+
+	class Cause(models.TextChoices):
+		CAR = "CAR", "Cardiac arrest resuscitated"
+		AR = "AR", "Arrhytmia"
+		CT = "CT", "Cardiac transplant"
+		DEATH = "DEATH", "Death"
+		OTHER = "OT", "Other"
+		STROKE = "STROKE", "Stroke"
+
+	# Link back to your unique device instance
+	patient = models.ForeignKey(
+		"PatientProfile",
+		on_delete=models.CASCADE,
+		related_name="clinical_event",
+	)
+
+	# Internal Date, potentially can be used to check if dat was inserted correctly
+	timestamp = models.DateTimeField(auto_now_add=True)
+	date = models.DateField()
+
+	clinical_event = models.CharField(
+		max_length=100,
+		choices=Cause.choices,
+		blank=True,
+		default="",
+	)
+
+	cause = models.CharField(
+		max_length=100,
+		blank=True,
+		default="",
+	)
+
+	type = models.CharField(
+		max_length=100,
+		blank=True,
+		default="",
+	)
+
+	def __str__(self):
+		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 		
 class Clinical_evaluation(Clinical_Status):
 
