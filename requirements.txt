@@ -12,4 +12,4 @@ django-tables2==2.7.5
 django-filter==25.1
 django-autocomplete-light==3.12.1
 django-widget-tweaks==1.5.0
-
+Faker>=19.6

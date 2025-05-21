@@ -5,10 +5,9 @@ from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
 						Flecainide_test, Adrenaline_test, Ajmaline_test, ECG,
 						ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention,
 						CoronaryIntervention, ResearchAnalysis, PatientStudy,
-						Study, Riskfactors, Cardiomiopathies, ClinicalEvent #Events
+						Study, Riskfactors, Cardiomiopathies, ClinicalEvent, Genetic_profile,
+						Genetic_status, Genetic_test, Gene, Mutation, Doctors #Events
 					)
-from .models import PatientProfile, Sample, DeviceType, DeviceInstance, DeviceEvent, Ablation, DeviceImplant, Clinical_Status, Clinical_evaluation, Symptoms, Comorbidities, EP_study, Flecainide_test, Adrenaline_test, Ajmaline_test, ECG, ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention, CoronaryIntervention, ResearchAnalysis, PatientStudy, Study, Riskfactors, Cardiomiopathies, Genetic_profile, Genetic_status, Genetic_test, Gene, Mutation, Doctors
-
 
 class StudyAdmin(admin.ModelAdmin):
 	list_display  = ['id','project_code','project_id','start_date','end_date']
@@ -203,6 +202,10 @@ class DoctorsAdmin(admin.ModelAdmin):
 
 
 class PatientProfileAdmin(admin.ModelAdmin):
+
+	def formatted_date_of_birth(self, obj):
+		return obj.date_of_birth.strftime('%d-%m-%Y')
+
 	inlines = [
 		SampleInline,
 		AblationtInline,
@@ -224,8 +227,8 @@ class PatientProfileAdmin(admin.ModelAdmin):
 		# GeneticTestInLine
 	]
 	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
-	autocomplete_fields = ['therapies','allergies']
-	list_display = ("last_name", "first_name", "sex", "date_of_birth")
+	autocomplete_fields = ['therapies','allergies','studies']
+	list_display = ("last_name", "first_name", "sex", "formatted_date_of_birth")
 	search_fields = ['last_name', 'first_name']
 
 class PatientStudyAdmin(admin.ModelAdmin):

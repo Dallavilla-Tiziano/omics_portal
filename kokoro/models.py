@@ -118,7 +118,7 @@ class PatientProfile(models.Model):
 		]
 
 	def __str__(self):
-		return f'{self.id}'
+		return f'{self.first_name} {self.last_name}'
 
 
 # Needed to be able to track enrollment date
@@ -649,7 +649,7 @@ class ClinicalEvent(models.Model):
 	)
 
 	def __str__(self):
-		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
+		return f"{self.get_clinical_event_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 		
 class Clinical_evaluation(Clinical_Status):
 

@@ -138,6 +138,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+DATE_FORMAT = "d-m-Y"
 
 # django-allauth config
 ACCOUNT_USERNAME_REQUIRED = False
