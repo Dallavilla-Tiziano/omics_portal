@@ -9,6 +9,12 @@ from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
 						Genetic_status, Genetic_test, Gene, Mutation, Doctors #Events
 					)
 
+class AblationAdmin(admin.ModelAdmin):
+	list_display = ("date", "total_area", "total_rf_time")
+class AblationtInline(admin.TabularInline):
+	model = Ablation
+	extra = 0
+
 class StudyAdmin(admin.ModelAdmin):
 	list_display  = ['id','project_code','project_id','start_date','end_date']
 	search_fields = ['project_code', 'project_id']
@@ -52,11 +58,7 @@ class ComorbiditiesAdmin(admin.ModelAdmin):
 class ClinicalEventAdmin(admin.ModelAdmin):
 	list_display = ("patient", "date", "clinical_event")
 
-class AblationAdmin(admin.ModelAdmin):
-	list_display = ("date", "total_area", "total_rf_time")
-class AblationtInline(admin.TabularInline):
-	model = Ablation
-	extra = 0
+
 
 class DeviceImplantAdmin(admin.ModelAdmin):
 	list_display = ("date", "lv4_ring", "lv3_ring", "lv2_ring", "lv1_tip")
