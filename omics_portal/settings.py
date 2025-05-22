@@ -58,6 +58,7 @@ INSTALLED_APPS = [
 	'dal',
 	'dal_select2',
 	'widget_tweaks',
+	'tabbed_admin',
 	# Local
 	'accounts.apps.AccountsConfig',
 	'pages.apps.PagesConfig',
@@ -199,3 +200,5 @@ LOGOUT_REDIRECT_URL = "account_login"
 
 ADMIN_TOOLS_INDEX_DASHBOARD = 'pages.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_MENU = 'pages.menu.CustomMenu'
+
+TABBED_ADMIN_USE_JQUERY_UI = True

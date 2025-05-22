@@ -1,4 +1,5 @@
 from django.contrib import admin
+from tabbed_admin import TabbedModelAdmin
 from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
 						DeviceEvent, Ablation, DeviceImplant, Clinical_Status,
 						Clinical_evaluation, Symptoms, Comorbidities, EP_study,
@@ -48,12 +49,6 @@ class RiskfactorsAdmin(admin.ModelAdmin):
 class ComorbiditiesAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 	list_display = ['name']
-
-# class EventsAdmin(admin.ModelAdmin):
-#     list_display = ['death']
-# class EventsInline(admin.TabularInline):
-#     model = Events
-#     extra = 1
 
 class ClinicalEventAdmin(admin.ModelAdmin):
 	list_display = ("patient", "date", "clinical_event")
@@ -106,7 +101,6 @@ class SampleInline(admin.TabularInline):
 	extra = 0
 	def has_add_permission(self, request, obj=None):
 		return False  # disables "Add another Patient study"
-
 
 
 class EPStudyAdmin(admin.ModelAdmin):
@@ -208,40 +202,95 @@ class MutationAdmin(admin.ModelAdmin):
 class DoctorsAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
-#class AminoacidchangeAdmin(admin.ModelAdmin):
-#	search_fields = ['name']
-
-
-
-class PatientProfileAdmin(admin.ModelAdmin):
+class PatientProfileAdmin(TabbedModelAdmin):
 
 	def formatted_date_of_birth(self, obj):
 		return obj.date_of_birth.strftime('%d-%m-%Y')
 
-	inlines = [
-		SampleInline,
-		AblationtInline,
-		DeviceInstanceInline,
-		DeviceImplantInline,
-		# ClinicalEvaluationInline,
-		# EventsInline,
-		# EPStudyInline,
-		# FlecainideTestInline,
-		# ECGInline,
-		# ECHOInline,
-		LatePotentialsInline,
-		# RMTCPHInline,
-		ValveInterventionInLine,
-		CoronaryInterventionInLine,
-		PatientStudyInline,
-		GeneticProfileInLine,
-		GeneticStatusInLine,
-		# GeneticTestInLine
-	]
-	# "list_display": definisce le colonne visibili nella lista pazienti. Mostra cognome, nome, sesso e data di nascita.
-	autocomplete_fields = ['therapies','allergies','studies']
+	autocomplete_fields = ['therapies', 'allergies', 'studies']
 	list_display = ("last_name", "first_name", "sex", "formatted_date_of_birth")
 	search_fields = ['last_name', 'first_name']
+
+
+	tab_patient = (
+		(None, {
+			'fields': ('last_name', 'first_name', 'date_of_birth',
+			 'nation', 'region', 'province', 'height', 'weight', 'cardioref_id', 'therapies', 'allergies', 'studies')
+		}),
+	)
+
+	tab_sample = (
+		SampleInline,
+		)
+	tab_abl = (
+		AblationtInline,
+		)
+	tab_dev_ins = (
+		DeviceInstanceInline,
+		)
+	tab_dev_imp = (
+		DeviceImplantInline,
+		)
+	tab_clin_eva = (
+		ClinicalEvaluationInline,
+		)
+	tab_eps = (
+		EPStudyInline,
+		)
+	tab_fleca = (
+		FlecainideTestInline,
+		)
+	tab_ecg = (
+		ECGInline,
+		)
+	tab_echo = (
+		ECHOInline,
+		)
+	tab_lpot = (
+		LatePotentialsInline,
+		)
+	tab_rmt = (
+		RMTCPHInline,
+		)
+	tab_valve = (
+		ValveInterventionInLine,
+		)
+	tab_coro = (
+		CoronaryInterventionInLine,
+		)
+	tab_pat_study = (
+		PatientStudyInline,
+		)
+	tab_gen_p = (
+		GeneticProfileInLine,
+		)
+	tab_gen_s = (
+		GeneticStatusInLine,
+		)
+	tab_gen_t = (
+		GeneticTestInLine,
+		)
+
+	tabs = [
+	('Patient', tab_patient),
+	('Samples', tab_sample),
+	('Ablations', tab_abl),
+	('Devices', tab_dev_ins),
+	('Implants', tab_dev_imp),
+	('Clinical Evaluations', tab_clin_eva),
+	('EPS', tab_eps),
+	('Flecanide Tests', tab_fleca),
+	('ECG', tab_ecg),
+	('Echographies', tab_echo),
+	('Late Potentials', tab_lpot),
+	('RMT', tab_rmt),
+	('Valve interventions', tab_valve),
+	('Coronary interventions', tab_coro),
+	('Studies', tab_pat_study),
+	('Genetic Profiles', tab_gen_p),
+	('Genetic Status', tab_gen_s),
+	('Genetic tests', tab_gen_t)
+	]
 
 class PatientStudyAdmin(admin.ModelAdmin):
 	list_display       = ['patient', 'study', 'enrollment_date']

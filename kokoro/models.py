@@ -112,6 +112,8 @@ class PatientProfile(models.Model):
 	)
 
 	class Meta:
+		verbose_name = "Patient Profile"
+		verbose_name_plural = "Patient Profiles"  # Fixes incorrect pluralization
 		# permissions: aggiunge un permesso personalizzato che potrà essere usato per controllare l’accesso a dati sensibili.
 		permissions = [
 		("access_sensible_info", "Can view patient sensible info")
