@@ -257,7 +257,7 @@ class DeviceType(models.Model):
 		)# I'm calling it design because i can't find a more appropriate name rn
 
 	def __str__(self):
-		return f"{self.name} ({self.manufacturer})"
+		return f"{self.type}, {self.model}, ({self.company})"
 
 class DeviceInstance(models.Model):
 	
@@ -285,7 +285,7 @@ class DeviceInstance(models.Model):
 		related_name="patient",
 	)
 	def __str__(self):
-		return f"{self.device_type.name} SN:{self.serial_number}"
+		return f"{self.device_type} SN:{self.serial_number}"
 
 class DeviceImplant(ProcedureBase):
 
@@ -396,7 +396,7 @@ class DeviceEvent(models.Model):
 		related_name="event",
 	)
 
-	# Internal Date, potentially can be used to check if dat was inserted correctly
+	# Internal Date, potentially can be used to check if date was inserted correctly
 	timestamp = models.DateTimeField(auto_now_add=True)
 	date = models.DateField()
 
@@ -421,7 +421,7 @@ class DeviceEvent(models.Model):
 		ordering = ["-timestamp"]
 
 	def __str__(self):
-		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
+		return f"{self.device} @ {self.timestamp:%Y-%m-%d %H:%M}"
 
 
 

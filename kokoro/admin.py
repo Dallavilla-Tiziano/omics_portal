@@ -73,7 +73,7 @@ class DeviceEventInline(admin.TabularInline):
 
 
 class DeviceTypeAdmin(admin.ModelAdmin):
-	list_display = ("Model", "Design", "Company")
+	list_display = ("model", "design", "company")
 
 class DeviceInstanceAdmin(admin.ModelAdmin):
 
@@ -85,7 +85,7 @@ class DeviceInstanceAdmin(admin.ModelAdmin):
 		implant = getattr(obj, 'implant', None)
 		return implant.date if implant else "-"
 	implant_date.short_description = "Implant date"
-	
+
 	inlines = [
 		DeviceEventInline,
 	]
@@ -185,7 +185,7 @@ class GeneticProfileInLine(admin.TabularInline):
 	extra = 0
 
 class GeneticStatusAdmin(admin.ModelAdmin):
-	list_display = ["Patient_status"]
+	list_display = ["patient_status"]
 class GeneticStatusInLine(admin.TabularInline):	
 	model = Genetic_status
 	extra = 0
