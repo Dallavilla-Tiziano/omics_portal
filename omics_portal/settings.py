@@ -197,3 +197,5 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 LOGOUT_REDIRECT_URL = "account_login"
 
+ADMIN_TOOLS_INDEX_DASHBOARD = 'pages.dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_MENU = 'pages.menu.CustomMenu'
