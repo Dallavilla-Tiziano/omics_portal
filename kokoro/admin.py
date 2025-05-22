@@ -96,7 +96,7 @@ class DeviceInstanceInline(admin.TabularInline):
 class SampleAdmin(admin.ModelAdmin):
 	list_display = ("imtc_id", "patient", "procedure_type", "collection_date")
 	search_fields = ['imtc_id']
-class SampleInline(admin.TabularInline):
+class SampleInline(admin.StackedInline):
 	model = Sample
 	extra = 0
 	def has_add_permission(self, request, obj=None):
@@ -137,7 +137,7 @@ class ECGInline(admin.TabularInline):
 
 class ECHOAdmin(admin.ModelAdmin):
 	list_display = ["anatomical_alterations"]
-class ECHOInline(admin.TabularInline):
+class ECHOInline(admin.StackedInline):
 	model = ECHO
 	extra = 0
 
@@ -189,7 +189,7 @@ class GeneticStatusInLine(admin.TabularInline):
 class GeneticTestAdmin(admin.ModelAdmin):
 	autocomplete_fields = ('genes', 'var_p', 'var_c', 'editing_doctor', 'reporting_doctor') 
 	list_display = ["Consent_date"]
-class GeneticTestInLine(admin.TabularInline):	
+class GeneticTestInLine(admin.StackedInline):	
 	model = Genetic_test
 	extra = 0
 
