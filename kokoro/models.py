@@ -199,9 +199,102 @@ class Ablation(ProcedureBase):
 	therapy = models.CharField(max_length=250)
 	# REDO ABLAZIONE is not needed anymore
 
+class DeviceType(models.Model):
+
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+	class Design(models.TextChoices):
+		SD_PACEMAKER = "Single\\Dual Pacemaker"
+		SD_CHAMBER_ICD = "Single\\Dual Chamber ICD"
+		OTHER = "Other"
+
+	class Model(models.TextChoices):
+		IN7F4IS4 = "INTICA 7 HF-TQPDF4/IS4"
+		RI7HFQP = "RIVACOR 7 HF-T QP"
+		IN7HFIS4 = "INTICA 7 HF-TQPDF1/IS4"
+		INN7HFQP = "INTICA NEO 7 HF-T QP"
+
+	class Type(models.TextChoices):
+		CARDIAC_DEVICE = "CD", "Cardiac Device"
+		LOOP_RECORDER = "LR", "Loop Recorder"
+		PACE_MAKER = "PM", "Pace Maker"
+
+	class Company(models.TextChoices):
+		ABBOTT = "AB", "Abbott"
+		BIOTRONIK = "BT", "Biotronik"
+		MEDTRONIC = "MT", "Medtronic"
+		BOSTON = "BS", "Boston"
+		STJUDE = "SJ", "St. Jude"
+
+	type = models.CharField(
+		max_length=5,
+		choices=Type.choices,
+		blank=True,
+		default="",
+	)
+	company = models.CharField(
+		max_length=50,
+		choices=Company.choices,
+		blank=True,
+		default="",
+	)
+	# Dispositivo, Tipologia are these needed?
+	# Tipo di device has been joined with type above.
+	model = models.CharField(
+		max_length=50,
+		choices=Model.choices,
+		blank=True,
+		default="",
+	)
+	design = models.CharField(
+		max_length=50,
+		choices=Design.choices,
+		blank=True,
+		default="",
+		)# I'm calling it design because i can't find a more appropriate name rn
+
+	def __str__(self):
+		return f"{self.name} ({self.manufacturer})"
+
+class DeviceInstance(models.Model):
+	
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+
+	device_type = models.ForeignKey(
+		DeviceType,
+		on_delete=models.PROTECT,
+		related_name="device",
+	)	
+
+	serial_number = models.CharField( ## Most probably i didn't got which field contains the serial, i need to ask.
+		max_length=100, 
+		unique=True,
+		help_text="Unique identifier printed on the device"
+	)
+
+	patient = models.ForeignKey(
+		PatientProfile,
+		on_delete=models.CASCADE,
+		related_name="patient",
+	)
+	def __str__(self):
+		return f"{self.device_type.name} SN:{self.serial_number}"
 
 class DeviceImplant(ProcedureBase):
 
+	# SET KEYS
+	device_instance = models.OneToOneField(
+		DeviceInstance,
+		on_delete=models.CASCADE,
+		related_name='implant'
+		)
 	# CONDUCTION TIMES RV-PACED TO LV-SENSED
 	lv4_ring = models.FloatField(null=True, blank=True)
 	lv3_ring = models.FloatField(null=True, blank=True)
@@ -278,101 +371,6 @@ class CoronaryIntervention(ProcedureBase):
 ###############################################################################
 ################################### DEVICES ###################################
 ###############################################################################
-
-class DeviceType(models.Model):
-
-	id = models.UUIDField(
-		primary_key=True,
-		default=uuid.uuid4,
-		editable=False,
-	)
-	class Design(models.TextChoices):
-		SD_PACEMAKER = "Single\\Dual Pacemaker"
-		SD_CHAMBER_ICD = "Single\\Dual Chamber ICD"
-		OTHER = "Other"
-
-	class Model(models.TextChoices):
-		IN7F4IS4 = "INTICA 7 HF-TQPDF4/IS4"
-		RI7HFQP = "RIVACOR 7 HF-T QP"
-		IN7HFIS4 = "INTICA 7 HF-TQPDF1/IS4"
-		INN7HFQP = "INTICA NEO 7 HF-T QP"
-
-	class Type(models.TextChoices):
-		CARDIAC_DEVICE = "CD", "Cardiac Device"
-		LOOP_RECORDER = "LR", "Loop Recorder"
-		PACE_MAKER = "PM", "Pace Maker"
-
-	class Company(models.TextChoices):
-		ABBOTT = "AB", "Abbott"
-		BIOTRONIK = "BT", "Biotronik"
-		MEDTRONIC = "MT", "Medtronic"
-		BOSTON = "BS", "Boston"
-		STJUDE = "SJ", "St. Jude"
-
-	type = models.CharField(
-		max_length=2,
-		choices=Type.choices,
-		blank=True,
-		default="",
-	)
-	company = models.CharField(
-		max_length=2,
-		choices=Company.choices,
-		blank=True,
-		default="",
-	)
-	# Dispositivo, Tipologia are these needed?
-	# Tipo di device has been joined with type above.
-	model = models.CharField(
-		max_length=50,
-		choices=Model.choices,
-		blank=True,
-		default="",
-	)
-	design = models.CharField(
-		max_length=50,
-		choices=Design.choices,
-		blank=True,
-		default="",
-		)# I'm calling it design because i can't find a more appropriate name rn
-
-	def __str__(self):
-		return f"{self.name} ({self.manufacturer})"
-
-
-class DeviceInstance(models.Model):
-	
-	id = models.UUIDField(
-		primary_key=True,
-		default=uuid.uuid4,
-		editable=False,
-	)
-
-	device_type = models.ForeignKey(
-		DeviceType,
-		on_delete=models.PROTECT,
-		related_name="device",
-	)	
-
-	serial_number = models.CharField( ## Most probably i didn't got which field contains the serial, i need to ask.
-		max_length=100, 
-		unique=True,
-		help_text="Unique identifier printed on the device"
-	)
-
-	implantation = models.OneToOneField(
-		DeviceImplant,
-		on_delete=models.CASCADE,
-		related_name="device",
-	)
-
-	patient = models.ForeignKey(
-		PatientProfile,
-		on_delete=models.CASCADE,
-		related_name="device",
-	)
-	def __str__(self):
-		return f"{self.device_type.name} SN:{self.serial_number}"
 
 
 class DeviceEvent(models.Model):

@@ -22,7 +22,7 @@ class PatientStudyInline(admin.TabularInline):
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
 	autocomplete_fields = ['symptoms', 'cardiomiopathies', 'riskfactors', 'comorbidities']
 	
-	list_display = ['date_of_visit']
+	list_display = ['patient','date_of_visit']
 class ClinicalEvaluationInline(admin.TabularInline):
 	model = Clinical_evaluation
 	extra = 0
@@ -59,13 +59,13 @@ class AblationtInline(admin.TabularInline):
 	extra = 0
 
 class DeviceImplantAdmin(admin.ModelAdmin):
-		list_display = ("date", "lv4_ring", "lv3_ring", "lv2_ring", "lv1_tip")
+	list_display = ("date", "lv4_ring", "lv3_ring", "lv2_ring", "lv1_tip")
 class DeviceImplantInline(admin.TabularInline):
 	model = DeviceImplant
 	extra = 0
 
 class DeviceEventAdmin(admin.ModelAdmin):
-		list_display = ("timestamp", "date", "inappropriate_pre_rf_shock_cause", "inappropriate_post_brs_shock_cause")
+	list_display = ("timestamp", "date", "inappropriate_pre_rf_shock_cause", "inappropriate_post_brs_shock_cause")
 class DeviceEventInline(admin.TabularInline):
 	model = DeviceEvent
 	extra = 0
@@ -73,13 +73,23 @@ class DeviceEventInline(admin.TabularInline):
 
 
 class DeviceTypeAdmin(admin.ModelAdmin):
-		list_display = ("Model", "Design", "Company")
+	list_display = ("Model", "Design", "Company")
 
-class DeviceInstanceAdmin(admin.ModelAdmin):#
+class DeviceInstanceAdmin(admin.ModelAdmin):
+
+	list_display = ("device_type", "serial_number", "implant_date")
+
+	def implant_date(self, obj):
+		# for OneToOne: obj.implant
+		# for FK: maybe obj.implants.latest('date')
+		implant = getattr(obj, 'implant', None)
+		return implant.date if implant else "-"
+	implant_date.short_description = "Implant date"
+	
 	inlines = [
 		DeviceEventInline,
 	]
-	list_display = ("device_type", "serial_number", "implantation")
+	
 class DeviceInstanceInline(admin.TabularInline):
 	model = DeviceInstance
 	extra = 0
