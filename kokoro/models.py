@@ -337,7 +337,7 @@ class DeviceType(models.Model):
 		)# I'm calling it design because i can't find a more appropriate name rn
 
 	def __str__(self):
-		return f"{self.name} ({self.manufacturer})"
+		return f"{self.model} ({self.design})"
 
 
 class DeviceInstance(models.Model):
@@ -372,7 +372,7 @@ class DeviceInstance(models.Model):
 		related_name="device",
 	)
 	def __str__(self):
-		return f"{self.device_type.name} SN:{self.serial_number}"
+		return f"{self.device_type.model} SN:{self.serial_number}"
 
 
 class DeviceEvent(models.Model):
