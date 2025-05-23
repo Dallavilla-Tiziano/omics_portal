@@ -112,13 +112,15 @@ class PatientProfile(models.Model):
 	)
 
 	class Meta:
+		verbose_name = "Patient Profile"
+		verbose_name_plural = "Patient Profiles"  # Fixes incorrect pluralization
 		# permissions: aggiunge un permesso personalizzato che potrà essere usato per controllare l’accesso a dati sensibili.
 		permissions = [
 		("access_sensible_info", "Can view patient sensible info")
 		]
 
 	def __str__(self):
-		return f'{self.id}'
+		return f'{self.first_name} {self.last_name}'
 
 
 # Needed to be able to track enrollment date
@@ -198,10 +200,115 @@ class Ablation(ProcedureBase):
 	complication_type = models.CharField(max_length=250)
 	therapy = models.CharField(max_length=250)
 	# REDO ABLAZIONE is not needed anymore
+	class Meta:
+		verbose_name = 'Ablation'
+		verbose_name_plural = 'Ablations'
 
+class DeviceType(models.Model):
+
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+	class Design(models.TextChoices):
+		SD_PACEMAKER = "Single\\Dual Pacemaker"
+		SD_CHAMBER_ICD = "Single\\Dual Chamber ICD"
+		OTHER = "Other"
+
+	class Model(models.TextChoices):
+		IN7F4IS4 = "INTICA 7 HF-TQPDF4/IS4"
+		RI7HFQP = "RIVACOR 7 HF-T QP"
+		IN7HFIS4 = "INTICA 7 HF-TQPDF1/IS4"
+		INN7HFQP = "INTICA NEO 7 HF-T QP"
+
+	class Type(models.TextChoices):
+		CARDIAC_DEVICE = "CD", "Cardiac Device"
+		LOOP_RECORDER = "LR", "Loop Recorder"
+		PACE_MAKER = "PM", "Pace Maker"
+
+	class Company(models.TextChoices):
+		ABBOTT = "AB", "Abbott"
+		BIOTRONIK = "BT", "Biotronik"
+		MEDTRONIC = "MT", "Medtronic"
+		BOSTON = "BS", "Boston"
+		STJUDE = "SJ", "St. Jude"
+
+	type = models.CharField(
+		max_length=5,
+		choices=Type.choices,
+		blank=True,
+		default="",
+	)
+	company = models.CharField(
+		max_length=50,
+		choices=Company.choices,
+		blank=True,
+		default="",
+	)
+	# Dispositivo, Tipologia are these needed?
+	# Tipo di device has been joined with type above.
+	model = models.CharField(
+		max_length=50,
+		choices=Model.choices,
+		blank=True,
+		default="",
+	)
+	design = models.CharField(
+		max_length=50,
+		choices=Design.choices,
+		blank=True,
+		default="",
+		)# I'm calling it design because i can't find a more appropriate name rn
+
+	class Meta:
+		verbose_name = 'Device Type'
+		verbose_name_plural= 'Device Types'
+
+	def __str__(self):
+		return f"{self.type}, {self.model}, ({self.company})"
+
+class DeviceInstance(models.Model):
+	
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False,
+	)
+
+	device_type = models.ForeignKey(
+		DeviceType,
+		on_delete=models.PROTECT,
+		related_name="device",
+	)	
+
+	serial_number = models.CharField( ## Most probably i didn't got which field contains the serial, i need to ask.
+		max_length=100, 
+		unique=True,
+		help_text="Unique identifier printed on the device"
+	)
+
+	patient = models.ForeignKey(
+		PatientProfile,
+		on_delete=models.CASCADE,
+		related_name="patient",
+	)
+
+	class Meta:
+		verbose_name = 'Device instance'
+		verbose_name_plural= 'Device instances'
+
+	def __str__(self):
+		return f"{self.device_type} SN:{self.serial_number}"
 
 class DeviceImplant(ProcedureBase):
 
+	# SET KEYS
+	device_instance = models.OneToOneField(
+		DeviceInstance,
+		on_delete=models.CASCADE,
+		related_name='implant'
+		)
 	# CONDUCTION TIMES RV-PACED TO LV-SENSED
 	lv4_ring = models.FloatField(null=True, blank=True)
 	lv3_ring = models.FloatField(null=True, blank=True)
@@ -224,6 +331,10 @@ class DeviceImplant(ProcedureBase):
 	# Are these fieds (ms, V) repeated or are they needed, or this needs to be logged?
 	# A CHANNEL
 	pacing_impendance3 = models.FloatField(null=True, blank=True)
+
+	class Meta:
+		verbose_name = 'Device implant'
+		verbose_name_plural= 'Device implants'
 
 	def __str__(self):
 		return f"Implant on {self.date} for {self.patient}"
@@ -279,101 +390,6 @@ class CoronaryIntervention(ProcedureBase):
 ################################### DEVICES ###################################
 ###############################################################################
 
-class DeviceType(models.Model):
-
-	id = models.UUIDField(
-		primary_key=True,
-		default=uuid.uuid4,
-		editable=False,
-	)
-	class Design(models.TextChoices):
-		SD_PACEMAKER = "Single\\Dual Pacemaker"
-		SD_CHAMBER_ICD = "Single\\Dual Chamber ICD"
-		OTHER = "Other"
-
-	class Model(models.TextChoices):
-		IN7F4IS4 = "INTICA 7 HF-TQPDF4/IS4"
-		RI7HFQP = "RIVACOR 7 HF-T QP"
-		IN7HFIS4 = "INTICA 7 HF-TQPDF1/IS4"
-		INN7HFQP = "INTICA NEO 7 HF-T QP"
-
-	class Type(models.TextChoices):
-		CARDIAC_DEVICE = "CD", "Cardiac Device"
-		LOOP_RECORDER = "LR", "Loop Recorder"
-		PACE_MAKER = "PM", "Pace Maker"
-
-	class Company(models.TextChoices):
-		ABBOTT = "AB", "Abbott"
-		BIOTRONIK = "BT", "Biotronik"
-		MEDTRONIC = "MT", "Medtronic"
-		BOSTON = "BS", "Boston"
-		STJUDE = "SJ", "St. Jude"
-
-	type = models.CharField(
-		max_length=2,
-		choices=Type.choices,
-		blank=True,
-		default="",
-	)
-	company = models.CharField(
-		max_length=2,
-		choices=Company.choices,
-		blank=True,
-		default="",
-	)
-	# Dispositivo, Tipologia are these needed?
-	# Tipo di device has been joined with type above.
-	model = models.CharField(
-		max_length=50,
-		choices=Model.choices,
-		blank=True,
-		default="",
-	)
-	design = models.CharField(
-		max_length=50,
-		choices=Design.choices,
-		blank=True,
-		default="",
-		)# I'm calling it design because i can't find a more appropriate name rn
-
-	def __str__(self):
-		return f"{self.name} ({self.manufacturer})"
-
-
-class DeviceInstance(models.Model):
-	
-	id = models.UUIDField(
-		primary_key=True,
-		default=uuid.uuid4,
-		editable=False,
-	)
-
-	device_type = models.ForeignKey(
-		DeviceType,
-		on_delete=models.PROTECT,
-		related_name="device",
-	)	
-
-	serial_number = models.CharField( ## Most probably i didn't got which field contains the serial, i need to ask.
-		max_length=100, 
-		unique=True,
-		help_text="Unique identifier printed on the device"
-	)
-
-	implantation = models.OneToOneField(
-		DeviceImplant,
-		on_delete=models.CASCADE,
-		related_name="device",
-	)
-
-	patient = models.ForeignKey(
-		PatientProfile,
-		on_delete=models.CASCADE,
-		related_name="device",
-	)
-	def __str__(self):
-		return f"{self.device_type.name} SN:{self.serial_number}"
-
 
 class DeviceEvent(models.Model):
 
@@ -398,7 +414,7 @@ class DeviceEvent(models.Model):
 		related_name="event",
 	)
 
-	# Internal Date, potentially can be used to check if dat was inserted correctly
+	# Internal Date, potentially can be used to check if date was inserted correctly
 	timestamp = models.DateTimeField(auto_now_add=True)
 	date = models.DateField()
 
@@ -423,7 +439,7 @@ class DeviceEvent(models.Model):
 		ordering = ["-timestamp"]
 
 	def __str__(self):
-		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
+		return f"{self.device} @ {self.timestamp:%Y-%m-%d %H:%M}"
 
 
 
@@ -480,6 +496,10 @@ class Sample(models.Model):
 		blank=True,
 	)
 
+	class Meta:
+		verbose_name = 'Sample'
+		verbose_name_plural = 'Samples'
+
 	def __str__(self):
 		return f"{self.imtc_id} ({self.get_procedure_type_display()})"
 
@@ -523,8 +543,8 @@ class ResearchAnalysis(models.Model):
 	)
 
 	class Meta:
-		verbose_name = "Analysis"
-		verbose_name_plural = "Analyses"  # Fixes incorrect pluralization
+		verbose_name = "Omics Analysis"
+		verbose_name_plural = "Omics Analyses"  # Fixes incorrect pluralization
 
 	def __str__(self):
 		return f"{self.get_type_display()} ({self.date_performed})"	
@@ -589,8 +609,8 @@ class Riskfactors(models.Model):
 
 	class Meta:
 		ordering = ['name']
-		verbose_name = 'Riskfactor'
-		verbose_name_plural= 'Riskfactors'
+		verbose_name = 'Risk factor'
+		verbose_name_plural= 'Risk factors'
 
 	def _str_(self):
 		return self.name
@@ -604,7 +624,6 @@ class Comorbidities(models.Model):
 		ordering = ['name']
 		verbose_name = 'Comorbidity'
 		verbose_name_plural= 'Comorbidities'
-
 	def _str_(self):
 		return self.name
 
@@ -648,8 +667,12 @@ class ClinicalEvent(models.Model):
 		default="",
 	)
 
+	class Meta:
+		verbose_name = 'Clinical Event'
+		verbose_name_plural= 'Clinical Events'
+
 	def __str__(self):
-		return f"{self.get_event_type_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
+		return f"{self.get_clinical_event_display()} @ {self.timestamp:%Y-%m-%d %H:%M}"
 		
 class Clinical_evaluation(Clinical_Status):
 
@@ -739,7 +762,9 @@ class Clinical_evaluation(Clinical_Status):
 		choices=NYHA,
 		default=''
 	)	
-
+	class Meta:
+		verbose_name = 'Clinical Evaluation'
+		verbose_name_plural= 'Clinical Evaluations'
 
 
 
@@ -812,7 +837,9 @@ class Flecainide_test(Provocative_tests):
 		choices=FlecResult,
 		default=''
 	)
-
+	class Meta:
+		verbose_name = 'Flecainide test'
+		verbose_name_plural = 'Flecainide tests'
 
 class Adrenaline_test(Provocative_tests):
 
@@ -826,6 +853,9 @@ class Adrenaline_test(Provocative_tests):
 		choices=AdrResult,
 		default=''
 	)
+	class Meta:
+		verbose_name = 'Adrenaline test'
+		verbose_name_plural = 'Adrenaline tests'
 	# !!! In Canva there are other options.. do we want to include them? (e.g. LQT 3)
 
 
@@ -1006,7 +1036,9 @@ class ECG(Diagnostic_exams):
 		choices=AVblock,
 		default=''
 	)
-
+	class Meta:
+		verbose_name = 'ECG'
+		verbose_name_plural= 'ECGs'
 
 class ECHO(Diagnostic_exams):
 
@@ -1130,6 +1162,9 @@ class ECHO(Diagnostic_exams):
 	)
 
 	# !!! what are TIPO_34 and EF ? Do we need them ? !!!
+	class Meta:
+		verbose_name = 'Ecography'
+		verbose_name_plural= 'Ecography'
 
 
 class Late_potentials(Diagnostic_exams):
@@ -1140,6 +1175,9 @@ class Late_potentials(Diagnostic_exams):
 	basal_lp4 = models.FloatField(null=True, blank=True)
 	# !!! I wrote only 4 values (the basal one), but they should be re-collected during each follow-up...
 	# how to create a log ? !!!	
+	class Meta:
+		verbose_name = 'Late potential'
+		verbose_name_plural = 'Late potentials'
 
 
 class RMN_TC_PH(Diagnostic_exams):
@@ -1417,13 +1455,14 @@ class Genetics(models.Model):
 	class Meta:
 		abstract = True # Tell django this is an abstract class, no table will be created
 
-
 class Genetic_profile(Genetics):
 
 	FIN_progressive_genetics = models.PositiveIntegerField(null=True, blank=True)
 	FIN_number = models.CharField(max_length=100)
 	PIN_number = models.CharField(max_length=100)
-	
+	class Meta:
+		verbose_name = 'Genetic profile'
+		verbose_name_plural = 'Genetic profiles'
 
 class Genetic_status(Genetics):
 
@@ -1471,9 +1510,11 @@ class Genetic_status(Genetics):
 	)
 
 	children = models.PositiveIntegerField(null=True, blank=True)
+	class Meta:
+		verbose_name = 'Genetic status'
+		verbose_name_plural = 'Genetic status'
 
-
-
+## NO CONNECTION TO OTHER TABLES
 class Genetic_sample(Genetics):
 	
 	# !!! it must have an ID !!!
@@ -1483,6 +1524,9 @@ class Genetic_sample(Genetics):
 	)
 
 	blood_sample_date = models.DateField()
+	class Meta:
+		verbose_name = 'Genetic sample'
+		verbose_name_plural = 'Genetic samples'
 
 
 class Genetic_test(Genetics):
@@ -1825,4 +1869,6 @@ class Genetic_test(Genetics):
 
 	eredity =  models.CharField(max_length=100, default='')
 	cromo_anomality =  models.CharField(max_length=100, default='')
-
+	class Meta:
+		verbose_name = 'Genetic test'
+		verbose_name_plural = 'Genetic tests'
