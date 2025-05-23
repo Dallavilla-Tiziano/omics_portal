@@ -176,7 +176,7 @@ class GeneticProfileInLine(admin.TabularInline):
 	extra = 0
 
 class GeneticStatusAdmin(admin.ModelAdmin):
-	list_display = ["Patient_status"]
+	list_display = ["patient_status"]
 class GeneticStatusInLine(admin.TabularInline):	
 	model = Genetic_status
 	extra = 0
