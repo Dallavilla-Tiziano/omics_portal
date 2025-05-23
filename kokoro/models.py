@@ -1511,8 +1511,8 @@ class Genetic_status(Genetics):
 
 	children = models.PositiveIntegerField(null=True, blank=True)
 	class Meta:
-		verbose_name = 'Genetic profile'
-		verbose_name_plural = 'Genetic profiles'
+		verbose_name = 'Genetic status'
+		verbose_name_plural = 'Genetic status'
 
 ## NO CONNECTION TO OTHER TABLES
 class Genetic_sample(Genetics):
