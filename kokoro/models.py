@@ -299,7 +299,7 @@ class DeviceInstance(models.Model):
 		verbose_name_plural= 'Device instances'
 
 	def __str__(self):
-		return f"{self.device_type} SN:{self.serial_number}"
+		return f"{self.device_type.model} SN:{self.serial_number}"
 
 class DeviceImplant(ProcedureBase):
 

@@ -74,7 +74,7 @@ class DeviceEventInline(admin.TabularInline):
 
 
 class DeviceTypeAdmin(admin.ModelAdmin):
-	list_display = ("model", "design", "company")
+		list_display = ("model", "design", "company")
 
 class DeviceInstanceAdmin(admin.ModelAdmin):
 
