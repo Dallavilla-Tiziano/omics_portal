@@ -229,6 +229,7 @@ class PatientProfileAdmin(TabbedModelAdmin):
 
 	autocomplete_fields = ['therapies', 'allergies', 'studies']
 	list_display = ("last_name", "first_name", "sex", "formatted_date_of_birth")
+	# list_display = ("id", "sex", "formatted_date_of_birth")
 	readonly_fields = ['related_analyses_display']
 	search_fields = ['last_name', 'first_name']
 
