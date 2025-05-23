@@ -11,7 +11,8 @@ from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
 					)
 
 class AblationAdmin(admin.ModelAdmin):
-	list_display = ("date", "total_area", "total_rf_time")
+	list_display = ('patient', 'date')
+	search_fields = ['patient__first_name', 'patient__last_name']
 class AblationtInline(admin.TabularInline):
 	model = Ablation
 	extra = 0
@@ -189,7 +190,8 @@ class GeneticStatusInLine(admin.TabularInline):
 class GeneticTestAdmin(admin.ModelAdmin):
 	autocomplete_fields = ('genes', 'var_p', 'var_c', 'editing_doctor', 'reporting_doctor') 
 	list_display = ["Consent_date"]
-class GeneticTestInLine(admin.StackedInline):	
+class GeneticTestInLine(admin.StackedInline):
+	autocomplete_fields = ('genes', 'var_p', 'var_c', 'editing_doctor', 'reporting_doctor')
 	model = Genetic_test
 	extra = 0
 
