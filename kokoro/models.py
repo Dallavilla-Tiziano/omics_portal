@@ -523,8 +523,8 @@ class ResearchAnalysis(models.Model):
 	)
 
 	class Meta:
-		verbose_name = "Analysis"
-		verbose_name_plural = "Analyses"  # Fixes incorrect pluralization
+		verbose_name = "Omics Analysis"
+		verbose_name_plural = "Omics Analyses"  # Fixes incorrect pluralization
 
 	def __str__(self):
 		return f"{self.get_type_display()} ({self.date_performed})"	
