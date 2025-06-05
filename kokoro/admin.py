@@ -1,3 +1,4 @@
+from .forms import PatientProfileForm
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
 from tabbed_admin import TabbedModelAdmin
@@ -221,6 +222,8 @@ class DoctorsAdmin(admin.ModelAdmin):
 
 class PatientProfileAdmin(TabbedModelAdmin):
 	
+	form = PatientProfileForm
+	
 	def formatted_date_of_birth(self, obj):
 		return obj.date_of_birth.strftime('%d-%m-%Y')
 
@@ -241,6 +244,7 @@ class PatientProfileAdmin(TabbedModelAdmin):
 			'<strong>{}</strong>: {}',
 			((a.get_type_display(), a.date_performed) for a in analyses)
 		)
+
 	related_analyses_display.short_description = "Related Omics Analyses"
 
 	tab_patient = (
