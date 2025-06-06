@@ -1,4 +1,4 @@
-from .forms import PatientProfileForm
+from .forms import PatientProfileForm, LatePotentialForm
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
 from tabbed_admin import TabbedModelAdmin
@@ -104,8 +104,6 @@ class SampleAdmin(admin.ModelAdmin):
 class SampleInline(admin.StackedInline):
 	model = Sample
 	extra = 0
-	def has_add_permission(self, request, obj=None):
-		return False  # disables "Add another Patient study"
 
 
 class EPStudyAdmin(admin.ModelAdmin):
@@ -153,9 +151,11 @@ class ECHOInline(admin.StackedInline):
 	extra = 0
 
 class LatePotentialsAdmin(admin.ModelAdmin):
-	list_display = ('patient__first_name', 'patient__last_name', 'date_of_exam')
-	search_fields = ['patient__first_name', 'patient__last_name']
+    form = LatePotentialForm
+    list_display = ('patient__first_name', 'patient__last_name', 'date_of_exam')
+    search_fields = ['patient__first_name', 'patient__last_name']
 class LatePotentialsInline(admin.TabularInline):
+	form = LatePotentialForm
 	model = Late_potentials
 	extra = 0
 
@@ -363,3 +363,5 @@ admin.site.register(Gene, GeneAdmin)
 admin.site.register(Mutation, MutationAdmin)
 admin.site.register(Doctors, DoctorsAdmin)
 admin.site.register(ClinicalEvent, ClinicalEventAdmin)
+admin.site.register(ValveIntervention, ValveInterventionAdmin)
+admin.site.register(CoronaryIntervention, CoronaryInterventionAdmin)
