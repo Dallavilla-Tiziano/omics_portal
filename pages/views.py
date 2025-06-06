@@ -4,6 +4,7 @@ from django.db.models import Count
 from collections import Counter
 import json
 from patients.models import Patient, Sample, Analysis
+from kokoro.models import PatientProfile
 
 class HomePageView(TemplateView):
     template_name = "home.html"
@@ -18,6 +19,7 @@ class HomePageView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         # Get total counts
+        total_PatientProfile = PatientProfile.objects.count()
         total_patients = Patient.objects.count()
         total_samples = Sample.objects.count()
         total_analysis = Analysis.objects.count()
@@ -40,6 +42,7 @@ class HomePageView(TemplateView):
             "nation_distribution": json.dumps(nation_distribution),
             "sex_distribution": json.dumps(sex_distribution),
             "dob_distribution": json.dumps(dob_distribution),
+            "total_PatientProfile": total_PatientProfile,
         })
 
         return context
