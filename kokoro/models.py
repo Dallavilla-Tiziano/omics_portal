@@ -88,7 +88,7 @@ class PatientProfile(models.Model):
 	province = models.CharField(max_length=100, blank=True, default='')
 	height = models.PositiveIntegerField(null=True, blank=True)
 	weight = models.PositiveIntegerField(null=True, blank=True)
-	cardioref_id = models.CharField(max_length=100, blank=True, default='')
+	cardioref_id = models.PositiveIntegerField(null=True, blank=True)
 
 	therapies = models.ManyToManyField(
 		Therapy,

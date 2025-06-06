@@ -1,3 +1,4 @@
+from .forms import (PatientProfileForm, LatePotentialForm, StudyForm)
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
 from tabbed_admin import TabbedModelAdmin
@@ -19,10 +20,12 @@ class AblationtInline(admin.TabularInline):
 	extra = 0
 
 class StudyAdmin(admin.ModelAdmin):
+	form = StudyForm
 	list_display  = ['project_code','project_id','start_date','end_date']
 	search_fields = ['project_code', 'project_id']
 
 class PatientStudyInline(admin.TabularInline):
+	form = StudyForm
 	model = PatientStudy
 	extra = 0
 	autocomplete_fields = ['study']
@@ -103,8 +106,6 @@ class SampleAdmin(admin.ModelAdmin):
 class SampleInline(admin.StackedInline):
 	model = Sample
 	extra = 0
-	def has_add_permission(self, request, obj=None):
-		return False  # disables "Add another Patient study"
 
 
 class EPStudyAdmin(admin.ModelAdmin):
@@ -152,9 +153,11 @@ class ECHOInline(admin.StackedInline):
 	extra = 0
 
 class LatePotentialsAdmin(admin.ModelAdmin):
+	form = LatePotentialForm
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_exam')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class LatePotentialsInline(admin.TabularInline):
+	form = LatePotentialForm
 	model = Late_potentials
 	extra = 0
 
@@ -221,11 +224,14 @@ class DoctorsAdmin(admin.ModelAdmin):
 
 class PatientProfileAdmin(TabbedModelAdmin):
 	
+	form = PatientProfileForm
+	
 	def formatted_date_of_birth(self, obj):
 		return obj.date_of_birth.strftime('%d-%m-%Y')
 
 	autocomplete_fields = ['therapies', 'allergies', 'studies']
 	list_display = ("last_name", "first_name", "sex", "formatted_date_of_birth")
+	# list_display = ("id", "sex", "formatted_date_of_birth")
 	readonly_fields = ['related_analyses_display']
 	search_fields = ['last_name', 'first_name']
 
@@ -241,6 +247,7 @@ class PatientProfileAdmin(TabbedModelAdmin):
 			'<strong>{}</strong>: {}',
 			((a.get_type_display(), a.date_performed) for a in analyses)
 		)
+
 	related_analyses_display.short_description = "Related Omics Analyses"
 
 	tab_patient = (
@@ -358,3 +365,5 @@ admin.site.register(Gene, GeneAdmin)
 admin.site.register(Mutation, MutationAdmin)
 admin.site.register(Doctors, DoctorsAdmin)
 admin.site.register(ClinicalEvent, ClinicalEventAdmin)
+admin.site.register(ValveIntervention, ValveInterventionAdmin)
+admin.site.register(CoronaryIntervention, CoronaryInterventionAdmin)
