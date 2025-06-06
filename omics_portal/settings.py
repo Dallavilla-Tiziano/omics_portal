@@ -110,7 +110,6 @@ TEMPLATES = [
 
 
 
-
 WSGI_APPLICATION = 'omics_portal.wsgi.application'
 
 
