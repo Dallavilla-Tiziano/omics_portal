@@ -1,13 +1,10 @@
 from django import forms
-from .models import (PatientProfile, Late_potentials)
-from .validators import (validate_not_in_future, clean_positive_float)
+from .models import (PatientProfile, Late_potentials, Study)
+from .validators import (validate_not_in_future, clean_positive_float, clean_start_end_date)
 
 class PatientProfileForm(forms.ModelForm):
 
-	cardioref_id = forms.CharField(
-		required=False,
-		error_messages={'invalid': 'Cardioref ID must be a number.',}
-	)
+	cardioref_id = forms.CharField(required=False)
 
 	class Meta:
 		model = PatientProfile
@@ -22,6 +19,7 @@ class PatientProfileForm(forms.ModelForm):
 
 
 class LatePotentialForm(forms.ModelForm):
+
 	basal_lp1 = forms.CharField(required=False)
 	basal_lp2 = forms.CharField(required=False)
 	basal_lp3 = forms.CharField(required=False)
@@ -44,6 +42,17 @@ class LatePotentialForm(forms.ModelForm):
 		return clean_positive_float(self.cleaned_data.get('basal_lp4'), label="Basal LP4")
 
 	def clean_date_of_exam(self):
-		doe = self.cleaned_data.get('date_of_exam')
-		validate_not_in_future(doe)
-		return doe
+		return validate_not_in_future(self.cleaned_data.get('date_of_exam'))
+
+class StudyForm(forms.ModelForm):
+
+	def clean(self):
+		cleaned_data = super().clean()
+		start = cleaned_data.get('start_date')
+		end = cleaned_data.get('end_date')
+		clean_start_end_date(start, end)
+		return cleaned_data
+
+	class Meta:
+		model = Study
+		fields = '__all__'

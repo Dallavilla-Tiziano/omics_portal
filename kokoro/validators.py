@@ -26,3 +26,7 @@ def clean_positive_int(value, label="Value"):
 	if value < 0:
 		raise forms.ValidationError(f"{label} must be a positive integer.")
 	return value
+
+def clean_start_end_date(value_start, value_end):
+	if value_start and value_end and value_start > value_end:
+		raise ValidationError("Start date can't be set after end date.")
