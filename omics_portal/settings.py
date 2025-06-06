@@ -83,7 +83,7 @@ ROOT_URLCONF = 'omics_portal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [BASE_DIR / "templates"], # I remember that tutorial Django version and this Django version are different... is this sintax correct?
         'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
