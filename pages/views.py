@@ -1,11 +1,12 @@
-from django.views.generic import TemplateView
-from django.shortcuts import redirect
-from django.db.models import Count
-from collections import Counter
+from django.views.generic import TemplateView  # used to display an HTML template, useful for static or semi-static pages like homepage, about, etc.
+from django.shortcuts import redirect  # used to redirect the user to another page. Here it's used to send unauthenticated users to the login page.
+from django.db.models import Count  # a Django function useful to count objects directly at the database query level.
+from collections import Counter  # Python class used to count occurrences of elements in a list or iterable. It is used to calculate distributions (e.g., how many patients per nation, sex, etc.).
 import json
 from patients.models import Patient, Sample, Analysis
 ### NEW ###
 from kokoro.models import PatientProfile, PatientStudy 
+
 
 class HomePageView(TemplateView):
     template_name = "home.html"
@@ -58,4 +59,4 @@ class HomePageView(TemplateView):
         return context
 
 class AboutPageView(TemplateView):
-	template_name = "about.html"
+    template_name = "about.html"
