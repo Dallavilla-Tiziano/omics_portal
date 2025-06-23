@@ -3,9 +3,9 @@ from django.shortcuts import redirect  # used to redirect the user to another pa
 from django.db.models import Count  # a Django function useful to count objects directly at the database query level.
 from collections import Counter  # Python class used to count occurrences of elements in a list or iterable. It is used to calculate distributions (e.g., how many patients per nation, sex, etc.).
 import json
-from patients.models import Patient, Sample, Analysis
+#from patients.models import Patient, Sample, Analysis
 ### NEW ###
-from kokoro.models import PatientProfile, PatientStudy 
+from kokoro.models import PatientProfile, ProcedureBase
 
 
 class HomePageView(TemplateView):
@@ -21,38 +21,46 @@ class HomePageView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         # Get total counts
-        total_patients = Patient.objects.count()
-        total_samples = Sample.objects.count()
-        total_analysis = Analysis.objects.count()
+        #total_patients = Patient.objects.count()
+        #total_samples = Sample.objects.count()
+        #total_analysis = Analysis.objects.count()
 
         ### NEW ###
         total_patientProfiles = PatientProfile.objects.count()
+        #total_procedures = ProcedureBase.objects.count()
 
         # Get distribution data
-        nations = Patient.objects.values_list("nation", flat=True)
-        sex_counts = Patient.objects.values_list("sex", flat=True)
-        dob_years = Patient.objects.values_list("date_of_birth", flat=True)
+        #nations = Patient.objects.values_list("nation", flat=True)
+        #sex_counts = Patient.objects.values_list("sex", flat=True)
+        #dob_years = Patient.objects.values_list("date_of_birth", flat=True)
 
         ### NEW ###
-        sexProfiles_counts = Patient.objects.values_list("sex", flat=True)
+        sexProfiles_counts = PatientProfile.objects.values_list("sex", flat=True)
 
         # Process distributions
-        nation_distribution = dict(Counter(nations))
-        sex_distribution = dict(Counter(sex_counts))
-        dob_distribution = dict(Counter(d.year for d in dob_years if d))  # Group by birth year
+        #nation_distribution = dict(Counter(nations))
+        #sex_distribution = dict(Counter(sex_counts))
+        #dob_distribution = dict(Counter(d.year for d in dob_years if d))  # Group by birth year
 
         ### NEW ###
         sexProfiles_distribution = dict(Counter(sexProfiles_counts))
 
         # Add data to context
+        #context.update({
+        #    "total_patients": total_patients,
+        #    "total_samples": total_samples,
+        #    "total_analysis": total_analysis,
+        #    "total_kokoroPatients": total_patientProfiles,
+        #    "nation_distribution": json.dumps(nation_distribution),
+        #    "sex_distribution": json.dumps(sex_distribution),
+        #    "dob_distribution": json.dumps(dob_distribution),
+        #    "sex_kokoroDistribution": json.dumps(sexProfiles_distribution),
+        #})
+
+        ### NEW ###
         context.update({
-            "total_patients": total_patients,
-            "total_samples": total_samples,
-            "total_analysis": total_analysis,
             "total_kokoroPatients": total_patientProfiles,
-            "nation_distribution": json.dumps(nation_distribution),
-            "sex_distribution": json.dumps(sex_distribution),
-            "dob_distribution": json.dumps(dob_distribution),
+            #"total_procedures": total_procedures,
             "sex_kokoroDistribution": json.dumps(sexProfiles_distribution),
         })
 

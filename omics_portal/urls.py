@@ -30,5 +30,5 @@ urlpatterns = [
     # for "patients" app
     path("patients/", include("patients.urls")),
     # for "kokoro" app
-    path("kokoro/", include("kokoro.urls")),
+    path("kokoro/", include("kokoro.urls"), name="kokoro"),
 ]
