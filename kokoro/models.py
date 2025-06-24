@@ -212,22 +212,26 @@ class DeviceType(models.Model):
 		editable=False,
 	)
 	class Design(models.TextChoices):
+		EMPTY = '', 'Choose a design'
 		SD_PACEMAKER = "Single\\Dual Pacemaker"
 		SD_CHAMBER_ICD = "Single\\Dual Chamber ICD"
 		OTHER = "Other"
 
 	class Model(models.TextChoices):
+		EMPTY = '', 'Choose a model'
 		IN7F4IS4 = "INTICA 7 HF-TQPDF4/IS4"
 		RI7HFQP = "RIVACOR 7 HF-T QP"
 		IN7HFIS4 = "INTICA 7 HF-TQPDF1/IS4"
 		INN7HFQP = "INTICA NEO 7 HF-T QP"
 
 	class Type(models.TextChoices):
+		EMPTY = '', 'Choose a type'
 		CARDIAC_DEVICE = "CD", "Cardiac Device"
 		LOOP_RECORDER = "LR", "Loop Recorder"
 		PACE_MAKER = "PM", "Pace Maker"
 
 	class Company(models.TextChoices):
+		EMPTY = '', 'Choose a company'
 		ABBOTT = "AB", "Abbott"
 		BIOTRONIK = "BT", "Biotronik"
 		MEDTRONIC = "MT", "Medtronic"
@@ -237,28 +241,24 @@ class DeviceType(models.Model):
 	type = models.CharField(
 		max_length=5,
 		choices=Type.choices,
-		blank=True,
-		default="",
+		blank=False,
 	)
 	company = models.CharField(
 		max_length=50,
 		choices=Company.choices,
-		blank=True,
-		default="",
+		blank=False,
 	)
 	# Dispositivo, Tipologia are these needed?
 	# Tipo di device has been joined with type above.
 	model = models.CharField(
 		max_length=50,
 		choices=Model.choices,
-		blank=True,
-		default="",
+		blank=False,
 	)
 	design = models.CharField(
 		max_length=50,
 		choices=Design.choices,
-		blank=True,
-		default="",
+		blank=False,
 		)# I'm calling it design because i can't find a more appropriate name rn
 
 	class Meta:
