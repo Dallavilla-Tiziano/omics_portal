@@ -594,7 +594,7 @@ class Symptoms(models.Model):
 		verbose_name = 'Symptom'
 		verbose_name_plural= 'Symptoms'
 
-	def _str_(self):
+	def __str__(self):
 		return self.name
 	
 
@@ -607,7 +607,7 @@ class Cardiomiopathies(models.Model):
 		verbose_name = 'Cardiomiopathy'
 		verbose_name_plural= 'Cardiomiopathies'
 
-	def _str_(self):
+	def __str__(self):
 		return self.name
 	
 
@@ -620,7 +620,7 @@ class Riskfactors(models.Model):
 		verbose_name = 'Risk factor'
 		verbose_name_plural= 'Risk factors'
 
-	def _str_(self):
+	def __str__(self):
 		return self.name
 
 
@@ -632,7 +632,7 @@ class Comorbidities(models.Model):
 		ordering = ['name']
 		verbose_name = 'Comorbidity'
 		verbose_name_plural= 'Comorbidities'
-	def _str_(self):
+	def __str__(self):
 		return self.name
 
 class ClinicalEvent(models.Model):
