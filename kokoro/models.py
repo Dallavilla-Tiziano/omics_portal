@@ -213,6 +213,9 @@ class Ablation(ProcedureBase):
 		verbose_name = 'Ablation'
 		verbose_name_plural = 'Ablations'
 
+	def __str__(self):
+		return f"{self.patient} on {self.date}"
+
 class DeviceType(models.Model):
 
 	id = models.UUIDField(
