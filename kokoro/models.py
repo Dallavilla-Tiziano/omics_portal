@@ -1708,9 +1708,9 @@ class Genetic_test(Genetics):
 
 
 	class NGSTestResult(models.TextChoices):
-		P = "Positive", "Positive"
-		N = "Negative", "Negative"
-		NC = "Not concluded", "Not concluded"	
+		P = "P", "Positive"
+		N = "N", "Negative"
+		NC = "NC", "Not conclusive"	
 	NGStest_result = models.CharField(
 		max_length=100,
 		choices=NGSTestResult,
