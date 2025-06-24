@@ -1879,8 +1879,8 @@ class Genetic_test(Genetics):
 
 ########## !!! Only if "OTHER" is selected, these should be compiled !!! ############
 
-	eredity =  models.CharField(max_length=100, default='')
-	cromo_anomality =  models.CharField(max_length=100, default='')
+	eredity =  models.CharField(max_length=100, default='', blank=True)
+	cromo_anomality =  models.CharField(max_length=100, default='', blank=True)
 	class Meta:
 		verbose_name = 'Genetic test'
 		verbose_name_plural = 'Genetic tests'
