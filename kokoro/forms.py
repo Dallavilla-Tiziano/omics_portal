@@ -1,6 +1,15 @@
 from django import forms
-from .models import (PatientProfile, Late_potentials, Study)
+from .models import (PatientProfile, Late_potentials, Study, Ablation)
 from .validators import (validate_not_in_future, clean_positive_float, clean_start_end_date, clean_positive_int)
+
+class AblationForm(forms.ModelForm):
+
+	class Meta:
+		model = Ablation
+		fields = '__all__'
+
+	def clean_date(self):
+		return validate_not_in_future(self.cleaned_data.get('date'))
 
 class PatientProfileForm(forms.ModelForm):
 

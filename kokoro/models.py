@@ -197,9 +197,18 @@ class Ablation(ProcedureBase):
 		default="",
 	)
 
-	complication_type = models.CharField(max_length=250)
-	therapy = models.CharField(max_length=250)
-	# REDO ABLAZIONE is not needed anymore
+	complication_type = models.CharField(
+		max_length=250,
+		blank=True,
+		default="",
+	)
+
+	therapy = models.CharField(
+		max_length=250,
+		blank=True,
+		default="",
+	)
+
 	class Meta:
 		verbose_name = 'Ablation'
 		verbose_name_plural = 'Ablations'
@@ -248,8 +257,7 @@ class DeviceType(models.Model):
 		choices=Company.choices,
 		blank=False,
 	)
-	# Dispositivo, Tipologia are these needed?
-	# Tipo di device has been joined with type above.
+
 	model = models.CharField(
 		max_length=50,
 		choices=Model.choices,

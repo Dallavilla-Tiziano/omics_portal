@@ -1,4 +1,4 @@
-from .forms import (PatientProfileForm, LatePotentialForm, StudyForm)
+from .forms import (PatientProfileForm, LatePotentialForm, StudyForm, AblationForm)
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
 from tabbed_admin import TabbedModelAdmin
@@ -13,9 +13,11 @@ from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
 					)
 
 class AblationAdmin(admin.ModelAdmin):
+	form = AblationForm
 	list_display = ('patient', 'date')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class AblationtInline(admin.TabularInline):
+	form = AblationForm
 	model = Ablation
 	extra = 0
 
@@ -33,7 +35,6 @@ class PatientStudyInline(admin.TabularInline):
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
 	autocomplete_fields = ['symptoms', 'cardiomiopathies', 'riskfactors', 'comorbidities']
-	
 	list_display = ['patient','date_of_visit']
 class ClinicalEvaluationInline(admin.TabularInline):
 	model = Clinical_evaluation
@@ -74,8 +75,6 @@ class DeviceEventInline(admin.TabularInline):
 	model = DeviceEvent
 	extra = 0
 
-
-
 class DeviceTypeAdmin(admin.ModelAdmin):
 		list_display = ("model", "design", "company")
 
@@ -97,8 +96,6 @@ class DeviceInstanceAdmin(admin.ModelAdmin):
 class DeviceInstanceInline(admin.TabularInline):
 	model = DeviceInstance
 	extra = 0
-
-
 
 class SampleAdmin(admin.ModelAdmin):
 	list_display = ('imtc_id', 'patient', 'procedure_type', 'collection_date')
