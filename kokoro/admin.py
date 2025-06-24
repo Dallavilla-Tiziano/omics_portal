@@ -71,7 +71,7 @@ class DeviceImplantInline(admin.TabularInline):
 
 class DeviceEventAdmin(admin.ModelAdmin):
 	list_display = ('device__serial_number', 'timestamp', 'date', 'inappropriate_pre_rf_shock_cause', 'inappropriate_post_brs_shock_cause')
-	search_fields = ['device__serial_number']
+	search_fields = ['device__serial_number', 'date', 'inappropriate_pre_rf_shock_cause', 'inappropriate_post_brs_shock_cause']
 class DeviceEventInline(admin.TabularInline):
 	model = DeviceEvent
 	extra = 0
@@ -218,7 +218,8 @@ class MutationAdmin(admin.ModelAdmin):
 	search_fields = ['name']
 
 class DoctorsAdmin(admin.ModelAdmin):
-	search_fields = ['name']
+	list_display = ('name', 'surname')
+	search_fields = ['name', 'surname']
 
 class PatientProfileAdmin(TabbedModelAdmin):
 	

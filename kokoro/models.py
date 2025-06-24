@@ -1429,7 +1429,8 @@ class Doctors(models.Model):
 	"""
 	A single cardiopathy fenotype.
 	"""
-	name = models.CharField(max_length=100, unique=True)
+	name = models.CharField(max_length=100, blank=False)
+	surname = models.CharField(max_length=100, blank=False)
 
 	class Meta:
 		ordering = ['name']
