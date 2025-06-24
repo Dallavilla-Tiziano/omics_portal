@@ -183,7 +183,7 @@ class ValveInterventionInLine(admin.TabularInline):
 	extra = 0
 
 class CoronaryInterventionAdmin(admin.ModelAdmin):
-	list_display = ("cabg", "pci")
+	list_display = ("patient__first_name", "patient__last_name", "date")
 class CoronaryInterventionInLine(admin.TabularInline):	
 	model = CoronaryIntervention
 	extra = 0
