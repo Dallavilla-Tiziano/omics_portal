@@ -34,6 +34,7 @@ class PatientStudyInline(admin.TabularInline):
 	fields = ['study', 'enrollment_date']
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
+	search_fields = ['patient__first_name', 'patient__last_name']
 	autocomplete_fields = ['symptoms', 'cardiomiopathies', 'riskfactors', 'comorbidities']
 	list_display = ['patient','date_of_visit']
 class ClinicalEvaluationInline(admin.TabularInline):
