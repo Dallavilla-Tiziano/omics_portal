@@ -1,6 +1,21 @@
 from django import forms
-from .models import (PatientProfile, Late_potentials, Study, Ablation)
+from .models import (PatientProfile, Late_potentials, Study, Ablation, Adrenaline_test)
 from .validators import (validate_not_in_future, clean_positive_float, clean_start_end_date, clean_positive_int)
+
+class AdrenalineTestForm(forms.ModelForm):
+
+	adrenaline_dose = forms.CharField(required=False)
+
+	class Meta:
+		model = Adrenaline_test
+		fields = '__all__'
+
+	def clean_date(self):
+		return validate_not_in_future(self.cleaned_data.get('date'))
+
+	def clean_adrenaline_dose(self):
+		return clean_positive_float(self.cleaned_data.get('adrenaline_dose'), label="Adrenaline Dose")
+
 
 class AblationForm(forms.ModelForm):
 

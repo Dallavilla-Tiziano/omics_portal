@@ -63,7 +63,8 @@ INSTALLED_APPS = [
 	'accounts.apps.AccountsConfig',
 	'pages.apps.PagesConfig',
 	'patients.apps.PatientsConfig',
-	'kokoro.apps.KokoroConfig'
+	'kokoro.apps.KokoroConfig',
+	'submissions.apps.SubmissionsConfig',
 ]
 
 MIDDLEWARE = [

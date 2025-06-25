@@ -1,4 +1,4 @@
-from .forms import (PatientProfileForm, LatePotentialForm, StudyForm, AblationForm)
+from .forms import (PatientProfileForm, LatePotentialForm, StudyForm, AblationForm, AdrenalineTestForm)
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
 from tabbed_admin import TabbedModelAdmin
@@ -121,9 +121,11 @@ class FlecainideTestInline(admin.TabularInline):
 	extra = 0
 
 class AdrenalineTestAdmin(admin.ModelAdmin):
+	form = AdrenalineTestForm
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_provocative_test', 'adrenaline_result')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class AdrenalineTestInline(admin.TabularInline):
+	form = AdrenalineTestForm
 	model = Adrenaline_test
 	extra = 0
 

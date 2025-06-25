@@ -22,13 +22,14 @@ urlpatterns = [
     path('admin_tools/', include('admin_tools.urls')),
     path('admin/', admin.site.urls),
     # User management
-    path("accounts/", include("allauth.urls")),
+    path('accounts/', include('allauth.urls')),
 
     # Local apps
-    path("", include("pages.urls")),
+    path('', include('pages.urls')),
 
     # for "patients" app
-    path("patients/", include("patients.urls")),
+    path('patients/', include('patients.urls')),
     # for "kokoro" app
-    path("kokoro/", include("kokoro.urls")),
+    path('kokoro/', include('kokoro.urls')),
+    path('submissions/', include('submissions.urls'), namespace='submissions')
 ]
