@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 
-class KokoroHome(TemplateView):
-	template_name = "kokoro/kokoro.html"
+# class KokoroHome(TemplateView):
+# 	template_name = "kokoro/kokoro.html"
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django_filters.views import FilterView
@@ -24,11 +24,11 @@ def get_filter_counts(request):
         "patients": filtered_patients.count(),
     }
 
-class PatientListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+class KokoroHomeView(LoginRequiredMixin, SingleTableMixin, FilterView):
     model = PatientProfile
     table_class = PatientTable
-    context_object_name = "patient_list"
-    template_name = "patients/patient_list.html"
+    context_object_name = "kokoro_patient_list"
+    template_name = "kokoro/kokoro.html"
     login_url = "account_login"
 
     def get_queryset(self):

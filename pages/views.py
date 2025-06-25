@@ -27,6 +27,7 @@ class HomePageView(TemplateView):
 
         ### NEW ###
         total_patientProfiles = PatientProfile.objects.count()
+        print(total_patientProfiles)
         #total_procedures = ProcedureBase.objects.count()
 
         # Get distribution data

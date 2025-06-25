@@ -14,7 +14,7 @@
     <div class="col-lg-2">
       <form method="get"
             autocomplete="off"
-            hx-get="{% url 'patient_list' %}"
+            hx-get="{% url 'kokoro_patient_list' %}"
             hx-target="#table-container"
             hx-trigger="change delay:500ms"
             hx-push-url="true"
@@ -41,13 +41,7 @@
 
     <div class="col-lg-8">
         <div id="table-container">
-            <ul class="list-group">
-                {% for item in table %}
-                <li class="list-group-item">
-                    {{ item }}
-                </li>
-                {% endfor %}
-            </ul>
+            {% render_table table %}
         </div>
     </div>
 
