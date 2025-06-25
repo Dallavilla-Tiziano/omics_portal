@@ -31,5 +31,5 @@ urlpatterns = [
     path('patients/', include('patients.urls')),
     # for "kokoro" app
     path('kokoro/', include('kokoro.urls')),
-    path('submissions/', include('submissions.urls'), namespace='submissions')
+    path('submissions/', include(('submissions.urls', 'submissions'), namespace='submissions')),
 ]
