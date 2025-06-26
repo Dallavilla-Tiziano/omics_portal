@@ -200,7 +200,7 @@ class ECHOForm(forms.ModelForm):
 		return validate_not_in_future(self.cleaned_data.get('date_of_exam'))
 
 	class Meta:
-		model = DeviceInstance
+		model = ECHO
 		fields = '__all__'
 
 class ECGForm(forms.ModelForm):
