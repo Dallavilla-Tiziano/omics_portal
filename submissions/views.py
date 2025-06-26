@@ -23,6 +23,38 @@ from kokoro.forms import (
 						ValveInterventionForm,
 					)
 
+class AblationCreateView(LoginRequiredMixin, CreateView):
+    model = Study
+    form_class = StudyForm
+    template_name = 'submissions/ablation_form.html'
+    success_url = reverse_lazy('submissions:submission_success')
+
+class AblationUpdateView(LoginRequiredMixin, UpdateView):
+    model = Ablation
+    form_class = AblationForm
+    template_name = 'submissions/ablation_form.html'
+    success_url = reverse_lazy('submissions:submission_success')
+
+    def get_queryset(self):
+        # Optional: limit which profiles a user can edit
+        return Ablation.objects.all()
+
+class StudyCreateView(LoginRequiredMixin, CreateView):
+    model = Study
+    form_class = StudyForm
+    template_name = 'submissions/study_form.html'
+    success_url = reverse_lazy('submissions:submission_success')
+
+class StudyUpdateView(LoginRequiredMixin, UpdateView):
+    model = Study
+    form_class = StudyForm
+    template_name = 'submissions/study_form.html'
+    success_url = reverse_lazy('submissions:submission_success')
+
+    def get_queryset(self):
+        # Optional: limit which profiles a user can edit
+        return Late_potentials.objects.all()
+
 
 class StudyCreateView(LoginRequiredMixin, CreateView):
     model = Study
