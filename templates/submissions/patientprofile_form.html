@@ -1,16 +1,5 @@
 {% extends "_base.html" %}
 
 {% block content %}
-  <div class="container">
-    <h2>Add a New Patient Profile</h2>
-
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-success">Submit</button>
-    </form>
-
-    <br>
-    <a href="/" class="btn btn-secondary">Cancel</a>
-  </div>
+  {% include "submissions/_form_layout.html" with form=form title="Add or Edit Patient Profile" %}
 {% endblock %}

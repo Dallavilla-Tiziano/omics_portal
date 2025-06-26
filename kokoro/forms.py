@@ -1,6 +1,7 @@
 from django import forms
 from .models import (PatientProfile, Late_potentials, Study, Ablation, Adrenaline_test)
 from .validators import (validate_not_in_future, clean_positive_float, clean_start_end_date, clean_positive_int)
+from dal import autocomplete
 
 class AdrenalineTestForm(forms.ModelForm):
 
@@ -33,7 +34,18 @@ class PatientProfileForm(forms.ModelForm):
 	class Meta:
 		model = PatientProfile
 		fields = '__all__'
-
+		widgets = {
+			'therapies': autocomplete.ModelSelect2Multiple(
+				url='therapy-autocomplete'
+			),
+			'allergies': autocomplete.ModelSelect2Multiple(
+				url='allergy-autocomplete'
+			),
+			'studies': autocomplete.ModelSelect2Multiple(
+				url='study-autocomplete'
+			),
+		}
+		
 	def clean_cardioref_id(self):
 		return clean_positive_int(self.cleaned_data.get('cardioref_id'), label="Cardioref id") 
 
