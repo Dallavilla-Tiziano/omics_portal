@@ -23,9 +23,9 @@ def clean_positive_int(value, label="Value"):
 	try:
 		value = int(value)
 	except ValueError:
-		raise forms.ValidationError(f"{label} must be a number.")
+		raise ValidationError(f"{label} must be a number.")
 	if value < 0:
-		raise forms.ValidationError(f"{label} must be a positive integer.")
+		raise ValidationError(f"{label} must be a positive integer.")
 	return value
 
 def clean_start_end_date(value_start, value_end):

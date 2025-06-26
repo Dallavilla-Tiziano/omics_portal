@@ -1,4 +1,8 @@
-from .forms import (PatientProfileForm, LatePotentialForm, StudyForm, AblationForm, AdrenalineTestForm)
+from .forms import (PatientProfileForm, LatePotentialForm, StudyForm,
+						AblationForm, AdrenalineTestForm, AjmalineTestForm,
+						Clinical_evaluationForm, ClinicalEventForm, CoronaryInterventionForm,
+						DeviceEventForm, 
+					)
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
 from tabbed_admin import TabbedModelAdmin
@@ -9,7 +13,7 @@ from .models import (PatientProfile, Sample, DeviceType, DeviceInstance,
 						ECHO, Late_potentials, RMN_TC_PH, Therapy, ValveIntervention,
 						CoronaryIntervention, ResearchAnalysis, PatientStudy,
 						Study, Riskfactors, Cardiomiopathies, ClinicalEvent, Genetic_profile,
-						Genetic_status, Genetic_test, Gene, Mutation, Doctors #Events
+						Genetic_status, Genetic_test, Gene, Mutation, Doctors
 					)
 
 class AblationAdmin(admin.ModelAdmin):
@@ -34,10 +38,12 @@ class PatientStudyInline(admin.TabularInline):
 	fields = ['study', 'enrollment_date']
 
 class ClinicalEvaluationAdmin(admin.ModelAdmin):
+	form = Clinical_evaluationForm
 	search_fields = ['patient__first_name', 'patient__last_name']
 	autocomplete_fields = ['symptoms', 'cardiomiopathies', 'riskfactors', 'comorbidities']
 	list_display = ['patient','date_of_visit']
 class ClinicalEvaluationInline(admin.TabularInline):
+	form = Clinical_evaluationForm
 	model = Clinical_evaluation
 	extra = 0
 
@@ -58,9 +64,8 @@ class ComorbiditiesAdmin(admin.ModelAdmin):
 	list_display = ['name']
 
 class ClinicalEventAdmin(admin.ModelAdmin):
+	form = ClinicalEventForm
 	list_display = ("patient", "date", "clinical_event")
-
-
 
 class DeviceImplantAdmin(admin.ModelAdmin):
 	list_display = ('patient__first_name','patient__last_name','date')
@@ -70,9 +75,11 @@ class DeviceImplantInline(admin.TabularInline):
 	extra = 0
 
 class DeviceEventAdmin(admin.ModelAdmin):
+	form = DeviceEventForm
 	list_display = ('device__serial_number', 'timestamp', 'date', 'inappropriate_pre_rf_shock_cause', 'inappropriate_post_brs_shock_cause')
 	search_fields = ['device__serial_number', 'date', 'inappropriate_pre_rf_shock_cause', 'inappropriate_post_brs_shock_cause']
 class DeviceEventInline(admin.TabularInline):
+	form = DeviceEventForm
 	model = DeviceEvent
 	extra = 0
 
@@ -130,9 +137,11 @@ class AdrenalineTestInline(admin.TabularInline):
 	extra = 0
 
 class AjmalineTestAdmin(admin.ModelAdmin):
+	form = AjmalineTestForm
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_provocative_test', 'ajmaline_result')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class AjmalineTestInline(admin.TabularInline):
+	form = AjmalineTestForm
 	model = Ajmaline_test
 	extra = 0
 
@@ -185,8 +194,10 @@ class ValveInterventionInLine(admin.TabularInline):
 	extra = 0
 
 class CoronaryInterventionAdmin(admin.ModelAdmin):
+	form = CoronaryInterventionForm
 	list_display = ("patient__first_name", "patient__last_name", "date")
-class CoronaryInterventionInLine(admin.TabularInline):	
+class CoronaryInterventionInLine(admin.TabularInline):
+	form = CoronaryInterventionForm
 	model = CoronaryIntervention
 	extra = 0
 
