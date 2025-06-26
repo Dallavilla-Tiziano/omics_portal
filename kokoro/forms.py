@@ -2,14 +2,137 @@ from django import forms
 from .models import (PatientProfile, Late_potentials, Study,
 						Ablation, Adrenaline_test, Ajmaline_test,
 						Clinical_evaluation, ClinicalEvent, CoronaryIntervention,
-						DeviceEvent, DeviceImplant, 
+						DeviceEvent, DeviceImplant, DeviceInstance,
+						EP_study, ECG, 
+
 					)
 from .validators import (validate_not_in_future, clean_positive_float, clean_start_end_date,
 							clean_positive_int
 						)
 from dal import autocomplete
 
+class ECGForm(forms.ModelForm):
+
+	max_pressure = forms.CharField(required=False)	
+	min_pressure = forms.CharField(required=False)
+	hr = forms.CharField(required=False)
+	rr = forms.CharField(required=False)
+	pq = forms.CharField(required=False)
+	pr = forms.CharField(required=False)
+	qrs = forms.CharField(required=False)
+	qt = forms.CharField(required=False)
+	qtc = forms.CharField(required=False)
+	max_st = forms.CharField(required=False)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive floats
+		float_fields = [
+			('max_pressure', 'Max Pressure'),
+			('min_pressure', 'Min Pressure'),
+			('hr', 'hr'),
+			('rr', 'rr'),
+			('pq', 'pq'),
+			('pr', 'pr'),
+			('qrs', 'qrs'),
+			('qt', 'qt'),
+			('qtc', 'qtc'),
+			('max_st', 'max st'),
+		]
+
+		for field, label in float_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_float(value, label=label)
+		return cleaned_data
+
+	def clean_date_of_exam(self):
+		return validate_not_in_future(self.cleaned_data.get('date_of_exam'))
+
+	class Meta:
+		model = DeviceInstance
+		fields = '__all__'
+
+class EP_studyForm(forms.ModelForm):
+
+	total_area = forms.CharField(required=False)
+	bas_area_a_160 = forms.CharField(required=False)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive floats
+		float_fields = [
+			('total_area', 'Total Area'),
+			('bas_area_a_160', 'Basal Area Above 160'),
+		]
+
+		for field, label in float_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_float(value, label=label)
+		return cleaned_data
+
+	def clean_date_of_provocative_test(self):
+		return validate_not_in_future(self.cleaned_data.get('date_of_provocative_test'))
+
+	class Meta:
+		model = EP_study
+		fields = '__all__'
+
+class DeviceInstanceForm(forms.ModelForm):
+
+	class Meta:
+		model = DeviceInstance
+		fields = '__all__'
+
 class DeviceImplantForm(forms.ModelForm):
+
+	lv4_ring = forms.CharField(required=False)
+	lv3_ring = forms.CharField(required=False)
+	lv2_ring = forms.CharField(required=False)
+	lv1_tip = forms.CharField(required=False)
+	v1 =  forms.CharField(required=False)
+	lv_pulse_configuration_2_lv2 = forms.CharField(required=False)
+	pacing_impendance1 = forms.CharField(required=False)
+	v2 =  forms.CharField(required=False)
+	pacing_impendance2 = forms.CharField(required=False)
+	v3 =  forms.CharField(required=False)
+	pacing_impendance3 = forms.CharField(required=False)
+
+	ms1 = forms.CharField(required=False)
+	ms2 = forms.CharField(required=False)
+	ms3 = forms.CharField(required=False)	
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive floats
+		float_fields = [
+			('lv4_ring', 'lv4 ring'),
+			('lv3_ring', 'lv3 ring'),
+			('lv2_ring', 'lv2 ring'),
+			('lv1_tip', 'lv1 tip'),
+			('v1', 'v1'),
+			('lv_pulse_configuration_2_lv2', 'lv pulse configuration 2 lv2'),
+			('pacing_impendance1', 'pacing impendance 1'),
+			('v2', 'v2'),
+			('pacing_impendance2', 'pacing impendance 2'),
+			('v3', 'v3'),
+			('pacing_impendance3', 'pacing impendance 3'),
+		]
+
+		for field, label in float_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_float(value, label=label)
+
+		int_fields = [
+			('ms1', 'ms1'),
+			('ms2', 'ms2'),
+			('ms3', 'ms3'),
+		]
+
+		for field, label in int_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_int(value, label=label)
+
+		return cleaned_data
 
 	def clean_date(self):
 		return validate_not_in_future(self.cleaned_data.get('date'))

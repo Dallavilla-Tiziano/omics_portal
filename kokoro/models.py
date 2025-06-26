@@ -1104,7 +1104,6 @@ class ECHO(Diagnostic_exams):
 		default=''
 	)
 
-
 	class MitralValvulopathy(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"	
@@ -1113,6 +1112,7 @@ class ECHO(Diagnostic_exams):
 		choices=MitralValvulopathy,
 		default=''
 	)
+
 	class MitralValvulopathyType(models.TextChoices):
 		R = "Regurgitation", "Regurgitation"
 		S = "Stenosis", "Stenosis"
@@ -1122,6 +1122,7 @@ class ECHO(Diagnostic_exams):
 		choices=MitralValvulopathyType,
 		default=''
 	)
+
 	# !!! How can we handle severity in case of both? !!!
 	class MitralValvulopathySeverity(models.TextChoices):
 		Mi = "Mild", "Mild"
@@ -1133,7 +1134,6 @@ class ECHO(Diagnostic_exams):
 		default=''
 	)
 
-
 	class TricuspidValvulopathy(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"	
@@ -1142,6 +1142,7 @@ class ECHO(Diagnostic_exams):
 		choices=TricuspidValvulopathy,
 		default=''
 	)
+
 	class TricuspidValvulopathyType(models.TextChoices):
 		R = "Regurgitation", "Regurgitation"
 		S = "Stenosis", "Stenosis"
@@ -1151,6 +1152,7 @@ class ECHO(Diagnostic_exams):
 		choices=TricuspidValvulopathyType,
 		default=''
 	)
+
 	# !!! How can we handle severity in case of both? !!!
 	class TricuspidValvulopathySeverity(models.TextChoices):
 		Mi = "Mild", "Mild"
@@ -1161,7 +1163,6 @@ class ECHO(Diagnostic_exams):
 		choices=TricuspidValvulopathySeverity,
 		default=''
 	)
-
 
 	class DiastolicDysfunction(models.TextChoices):
 		Y = "Yes", "Yes"

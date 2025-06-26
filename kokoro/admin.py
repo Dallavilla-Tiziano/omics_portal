@@ -1,7 +1,9 @@
 from .forms import (PatientProfileForm, LatePotentialForm, StudyForm,
 						AblationForm, AdrenalineTestForm, AjmalineTestForm,
 						Clinical_evaluationForm, ClinicalEventForm, CoronaryInterventionForm,
-						DeviceEventForm, 
+						DeviceEventForm, DeviceImplantForm, DeviceInstanceForm,
+						EP_studyForm, ECGForm
+
 					)
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
@@ -68,9 +70,11 @@ class ClinicalEventAdmin(admin.ModelAdmin):
 	list_display = ("patient", "date", "clinical_event")
 
 class DeviceImplantAdmin(admin.ModelAdmin):
+	form = DeviceImplantForm
 	list_display = ('patient__first_name','patient__last_name','date')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class DeviceImplantInline(admin.TabularInline):
+	form = DeviceImplantForm
 	model = DeviceImplant
 	extra = 0
 
@@ -87,7 +91,7 @@ class DeviceTypeAdmin(admin.ModelAdmin):
 		list_display = ("model", "design", "company")
 
 class DeviceInstanceAdmin(admin.ModelAdmin):
-
+	form = DeviceInstanceForm
 	list_display = ('device_type', 'serial_number', 'implant_date')
 	search_fields = ['serial_number', 'patient__first_name', 'patient__first_name']
 	def implant_date(self, obj):
@@ -99,9 +103,9 @@ class DeviceInstanceAdmin(admin.ModelAdmin):
 
 	inlines = [
 		DeviceEventInline,
-	]
-	
+	]	
 class DeviceInstanceInline(admin.TabularInline):
+	form = DeviceInstanceForm
 	model = DeviceInstance
 	extra = 0
 
@@ -114,9 +118,11 @@ class SampleInline(admin.StackedInline):
 
 
 class EPStudyAdmin(admin.ModelAdmin):
+	form = EP_studyForm
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_provocative_test', 'ep_result')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class EPStudyInline(admin.TabularInline):
+	form = EP_studyForm
 	model = EP_study
 	extra = 0
 
@@ -148,9 +154,11 @@ class AjmalineTestInline(admin.TabularInline):
 
 
 class ECGAdmin(admin.ModelAdmin):
+	form = ECGForm
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_exam')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class ECGInline(admin.TabularInline):
+	form = ECGForm
 	model = ECG
 	extra = 0
 
