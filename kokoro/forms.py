@@ -11,6 +11,7 @@ from .validators import (validate_not_in_future, clean_positive_float, clean_sta
 							clean_positive_int
 						)
 from dal import autocomplete
+from django.forms.widgets import DateInput
 
 
 class ValveInterventionForm(forms.ModelForm):
@@ -512,6 +513,12 @@ class LatePotentialForm(forms.ModelForm):
 	class Meta:
 		model = Late_potentials
 		fields = '__all__'
+		widgets = {
+			'patient': autocomplete.ModelSelect2(
+				url='patientprofile-autocomplete'
+			),
+			'date_of_exam': DateInput(attrs={'type': 'date'})
+		}
 
 	def clean_basal_lp1(self):
 		return clean_positive_float(self.cleaned_data.get('basal_lp1'), label="Basal LP1")
@@ -540,3 +547,7 @@ class StudyForm(forms.ModelForm):
 	class Meta:
 		model = Study
 		fields = '__all__'
+		widgets = {
+			'start_date': DateInput(attrs={'type': 'date'}),
+			'end_date': DateInput(attrs={'type': 'date'}),
+		}

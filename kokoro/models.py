@@ -120,7 +120,10 @@ class PatientProfile(models.Model):
 		]
 
 	def __str__(self):
-		return f'{self.first_name} {self.last_name}'
+		parts = [self.last_name, self.first_name]
+		if self.cardioref_id:
+			parts.append(f"(ID: {self.cardioref_id})")
+		return " ".join(filter(None, parts))
 
 
 # Needed to be able to track enrollment date
@@ -715,7 +718,7 @@ class Clinical_evaluation(Clinical_Status):
 		help_text='Comorbidities this patient have.'
 	)
  
-    # Are there only 2 possible options for primary cause of cardiovascular disease?
+	# Are there only 2 possible options for primary cause of cardiovascular disease?
 	class PRIcauseCD(models.TextChoices):
 		I = "Ischemic", "Ischemic"
 		NI = "Non Ischemic", "Non Ischemic"
@@ -726,7 +729,7 @@ class Clinical_evaluation(Clinical_Status):
 		default=''
 	)
 
-    # !!! Only if "Ischemic" is selected, these should be compiled !!!
+	# !!! Only if "Ischemic" is selected, these should be compiled !!!
 	class Ischemic(models.TextChoices):
 		my = "CAD with Myocardial Infarction", "CAD with Myocardial Infarction"
 		non_my = "CAD without Myocardial Infarction", "CAD without Myocardial Infarction"
@@ -762,7 +765,7 @@ class Clinical_evaluation(Clinical_Status):
 		default=''
 	)
 
-    # NYHA = New York Heart Association
+	# NYHA = New York Heart Association
 	class NYHA(models.TextChoices):
 		U = "I", "I"
 		D = "II", "II"
@@ -983,7 +986,7 @@ class ECG(Diagnostic_exams):
 	# how can we create the log? !!!
 
 
-    # !!! Do we want specific options for specific BBB or do we want a unique elencation? !!!
+	# !!! Do we want specific options for specific BBB or do we want a unique elencation? !!!
 	class RBBB(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"	
@@ -1027,7 +1030,7 @@ class ECG(Diagnostic_exams):
 		default=''
 	)
 
-    # !!! What does BRS stand for? !!!
+	# !!! What does BRS stand for? !!!
 	class BRS(models.TextChoices):
 		U = "I", "I"
 		D= "II", "II"
@@ -1074,7 +1077,7 @@ class ECHO(Diagnostic_exams):
 	)
 
 
-    # !!! Instead of creating 3 different classes of questions for 3 different valves,
+	# !!! Instead of creating 3 different classes of questions for 3 different valves,
 	# we could create one collective voice called "type_of_valve" and 3 answers (aortic, mitral & tricuspid) !!!
 	class AorticValvulopathy(models.TextChoices):
 		Y = "Yes", "Yes"
@@ -1565,7 +1568,7 @@ class Genetic_test(Genetics):
 	)
 
 
-    ########## !!! Only if "NGS" is selected, these should be compiled !!! ############
+	########## !!! Only if "NGS" is selected, these should be compiled !!! ############
 	class TestCategory(models.TextChoices):
 		On = "Oncology", "Oncology"
 		ChAr = "Channellopathies / Arrhythmias", "Channellopathies / Arrhythmias"
@@ -1586,7 +1589,7 @@ class Genetic_test(Genetics):
 		default=''
 	)
 
-    # !!! Only if "Cannelopathies" is selected, these should be compiled !!!
+	# !!! Only if "Cannelopathies" is selected, these should be compiled !!!
 	class ChanSubCategory(models.TextChoices):
 		LQTS = "LQTS", "LQTS"
 		ERS = "ERS", "ERS"
@@ -1634,7 +1637,7 @@ class Genetic_test(Genetics):
 		default=''
 	)
 
-    # !!! Only if "Syndromes / Dysmorphisms" is selected, these should be compiled !!!
+	# !!! Only if "Syndromes / Dysmorphisms" is selected, these should be compiled !!!
 	class DysSubCategory(models.TextChoices):
 		No = "Noonan", "Noonan"
 		Tu = "Turner", "Turner"
@@ -1753,7 +1756,7 @@ class Genetic_test(Genetics):
 		default=''
 	)
 	
-    ########## !!! Only if "Mutuna" is selected, these should be compiled !!! ############
+	########## !!! Only if "Mutuna" is selected, these should be compiled !!! ############
 	class ACMG(models.TextChoices):
 		I = "I", "I"
 		II = "II", "II"
