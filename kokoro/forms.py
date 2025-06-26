@@ -3,13 +3,205 @@ from .models import (PatientProfile, Late_potentials, Study,
 						Ablation, Adrenaline_test, Ajmaline_test,
 						Clinical_evaluation, ClinicalEvent, CoronaryIntervention,
 						DeviceEvent, DeviceImplant, DeviceInstance,
-						EP_study, ECG, 
-
+						EP_study, ECG, ECHO,
+						Flecainide_test, Genetic_profile, Genetic_status,
+						Genetic_test, RMN_TC_PH, Sample, ValveIntervention
 					)
 from .validators import (validate_not_in_future, clean_positive_float, clean_start_end_date,
 							clean_positive_int
 						)
 from dal import autocomplete
+
+
+class ValveInterventionForm(forms.ModelForm):
+
+	def clean_date(self):
+		return validate_not_in_future(self.cleaned_data.get('date'))
+
+	class Meta:
+		model = ValveIntervention
+		fields = '__all__'
+
+class SampleForm(forms.ModelForm):
+
+	collection_date = forms.DateField()
+
+	pbmc_vials_n = forms.CharField(required=False)
+	pellet_vials_n = forms.CharField(required=False)
+	rna_vials_n = forms.CharField(required=False)
+	plasma_cold_vials_n = forms.CharField(required=False)
+	plasma_ambient_vials_n = forms.CharField(required=False)
+	rin = forms.CharField(required=False)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive integer
+		int_fields = [
+			('pbmc_vials_n', 'Number of PBMC Vials'),
+			('pellet_vials_n', 'Number of Pellet Vials'),
+			('rna_vials_n', 'Number of RNA Vials'),
+			('plasma_cold_vials_n', 'Number of Plasma Vials (4°C)'),
+			('plasma_ambient_vials_n', 'Number of Plasma Vials (Room Temperature)'),
+			('rin', 'RNA Integrity Number'),
+		]
+
+		for field, label in int_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_int(value, label=label)
+		return cleaned_data
+
+	def clean_collection_date(self):
+		return validate_not_in_future(self.cleaned_data.get('collection_date'))
+
+	class Meta:
+		model = Sample
+		fields = '__all__'
+
+
+class RMN_TC_PHTest(forms.ModelForm):
+
+	def clean_date_of_exam(self):
+		return validate_not_in_future(self.cleaned_data.get('date_of_exam'))
+
+	class Meta:
+		model = RMN_TC_PH
+		fields = '__all__'
+
+class Genetic_testForm(forms.ModelForm):
+
+	Consent_date = forms.DateField()
+	report_data = forms.DateField()
+	aliquota = forms.CharField(required=False)
+	
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive integer
+		int_fields = [
+			('aliquota', 'Number of Aliquotes'),
+		]
+
+		for field, label in int_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_int(value, label=label)
+		return cleaned_data
+
+	def clean_Consent_date(self):
+		return validate_not_in_future(self.cleaned_data.get('Consent_date'))
+
+	def clean_report_data(self):
+		return validate_not_in_future(self.cleaned_data.get('report_data'))
+
+	class Meta:
+		model = Genetic_test
+		fields = '__all__'
+
+class Genetic_statusForm(forms.ModelForm):
+
+	family_members = forms.CharField(required=False)
+	children = forms.CharField(required=False)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive integer
+		int_fields = [
+			('family_members', 'Number of Family Members'),
+			('children', 'Number of Childrens'),
+		]
+
+		for field, label in int_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_int(value, label=label)
+		return cleaned_data
+
+	class Meta:
+		model = Genetic_status
+		fields = '__all__'
+
+class Genetic_profileForm(forms.ModelForm):
+
+	FIN_progressive_genetics = forms.CharField(required=False)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive integer
+		int_fields = [
+			('FIN_progressive_genetics', 'Family Identification Number (FIN)'),
+		]
+
+		for field, label in int_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_int(value, label=label)
+		return cleaned_data
+
+	class Meta:
+		model = Genetic_profile
+		fields = '__all__'		
+
+class Flecainide_testForm(forms.ModelForm):
+
+	flecainide_dose = forms.CharField(required=False)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive floats
+		float_fields = [
+			('flecainide_dose', 'Flecainide Dose'),
+		]
+
+		for field, label in float_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_float(value, label=label)
+		return cleaned_data	
+
+	def clean_date_of_provocative_test(self):
+		return validate_not_in_future(self.cleaned_data.get('date_of_provocative_test'))
+
+	class Meta:
+		model = Flecainide_test
+		fields = '__all__'
+
+class ECHOForm(forms.ModelForm):
+
+	max_pressure = forms.CharField(required=False)	
+	min_pressure = forms.CharField(required=False)
+	lvef = forms.CharField(required=False)
+	tapse = forms.CharField(required=False)
+	left_atrial_area = forms.CharField(required=False)
+	la_diameter = forms.CharField(required=False)
+	la_end_diastolic_volume = forms.CharField(required=False)
+	la_end_systolic_volume = forms.CharField(required=False)
+	lv_end_diastolic_volume = forms.CharField(required=False)
+	lv_end_systolic_volume = forms.CharField(required=False)
+	lv_end_diastolic_diameter = forms.CharField(required=False)
+	lv_end_systolic_diameter = forms.CharField(required=False)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		# Fields that should be validated as positive floats
+		float_fields = [
+			('max_pressure', 'Max Pressure'),
+			('min_pressure', 'Min Pressure'),
+			('hr', 'hr'),
+			('rr', 'rr'),
+			('pq', 'pq'),
+			('pr', 'pr'),
+			('qrs', 'qrs'),
+			('qt', 'qt'),
+			('qtc', 'qtc'),
+			('max_st', 'max st'),
+		]
+
+		for field, label in float_fields:
+			value = cleaned_data.get(field)
+			cleaned_data[field] = clean_positive_float(value, label=label)
+		return cleaned_data
+
+	def clean_date_of_exam(self):
+		return validate_not_in_future(self.cleaned_data.get('date_of_exam'))
+
+	class Meta:
+		model = DeviceInstance
+		fields = '__all__'
 
 class ECGForm(forms.ModelForm):
 
@@ -49,7 +241,7 @@ class ECGForm(forms.ModelForm):
 		return validate_not_in_future(self.cleaned_data.get('date_of_exam'))
 
 	class Meta:
-		model = DeviceInstance
+		model = ECG
 		fields = '__all__'
 
 class EP_studyForm(forms.ModelForm):

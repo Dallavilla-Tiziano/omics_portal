@@ -2,8 +2,10 @@ from .forms import (PatientProfileForm, LatePotentialForm, StudyForm,
 						AblationForm, AdrenalineTestForm, AjmalineTestForm,
 						Clinical_evaluationForm, ClinicalEventForm, CoronaryInterventionForm,
 						DeviceEventForm, DeviceImplantForm, DeviceInstanceForm,
-						EP_studyForm, ECGForm
-
+						EP_studyForm, ECGForm, ECHOForm,
+						Flecainide_testForm, Genetic_profileForm, Genetic_statusForm,
+						Genetic_testForm, RMN_TC_PHTest, SampleForm,
+						ValveInterventionForm,
 					)
 from django.contrib import admin
 from django.utils.html import format_html_join, mark_safe
@@ -110,9 +112,11 @@ class DeviceInstanceInline(admin.TabularInline):
 	extra = 0
 
 class SampleAdmin(admin.ModelAdmin):
+	form = SampleForm
 	list_display = ('imtc_id', 'patient', 'procedure_type', 'collection_date')
 	search_fields = ['patient__first_name', 'patient__last_name', 'imtc_id']
 class SampleInline(admin.StackedInline):
+	form = SampleForm
 	model = Sample
 	extra = 0
 
@@ -127,9 +131,11 @@ class EPStudyInline(admin.TabularInline):
 	extra = 0
 
 class FlecainideTestAdmin(admin.ModelAdmin):
+	form = Flecainide_testForm
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_provocative_test', 'flecainide_result')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class FlecainideTestInline(admin.TabularInline):
+	form = Flecainide_testForm
 	model = Flecainide_test
 	extra = 0
 
@@ -163,9 +169,11 @@ class ECGInline(admin.TabularInline):
 	extra = 0
 
 class ECHOAdmin(admin.ModelAdmin):
+	form = ECHOForm
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_exam')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class ECHOInline(admin.StackedInline):
+	form = ECHOForm
 	model = ECHO
 	extra = 0
 
@@ -179,9 +187,11 @@ class LatePotentialsInline(admin.TabularInline):
 	extra = 0
 
 class RMTCPHAdmin(admin.ModelAdmin):
+	form = RMN_TC_PHTest
 	list_display = ('patient__first_name', 'patient__last_name', 'date_of_exam')
 	search_fields = ['patient__first_name', 'patient__last_name']
 class RMTCPHInline(admin.TabularInline):
+	form = RMN_TC_PHTest
 	model = RMN_TC_PH
 	extra = 0
 
@@ -196,8 +206,10 @@ class ResearchAnalysisAdmin(admin.ModelAdmin):
 	list_display = ('analysis_name', 'type', 'date_performed')
 
 class ValveInterventionAdmin(admin.ModelAdmin):
-	list_display = ("replacement", "repair")
-class ValveInterventionInLine(admin.TabularInline):	
+	form = ValveInterventionForm
+	list_display = ("patient__first_name", "patient__last_name", "date")
+class ValveInterventionInLine(admin.TabularInline):
+	form = ValveInterventionForm
 	model = ValveIntervention
 	extra = 0
 
@@ -210,24 +222,30 @@ class CoronaryInterventionInLine(admin.TabularInline):
 	extra = 0
 
 class GeneticProfileAdmin(admin.ModelAdmin):
+	form = Genetic_profileForm
 	list_display = ('patient__first_name', 'patient__last_name', 'FIN_number', 'PIN_number', 'FIN_progressive_genetics')
 	search_fields = ['patient__first_name', 'patient__last_name']
-class GeneticProfileInLine(admin.TabularInline):	
+class GeneticProfileInLine(admin.TabularInline):
+	form = Genetic_profileForm
 	model = Genetic_profile
 	extra = 0
 
 class GeneticStatusAdmin(admin.ModelAdmin):
+	form = Genetic_statusForm
 	list_display = ('patient__first_name', 'patient__last_name', 'patient_status')
 	search_fields = ['patient__first_name', 'patient__last_name']
-class GeneticStatusInLine(admin.TabularInline):	
+class GeneticStatusInLine(admin.TabularInline):
+	form = Genetic_statusForm	
 	model = Genetic_status
 	extra = 0
 
 class GeneticTestAdmin(admin.ModelAdmin):
+	form = Genetic_testForm
 	list_display = ('patient__first_name', 'patient__last_name', 'report_data')
 	search_fields = ['patient__first_name', 'patient__last_name']
 	autocomplete_fields = ('genes', 'var_p', 'var_c', 'editing_doctor', 'reporting_doctor') 
 class GeneticTestInLine(admin.StackedInline):
+	form = Genetic_testForm
 	autocomplete_fields = ('genes', 'var_p', 'var_c', 'editing_doctor', 'reporting_doctor')
 	model = Genetic_test
 	extra = 0
