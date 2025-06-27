@@ -64,7 +64,6 @@ class HomePageView(TemplateView):
             "sex_kokoroDistribution": json.dumps(sexProfiles_distribution),
             "nation_distribution": json.dumps(nationProfiles_distribution),
             "dob_distribution": json.dumps(dob_distribution),
-            "total_PatientProfile": total_PatientProfile,
         })
 
         return context

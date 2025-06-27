@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kokoro', '0007_alter_patientprofile_cardioref_id'),
+        ('kokoro', '0001_initial'),
     ]
 
     operations = [

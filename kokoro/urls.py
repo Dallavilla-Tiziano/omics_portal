@@ -1,5 +1,8 @@
 from django.urls import path
-from .views import KokoroHome
+from .views import (KokoroHomeView, TherapyAutocomplete, AllergyAutocomplete,
+					StudyAutocomplete, PatientProfileAutocomplete, PatientSpecificResearchView,
+					AdvancedResearchView, RemoteMonirotingView, filter_counts_partial,
+				)
 
 urlpatterns = [
     path('therapy-autocomplete/', TherapyAutocomplete.as_view(), name='therapy-autocomplete'),
