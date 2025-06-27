@@ -120,7 +120,10 @@ class PatientProfile(models.Model):
 		]
 
 	def __str__(self):
-		return f'{self.first_name} {self.last_name}'
+		parts = [self.last_name, self.first_name]
+		if self.cardioref_id:
+			parts.append(f"(ID: {self.cardioref_id})")
+		return " ".join(filter(None, parts))
 
 
 # Needed to be able to track enrollment date
@@ -197,12 +200,24 @@ class Ablation(ProcedureBase):
 		default="",
 	)
 
-	complication_type = models.CharField(max_length=250)
-	therapy = models.CharField(max_length=250)
-	# REDO ABLAZIONE is not needed anymore
+	complication_type = models.CharField(
+		max_length=250,
+		blank=True,
+		default="",
+	)
+
+	therapy = models.CharField(
+		max_length=250,
+		blank=True,
+		default="",
+	)
+
 	class Meta:
 		verbose_name = 'Ablation'
 		verbose_name_plural = 'Ablations'
+
+	def __str__(self):
+		return f"{self.patient} on {self.date}"
 
 class DeviceType(models.Model):
 
@@ -212,22 +227,26 @@ class DeviceType(models.Model):
 		editable=False,
 	)
 	class Design(models.TextChoices):
+		EMPTY = '', 'Choose a design'
 		SD_PACEMAKER = "Single\\Dual Pacemaker"
 		SD_CHAMBER_ICD = "Single\\Dual Chamber ICD"
 		OTHER = "Other"
 
 	class Model(models.TextChoices):
+		EMPTY = '', 'Choose a model'
 		IN7F4IS4 = "INTICA 7 HF-TQPDF4/IS4"
 		RI7HFQP = "RIVACOR 7 HF-T QP"
 		IN7HFIS4 = "INTICA 7 HF-TQPDF1/IS4"
 		INN7HFQP = "INTICA NEO 7 HF-T QP"
 
 	class Type(models.TextChoices):
+		EMPTY = '', 'Choose a type'
 		CARDIAC_DEVICE = "CD", "Cardiac Device"
 		LOOP_RECORDER = "LR", "Loop Recorder"
 		PACE_MAKER = "PM", "Pace Maker"
 
 	class Company(models.TextChoices):
+		EMPTY = '', 'Choose a company'
 		ABBOTT = "AB", "Abbott"
 		BIOTRONIK = "BT", "Biotronik"
 		MEDTRONIC = "MT", "Medtronic"
@@ -237,28 +256,23 @@ class DeviceType(models.Model):
 	type = models.CharField(
 		max_length=5,
 		choices=Type.choices,
-		blank=True,
-		default="",
+		blank=False,
 	)
 	company = models.CharField(
 		max_length=50,
 		choices=Company.choices,
-		blank=True,
-		default="",
+		blank=False,
 	)
-	# Dispositivo, Tipologia are these needed?
-	# Tipo di device has been joined with type above.
+
 	model = models.CharField(
 		max_length=50,
 		choices=Model.choices,
-		blank=True,
-		default="",
+		blank=False,
 	)
 	design = models.CharField(
 		max_length=50,
 		choices=Design.choices,
-		blank=True,
-		default="",
+		blank=False,
 		)# I'm calling it design because i can't find a more appropriate name rn
 
 	class Meta:
@@ -586,7 +600,7 @@ class Symptoms(models.Model):
 		verbose_name = 'Symptom'
 		verbose_name_plural= 'Symptoms'
 
-	def _str_(self):
+	def __str__(self):
 		return self.name
 	
 
@@ -599,7 +613,7 @@ class Cardiomiopathies(models.Model):
 		verbose_name = 'Cardiomiopathy'
 		verbose_name_plural= 'Cardiomiopathies'
 
-	def _str_(self):
+	def __str__(self):
 		return self.name
 	
 
@@ -612,7 +626,7 @@ class Riskfactors(models.Model):
 		verbose_name = 'Risk factor'
 		verbose_name_plural= 'Risk factors'
 
-	def _str_(self):
+	def __str__(self):
 		return self.name
 
 
@@ -624,7 +638,7 @@ class Comorbidities(models.Model):
 		ordering = ['name']
 		verbose_name = 'Comorbidity'
 		verbose_name_plural= 'Comorbidities'
-	def _str_(self):
+	def __str__(self):
 		return self.name
 
 class ClinicalEvent(models.Model):
@@ -704,7 +718,7 @@ class Clinical_evaluation(Clinical_Status):
 		help_text='Comorbidities this patient have.'
 	)
  
-    # Are there only 2 possible options for primary cause of cardiovascular disease?
+	# Are there only 2 possible options for primary cause of cardiovascular disease?
 	class PRIcauseCD(models.TextChoices):
 		I = "Ischemic", "Ischemic"
 		NI = "Non Ischemic", "Non Ischemic"
@@ -715,7 +729,7 @@ class Clinical_evaluation(Clinical_Status):
 		default=''
 	)
 
-    # !!! Only if "Ischemic" is selected, these should be compiled !!!
+	# !!! Only if "Ischemic" is selected, these should be compiled !!!
 	class Ischemic(models.TextChoices):
 		my = "CAD with Myocardial Infarction", "CAD with Myocardial Infarction"
 		non_my = "CAD without Myocardial Infarction", "CAD without Myocardial Infarction"
@@ -751,7 +765,7 @@ class Clinical_evaluation(Clinical_Status):
 		default=''
 	)
 
-    # NYHA = New York Heart Association
+	# NYHA = New York Heart Association
 	class NYHA(models.TextChoices):
 		U = "I", "I"
 		D = "II", "II"
@@ -972,7 +986,7 @@ class ECG(Diagnostic_exams):
 	# how can we create the log? !!!
 
 
-    # !!! Do we want specific options for specific BBB or do we want a unique elencation? !!!
+	# !!! Do we want specific options for specific BBB or do we want a unique elencation? !!!
 	class RBBB(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"	
@@ -1016,7 +1030,7 @@ class ECG(Diagnostic_exams):
 		default=''
 	)
 
-    # !!! What does BRS stand for? !!!
+	# !!! What does BRS stand for? !!!
 	class BRS(models.TextChoices):
 		U = "I", "I"
 		D= "II", "II"
@@ -1063,7 +1077,7 @@ class ECHO(Diagnostic_exams):
 	)
 
 
-    # !!! Instead of creating 3 different classes of questions for 3 different valves,
+	# !!! Instead of creating 3 different classes of questions for 3 different valves,
 	# we could create one collective voice called "type_of_valve" and 3 answers (aortic, mitral & tricuspid) !!!
 	class AorticValvulopathy(models.TextChoices):
 		Y = "Yes", "Yes"
@@ -1093,7 +1107,6 @@ class ECHO(Diagnostic_exams):
 		default=''
 	)
 
-
 	class MitralValvulopathy(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"	
@@ -1102,6 +1115,7 @@ class ECHO(Diagnostic_exams):
 		choices=MitralValvulopathy,
 		default=''
 	)
+
 	class MitralValvulopathyType(models.TextChoices):
 		R = "Regurgitation", "Regurgitation"
 		S = "Stenosis", "Stenosis"
@@ -1111,6 +1125,7 @@ class ECHO(Diagnostic_exams):
 		choices=MitralValvulopathyType,
 		default=''
 	)
+
 	# !!! How can we handle severity in case of both? !!!
 	class MitralValvulopathySeverity(models.TextChoices):
 		Mi = "Mild", "Mild"
@@ -1122,7 +1137,6 @@ class ECHO(Diagnostic_exams):
 		default=''
 	)
 
-
 	class TricuspidValvulopathy(models.TextChoices):
 		Y = "Yes", "Yes"
 		N = "No", "No"	
@@ -1131,6 +1145,7 @@ class ECHO(Diagnostic_exams):
 		choices=TricuspidValvulopathy,
 		default=''
 	)
+
 	class TricuspidValvulopathyType(models.TextChoices):
 		R = "Regurgitation", "Regurgitation"
 		S = "Stenosis", "Stenosis"
@@ -1140,6 +1155,7 @@ class ECHO(Diagnostic_exams):
 		choices=TricuspidValvulopathyType,
 		default=''
 	)
+
 	# !!! How can we handle severity in case of both? !!!
 	class TricuspidValvulopathySeverity(models.TextChoices):
 		Mi = "Mild", "Mild"
@@ -1150,7 +1166,6 @@ class ECHO(Diagnostic_exams):
 		choices=TricuspidValvulopathySeverity,
 		default=''
 	)
-
 
 	class DiastolicDysfunction(models.TextChoices):
 		Y = "Yes", "Yes"
@@ -1418,7 +1433,8 @@ class Doctors(models.Model):
 	"""
 	A single cardiopathy fenotype.
 	"""
-	name = models.CharField(max_length=100, unique=True)
+	name = models.CharField(max_length=100, blank=False)
+	surname = models.CharField(max_length=100, blank=False)
 
 	class Meta:
 		ordering = ['name']
@@ -1552,7 +1568,7 @@ class Genetic_test(Genetics):
 	)
 
 
-    ########## !!! Only if "NGS" is selected, these should be compiled !!! ############
+	########## !!! Only if "NGS" is selected, these should be compiled !!! ############
 	class TestCategory(models.TextChoices):
 		On = "Oncology", "Oncology"
 		ChAr = "Channellopathies / Arrhythmias", "Channellopathies / Arrhythmias"
@@ -1573,7 +1589,7 @@ class Genetic_test(Genetics):
 		default=''
 	)
 
-    # !!! Only if "Cannelopathies" is selected, these should be compiled !!!
+	# !!! Only if "Cannelopathies" is selected, these should be compiled !!!
 	class ChanSubCategory(models.TextChoices):
 		LQTS = "LQTS", "LQTS"
 		ERS = "ERS", "ERS"
@@ -1621,7 +1637,7 @@ class Genetic_test(Genetics):
 		default=''
 	)
 
-    # !!! Only if "Syndromes / Dysmorphisms" is selected, these should be compiled !!!
+	# !!! Only if "Syndromes / Dysmorphisms" is selected, these should be compiled !!!
 	class DysSubCategory(models.TextChoices):
 		No = "Noonan", "Noonan"
 		Tu = "Turner", "Turner"
@@ -1696,9 +1712,9 @@ class Genetic_test(Genetics):
 
 
 	class NGSTestResult(models.TextChoices):
-		P = "Positive", "Positive"
-		N = "Negative", "Negative"
-		NC = "Not concluded", "Not concluded"	
+		P = "P", "Positive"
+		N = "N", "Negative"
+		NC = "NC", "Not conclusive"	
 	NGStest_result = models.CharField(
 		max_length=100,
 		choices=NGSTestResult,
@@ -1740,7 +1756,7 @@ class Genetic_test(Genetics):
 		default=''
 	)
 	
-    ########## !!! Only if "Mutuna" is selected, these should be compiled !!! ############
+	########## !!! Only if "Mutuna" is selected, these should be compiled !!! ############
 	class ACMG(models.TextChoices):
 		I = "I", "I"
 		II = "II", "II"
@@ -1867,8 +1883,8 @@ class Genetic_test(Genetics):
 
 ########## !!! Only if "OTHER" is selected, these should be compiled !!! ############
 
-	eredity =  models.CharField(max_length=100, default='')
-	cromo_anomality =  models.CharField(max_length=100, default='')
+	eredity =  models.CharField(max_length=100, default='', blank=True)
+	cromo_anomality =  models.CharField(max_length=100, default='', blank=True)
 	class Meta:
 		verbose_name = 'Genetic test'
 		verbose_name_plural = 'Genetic tests'
