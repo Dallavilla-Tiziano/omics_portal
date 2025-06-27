@@ -27,9 +27,10 @@ urlpatterns = [
     # Local apps
     path('', include('pages.urls')),
 
-    # for "patients" app
-    path('patients/', include('patients.urls')),
     # for "kokoro" app
-    path('kokoro/', include('kokoro.urls')),
+    path("kokoro/", include("kokoro.urls"), name="kokoro"), 
+    # for "patients" app
+    path("patients/", include("patients.urls")),
+    
     path('submissions/', include(('submissions.urls', 'submissions'), namespace='submissions')),
 ]

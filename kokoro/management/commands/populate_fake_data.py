@@ -230,7 +230,7 @@ class Command(BaseCommand):
 				province       = fake.city(),
 				height         = random.randint(150, 200),
 				weight         = random.randint(50, 120),
-				cardioref_id   = fake.bothify(text='CRF-###??')
+				cardioref_id   = fake.bothify(text='#####')
 			)
 
 			# 1–3 therapies, capped by how many we actually have:

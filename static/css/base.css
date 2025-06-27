@@ -1,10 +1,14 @@
 /* ================================== */
-/*        GENERAL PAGE LAYOUT         */
+/* GENERAL PAGE LAYOUT         */
 /* ================================== */
 
-.container {
+body {
+    height: 100vh;
+  }
+
+.container-fluid {
     display: flex;
-    flex-direction: column;  /* Stack the rows vertically */
+    flex-direction: column;   /* Stack the rows vertically */
     justify-content: center; /* Vertically center the content */
     align-items: center;     /* Horizontally center the content */
     gap: 20px;               /* Add some spacing between the rows */
@@ -13,31 +17,67 @@
     margin: 0 auto;          /* Center the container */
 }
 
+.row{
+    min-height: 100vh;
+}
+
 .row.justify-content-center {
     display: flex;
     justify-content: center;  /* Center the columns inside the row */
     gap: 20px;                /* Space between the columns */
     flex-wrap: wrap;          /* Allow items to wrap when needed */
     width: 100%;              /* Make sure the row takes full width */
+    height: 100%;
+}
+
+.sidenav {
+    height:100%;
+    width:200px;
+    position: fixed;
+    z-index:1;
+    top:0;
+    left:0;
+    background-color:#111;
+    overflow-x: hidden;
+    padding-top:20px;
+}
+
+.sidenav a {
+    padding:6px 8px 6px 16px;
+    text-decoration: none;
+    font-size:25px;
+    color: #818181;
+    display:block;
+}
+
+.sidenav a:hover{
+    color:#f1f1f1;
 }
 
 /* Sidebar Filters */
 .filters-box {
-    width: 250px;
-    min-width: 250px;
+    /* Removed fixed width and min-width to allow Bootstrap columns (e.g., col-md-1) to control the width */
+    width: 180px;
+    min-width: 180px;
+    /* display: flex; */
+}
+
+.my-full-height {
+    height: 100%;
 }
 
 /* Table Display Settings */
 .display-settings-box {
-    width: 250px;
-    min-width: 250px;
+    width: 180px;
+    min-width: 180px;
 }
 
 /* Table Section */
 .table-container {
     flex-grow: 1;
     min-width: 500px;
-    overflow-x: auto;
+    overflow-x: auto; /* Ensures better horizontal scroll management */
+    height: inherit;
 }
 
 /* Ensure Table Stays Wide */
@@ -61,10 +101,10 @@ table {
 
 .table {
     border-collapse: separate;
-    border-spacing: 0;
+    border-spacing: 0; /* No spaces between cells */
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Light shadow for "lifted" effect */
 }
 
 .table thead {
@@ -91,7 +131,8 @@ table {
 /* Body Settings */
 body {
     min-height: 75rem;
-    padding-top: 4.5rem;
+    /* Removed padding-top to ensure content starts from the very top */
+    /* padding-top: 4.5rem; */
     display: flex;
     flex-direction: column;
 }
@@ -101,16 +142,16 @@ body {
 }
 
 .card-header {
-    background-color: #007bff;  /* Bootstrap primary color */
+    background-color: #007bff;   /* Bootstrap primary color */
     color: #ffffff;             /* Ensures text is always white */
 }
 
 .card-body select {
-    max-width: 100%;
+    max-width: 100%; /* Avoid overflow */
 }
 
 /* ================================== */
-/*         HOME PAGE STYLING         */
+/* HOME PAGE STYLING         */
 /* ================================== */
 
 /* Apply styles only on login page */
@@ -121,7 +162,7 @@ body {
 }
 
 /* ================================== */
-/*         LOGIN PAGE STYLING         */
+/* LOGIN PAGE STYLING         */
 /* ================================== */
 
 /* Apply styles only on login page */
@@ -130,7 +171,7 @@ body {
     background-size: cover;
     backdrop-filter: blur(5px);
     height: 100vh; /* Prevent scrolling */
-    overflow: hidden;
+    overflow: hidden; /* Prevent scrolling */
 }
 
 /* Centered login card */
@@ -150,7 +191,7 @@ body {
 }
 
 /* ================================== */
-/*         LOGOUT PAGE STYLING        */
+/* LOGOUT PAGE STYLING        */
 /* ================================== */
 
 /* Apply styles only on login page */
@@ -161,7 +202,7 @@ body {
 }
 
 /* ================================== */
-/*         PATIENT DETAIL PAGE STYLING         */
+/* PATIENT DETAIL PAGE STYLING         */
 /* ================================== */
 
 /* Apply styles only on login page */
@@ -172,7 +213,7 @@ body {
 }
 
 /* ================================== */
-/*         PATIENT PAGE STYLING         */
+/* PATIENT PAGE STYLING         */
 /* ================================== */
 
 /* Apply styles only on login page */
@@ -183,7 +224,7 @@ body {
 }
 
 /* ================================== */
-/*         CHART CONTAINER FIX        */
+/* CHART CONTAINER FIX         */
 /* ================================== */
 
 .chart-card {
@@ -202,10 +243,10 @@ body {
     width: 100% !important;
     min-height: 350px;
     max-height: 450px; /* Prevents flattening */
-} 
+}
 
 /* ================================== */
-/*         STAT CARD FIX              */
+/* STAT CARD FIX             */
 /* ================================== */
 
 .stat-card {
@@ -215,8 +256,8 @@ body {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     margin-top: 25px;
-    min-width: 200px;         /* Set a minimum width for each stat card */
-    flex: 1 1 150px;          /* Allow stat cards to grow and shrink */
+    min-width: 200px;           /* Set a minimum width for each stat card */
+    flex: 1 1 150px;            /* Allow stat cards to grow and shrink */
 }
 
 .stat-card.stats{
@@ -224,6 +265,6 @@ body {
 }
 
 .stat-container {
-/*    display: flex;*/
+/* display: flex;*/
     justify-content: center;
 }

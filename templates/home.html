@@ -9,168 +9,180 @@
 
 <div class="container">
   <div class="col-12">
-    <div class="row justify-content-left">
-        <div class="col-md-3">
-            <div class="stat-card stats">
-                <p>Total Patients</p>
-                <h2 id="total-patients">{{ total_patients }}</h2>
-            </div>
-            <div class="stat-card stats">
-                <p>Total Patients Kokoro</p>
-                <h2 id="total-patients">{{ total_PatientProfile }}</h2>
-            </div>
+
+    <!-- Statistiche Pazienti -->
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <div class="stat-card stats">
+          <p>Total Patient Profiles</p>
+          <h2 id="total-patients-profiles">{{ total_kokoroPatients }}</h2>
         </div>
-    </div>
-
-    <div class="row justify-content-left">
+      </div>
+    <div class="row mb-4">
       <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Distribution by Nation</h5>
-                  <canvas id="nationChart"></canvas>
-              </div>
-          </div>
+        <div class="stat-card">
+          <h5>Distribution by Nation</h5>
+          <canvas id="nationChart" style="height: 300px;"></canvas>
+        </div>
       </div>
       <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Distribution by Sex</h5>
-                  <canvas id="sexChart"></canvas>
-              </div>
-          </div>
+        <div class="stat-card">
+          <h5>Distribution by Sex</h5>
+          <canvas id="sexChart" style="height: 300px;"></canvas>
+        </div>
       </div>
       <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Date of Birth Distribution</h5>
-                  <canvas id="dobChart"></canvas>
-              </div>
-          </div>
+        <div class="stat-card">
+          <h5>Date of Birth Distribution</h5>
+          <canvas id="dobChart" style="height: 300px;"></canvas>
+        </div>
       </div>
     </div>
-
-    <div class="row justify-content-left">
+  </div>   
+    <!--
       <div class="col-md-3">
-          <div class="stat-card stats">
-              <p>Total Samples</p>
-              <h2 id="total-patients">{{ total_samples }}</h2>
-          </div>
+        <div class="stat-card stats">
+          <p>Total Patients</p>
+          <h2 id="total-patients">{{ total_patients }}</h2>
+        </div>
       </div>
     </div>
-    <div class="row justify-content-left">
+    -->
+    <!-- Statistiche Campioni
+    <div class="row mb-3">
       <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Distribution by Nation</h5>
-                  <canvas id="nationChart"></canvas>
-              </div>
-          </div>
-      </div>
-      <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Distribution by Sex</h5>
-                  <canvas id="sexChart"></canvas>
-              </div>
-          </div>
-      </div>
-      <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Date of Birth Distribution</h5>
-                  <canvas id="dobChart"></canvas>
-              </div>
-          </div>
+        <div class="stat-card stats">
+          <p>Total Samples</p>
+          <h2>{{ total_samples }}</h2>
+        </div>
       </div>
     </div>
-
-    <div class="row justify-content-left">
+-->
+    <!-- Grafici Campioni
+    <div class="row mb-4">
       <div class="col-md-3">
-          <div class="stat-card stats">
-              <p>Total Analysis</p>
-              <h2 id="total-patients">{{ total_analysis }}</h2>
-          </div>
+        <div class="stat-card">
+          <h5>Distribution by Nation</h5>
+          <canvas id="nationChartSamples"></canvas>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <h5>Distribution by Sex</h5>
+          <canvas id="sexChartSamples"></canvas>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <h5>Date of Birth Distribution</h5>
+          <canvas id="dobChartSamples"></canvas>
+        </div>
       </div>
     </div>
-    <div class="row justify-content-left">
+-->
+    <!-- Statistiche Analisi
+    <div class="row mb-3">
       <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Distribution by Nation</h5>
-                  <canvas id="nationChart"></canvas>
-              </div>
-          </div>
+        <div class="stat-card stats">
+          <p>Total Analysis</p>
+          <h2>{{ total_analysis }}</h2>
+        </div>
+      </div>
+    </div>
+-->
+    <!-- Grafici Analisi
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <h5>Distribution by Nation</h5>
+          <canvas id="nationChartAnalysis"></canvas>
+        </div>
       </div>
       <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Distribution by Sex</h5>
-                  <canvas id="sexChart"></canvas>
-              </div>
-          </div>
+        <div class="stat-card">
+          <h5>Distribution by Sex</h5>
+          <canvas id="sexChartAnalysis"></canvas>
+        </div>
       </div>
       <div class="col-md-3">
-          <div class="stat-card">
-              <div class="chart-card">
-                  <h5>Date of Birth Distribution</h5>
-                  <canvas id="dobChart"></canvas>
-              </div>
-          </div>
+        <div class="stat-card">
+          <h5>Date of Birth Distribution</h5>
+          <canvas id="dobChartAnalysis"></canvas>
+        </div>
       </div>
     </div>
 
   </div>
 </div>
-
-<!-- Chart.js Script -->
+-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", () => {
     const nationData = JSON.parse('{{ nation_distribution|escapejs }}');
-    const sexData = JSON.parse('{{ sex_distribution|escapejs }}');
+    const sexData = JSON.parse('{{ sex_kokoroDistribution|escapejs }}');
     const dobData = JSON.parse('{{ dob_distribution|escapejs }}');
 
-    const createChart = (id, label, data, type = 'doughnut') => {
-        new Chart(document.getElementById(id), {
-            type: type,
-            data: {
-                labels: Object.keys(data),
-                datasets: [{
-                    data: Object.values(data),
-                    backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,  // Ensures correct behavior
-                layout: { padding: 20 },
-            }
-        });
+    const createChart = (id, data, type = 'doughnut') => {
+      new Chart(document.getElementById(id), {
+        type,
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            data: Object.values(data),
+            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, layout: { padding: 20 } }
+      });
     };
 
-    createChart("nationChart", "Patients by Nation", nationData);
-    createChart("sexChart", "Patients by Sex", sexData);
+    createChart("nationChart", nationData);
+    createChart("sexChart", sexData);
 
     new Chart(document.getElementById("dobChart"), {
-        type: 'bar',
-        data: {
-            labels: Object.keys(dobData),
-            datasets: [{
-                label: 'Patients by Year of Birth',
-                data: Object.values(dobData),
-                backgroundColor: '#36A2EB'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,  // Prevents infinite stretching
-            scales: {
-                x: { title: { display: true, text: 'Year' } },
-                y: { title: { display: true, text: 'Number of Patients' } }
-            }
+      type: 'bar',
+      data: {
+        labels: Object.keys(dobData),
+        datasets: [{
+          label: 'Patients by Year of Birth',
+          data: Object.values(dobData),
+          backgroundColor: '#36A2EB'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: 'Year' } },
+          y: { title: { display: true, text: 'Number of Patients' } }
         }
+      }
     });
   });
 </script>
-
 {% endblock content %}
+<!-- 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const sexData = JSON.parse('{{ sex_kokoroDistribution|escapejs }}');
+
+    const createChart = (id, data, type = 'doughnut') => {
+      new Chart(document.getElementById(id), {
+        type,
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            data: Object.values(data),
+            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, layout: { padding: 20 } }
+      });
+    };
+
+    createChart("sexChart", sexData);
+  });
+</script>
+
+

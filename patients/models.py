@@ -195,7 +195,7 @@ class Analysis(models.Model):
         verbose_name_plural = "Analyses"  # Fixes incorrect pluralization
 
     def __str__(self):
-        return f"{self.get_type_display()} ({self.date_performed})"
+        return f"{self.type} ({self.date_performed})"
     
     # Patient ↔ (1:n) ↔ Sample
     # Sample ↔ (n:m) ↔ Analysis
