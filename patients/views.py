@@ -126,9 +126,9 @@ def download_filtered_csv(request):
             ])
     return response
 
-def filter_counts_partial(request):
+def filter_counts_par(request):
     """
     Returns a partial template with updated filter counts.
     """
     filter_counts = get_filter_counts(request)
-    return render(request, "patients/filter_counts.html", {"filter_counts": filter_counts})
+    return render(request, "kokoro/filter_counts.html", {"filter_counts": filter_counts})

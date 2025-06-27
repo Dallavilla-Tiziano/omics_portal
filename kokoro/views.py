@@ -31,6 +31,14 @@ class KokoroHomeView(LoginRequiredMixin, SingleTableMixin, FilterView):
     template_name = "kokoro/kokoro.html"
     login_url = "account_login"
 
+        
+class PatientSpecificResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    model = PatientProfile
+    table_class = PatientTable
+    context_object_name = "patient-specific research"
+    template_name = "kokoro/patient-specific research.html"
+    login_url = "account_login"
+
     def get_queryset(self):
         # Use the unified filtering helper to build the queryset.
         return get_filtered_patients(self.request)
@@ -44,7 +52,7 @@ class KokoroHomeView(LoginRequiredMixin, SingleTableMixin, FilterView):
     def render_to_response(self, context, **response_kwargs):
         # If the request is from HTMX, render only the table partial.
         if self.request.headers.get("HX-Request"):
-            return render(self.request, "patients/_table.html", context)
+            return render(self.request, "kokoro/_table.html", context)
         return super().render_to_response(context, **response_kwargs)
 
     def get_table_pagination(self, table):
@@ -57,16 +65,34 @@ class KokoroHomeView(LoginRequiredMixin, SingleTableMixin, FilterView):
         except ValueError:
             return {"per_page": 20}
 
-class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-    model = PatientProfile
-    context_object_name = "patient"
-    template_name = "patients/patient_detail.html"
-    login_url = "account_login"
-    permission_required = "patients.access_sensible_info"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+class AdvancedResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    model = PatientProfile
+    table_class = PatientTable
+    context_object_name = "advanced research"
+    template_name = "kokoro/advanced research.html"
+    login_url = "account_login"
+
+class RemoteMonirotingView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    model = PatientProfile
+    table_class = PatientTable
+    context_object_name = "remote monitoring"
+    template_name = "kokoro/remote monitoring.html"
+    login_url = "account_login"  
+
+    
+
+# class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+#     model = PatientProfile
+#    context_object_name = "patient"
+#    template_name = "patients/patient_detail.html"
+#     login_url = "account_login"
+#     permission_required = "patients.access_sensible_info"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         return context
+
 
 #def download_filtered_csv(request):
 #    # Get the filtered patients once and prefetch related samples and analyses.
@@ -129,4 +155,4 @@ def filter_counts_partial(request):
     Returns a partial template with updated filter counts.
     """
     filter_counts = get_filter_counts(request)
-    return render(request, "patients/filter_counts.html", {"filter_counts": filter_counts})
+    return render(request, "kokoro/filter_counts.html", {"filter_counts": filter_counts})

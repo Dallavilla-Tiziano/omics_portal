@@ -31,17 +31,17 @@ class HomePageView(TemplateView):
         #total_procedures = ProcedureBase.objects.count()
 
         # Get distribution data
-        #nations = Patient.objects.values_list("nation", flat=True)
+        nationProfiles_counts = PatientProfile.objects.values_list("nation", flat=True)
         #sex_counts = Patient.objects.values_list("sex", flat=True)
-        #dob_years = Patient.objects.values_list("date_of_birth", flat=True)
+        dobProfiles_years = PatientProfile.objects.values_list("date_of_birth", flat=True)
 
         ### NEW ###
         sexProfiles_counts = PatientProfile.objects.values_list("sex", flat=True)
 
         # Process distributions
-        #nation_distribution = dict(Counter(nations))
+        nationProfiles_distribution = dict(Counter(nationProfiles_counts))
         #sex_distribution = dict(Counter(sex_counts))
-        #dob_distribution = dict(Counter(d.year for d in dob_years if d))  # Group by birth year
+        dob_distribution = dict(Counter(d.year for d in dobProfiles_years if d))  # Group by birth year
 
         ### NEW ###
         sexProfiles_distribution = dict(Counter(sexProfiles_counts))
@@ -63,6 +63,8 @@ class HomePageView(TemplateView):
             "total_kokoroPatients": total_patientProfiles,
             #"total_procedures": total_procedures,
             "sex_kokoroDistribution": json.dumps(sexProfiles_distribution),
+            "nation_distribution": json.dumps(nationProfiles_distribution),
+            "dob_distribution": json.dumps(dob_distribution),
         })
 
         return context

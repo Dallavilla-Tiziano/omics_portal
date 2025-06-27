@@ -27,8 +27,9 @@ urlpatterns = [
     # Local apps
     path("", include("pages.urls")),
 
+    # for "kokoro" app
+    path("kokoro/", include("kokoro.urls"), name="kokoro"), 
     # for "patients" app
     path("patients/", include("patients.urls")),
-    # for "kokoro" app
-    path("kokoro/", include("kokoro.urls"), name="kokoro"),
+    
 ]

@@ -22,9 +22,9 @@ class StrictChoiceFilter(django_filters.ChoiceFilter):
 # Inizia una classe FilterSet, ovvero una collezione di filtri applicabili a un modello: in questo caso, il modello è Patient Profile.
 class DemographicFilter(django_filters.FilterSet):
     """ Filters for patient demographics """
-    sex = django_filters.ChoiceFilter(choices=PatientProfile.Sex.choices, label="Sex")
+    sex = django_filters.ChoiceFilter(choices=PatientProfile.Sex.choices, label="sex")
     # nationality: filtro personalizzato con method="filter_nationality" → definito più sotto.
-    nationality = django_filters.ChoiceFilter(label="Nationality", method="filter_nationality")
+    nationality = django_filters.ChoiceFilter(label="nation", method="filter_nationality")
 
     #Sovrascrive il costruttore __init__ per costruire dinamicamente la lista di nazionalità presenti nel database:
     def __init__(self, *args, **kwargs):

@@ -18,13 +18,27 @@
           <h2 id="total-patients-profiles">{{ total_kokoroPatients }}</h2>
         </div>
       </div>
-  </div>   
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stat-card">
+          <h5>Distribution by Nation</h5>
+          <canvas id="nationChart" style="height: 300px;"></canvas>
+        </div>
+      </div>
       <div class="col-md-3">
         <div class="stat-card">
           <h5>Distribution by Sex</h5>
-          <canvas id="sexChart"></canvas>
+          <canvas id="sexChart" style="height: 300px;"></canvas>
         </div>
-      </div> 
+      </div>
+      <div class="col-md-3">
+        <div class="stat-card">
+          <h5>Date of Birth Distribution</h5>
+          <canvas id="dobChart" style="height: 300px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>   
     <!--
       <div class="col-md-3">
         <div class="stat-card stats">
@@ -34,28 +48,6 @@
       </div>
     </div>
     -->
-    <!-- Grafici Pazienti
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Nation</h5>
-          <canvas id="nationChart"></canvas>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Sex</h5>
-          <canvas id="sexChart"></canvas>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Date of Birth Distribution</h5>
-          <canvas id="dobChart"></canvas>
-        </div>
-      </div>
-    </div>
--->
     <!-- Statistiche Campioni
     <div class="row mb-3">
       <div class="col-md-3">
@@ -123,12 +115,11 @@
   </div>
 </div>
 -->
-<!-- Chart.js: Parsing dati e creazione grafici
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const nationData = JSON.parse('{{ nation_distribution|escapejs }}');
-    const sexData = JSON.parse('{{ sex_distribution|escapejs }}');
+    const sexData = JSON.parse('{{ sex_kokoroDistribution|escapejs }}');
     const dobData = JSON.parse('{{ dob_distribution|escapejs }}');
 
     const createChart = (id, data, type = 'doughnut') => {
@@ -169,11 +160,12 @@
     });
   });
 </script>
--->
+{% endblock content %}
+<!-- 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const sexData = JSON.parse('{{ sex_distribution|escapejs }}');
+    const sexData = JSON.parse('{{ sex_kokoroDistribution|escapejs }}');
 
     const createChart = (id, data, type = 'doughnut') => {
       new Chart(document.getElementById(id), {
@@ -192,5 +184,5 @@
     createChart("sexChart", sexData);
   });
 </script>
-{% endblock content %}
+
 
