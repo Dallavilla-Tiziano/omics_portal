@@ -58,82 +58,86 @@ class PatientProfileAutocomplete(autocomplete.Select2QuerySetView):
 
 
 def get_filter_counts(request):
-    """
-    Returns a dictionary with the counts of filtered patients, samples, and analyses.
-    """
-    filtered_patients = get_filtered_patients(request)
-    return {
-        "patients": filtered_patients.count(),
-    }
+	"""
+	Returns a dictionary with the counts of filtered patients, samples, and analyses.
+	"""
+	filtered_patients = get_filtered_patients(request)
+	return {
+		"patients": filtered_patients.count(),
+	}
 
 class KokoroHomeView(LoginRequiredMixin, SingleTableMixin, FilterView):
-    model = PatientProfile
-    table_class = PatientTable
-    context_object_name = "kokoro_patient_list"
-    template_name = "kokoro/kokoro.html"
-    login_url = "account_login"
+	model = PatientProfile
+	table_class = PatientTable
+	context_object_name = "kokoro_patient_list"
+	template_name = "kokoro/kokoro.html"
+	login_url = "account_login"
 
-        
+		
 class PatientSpecificResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
-    model = PatientProfile
-    table_class = PatientTable
-    context_object_name = "patient-specific research"
-    template_name = "kokoro/patient-specific research.html"
-    login_url = "account_login"
+	model = PatientProfile
+	table_class = PatientTable
+	context_object_name = "patient-specific research"
+	template_name = "kokoro/patient-specific research.html"
+	login_url = "account_login"
 
-    def get_queryset(self):
-        # Use the unified filtering helper to build the queryset.
-        return get_filtered_patients(self.request)
+	def get_queryset(self):
+		# Use the unified filtering helper to build the queryset.
+		return get_filtered_patients(self.request)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["demographic_filter"] = DemographicFilter(self.request.GET, queryset=PatientProfile.objects.all())
-        context["filter_counts"] = get_filter_counts(self.request)
-        return context
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["demographic_filter"] = DemographicFilter(self.request.GET, queryset=PatientProfile.objects.all())
+		context["filter_counts"] = get_filter_counts(self.request)
+		return context
 
-    def render_to_response(self, context, **response_kwargs):
-        # If the request is from HTMX, render only the table partial.
-        if self.request.headers.get("HX-Request"):
-            return render(self.request, "kokoro/_table.html", context)
-        return super().render_to_response(context, **response_kwargs)
+	def render_to_response(self, context, **response_kwargs):
+		# If the request is from HTMX, render only the table partial.
+		if self.request.headers.get("HX-Request"):
+			return render(self.request, "kokoro/_table.html", context)
+		return super().render_to_response(context, **response_kwargs)
 
-    def get_table_pagination(self, table):
-        rows_per_page = self.request.GET.get("rows", "20")
-        if self.request.GET.get("paginate") == "false":
-            return False
-        try:
-            rows_per_page = int(rows_per_page)
-            return {"per_page": rows_per_page}
-        except ValueError:
-            return {"per_page": 20}
+	def get_table_pagination(self, table):
+		rows_per_page = self.request.GET.get("rows", "20")
+		if self.request.GET.get("paginate") == "false":
+			return False
+		try:
+			rows_per_page = int(rows_per_page)
+			return {"per_page": rows_per_page}
+		except ValueError:
+			return {"per_page": 20}
 
 
 class AdvancedResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
-    model = PatientProfile
-    table_class = PatientTable
-    context_object_name = "advanced research"
-    template_name = "kokoro/advanced research.html"
-    login_url = "account_login"
+	model = PatientProfile
+	table_class = PatientTable
+	context_object_name = "advanced research"
+	template_name = "kokoro/advanced research.html"
+	login_url = "account_login"
 
 class RemoteMonirotingView(LoginRequiredMixin, SingleTableMixin, FilterView):
-    model = PatientProfile
-    table_class = PatientTable
-    context_object_name = "remote monitoring"
-    template_name = "kokoro/remote monitoring.html"
-    login_url = "account_login"  
+	model = PatientProfile
+	table_class = PatientTable
+	context_object_name = "remote monitoring"
+	template_name = "kokoro/remote monitoring.html"
+	login_url = "account_login"  
 
-    
+	
 
-# class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-#     model = PatientProfile
-#    context_object_name = "patient"
-#    template_name = "patients/patient_detail.html"
-#     login_url = "account_login"
-#     permission_required = "patients.access_sensible_info"
+class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+	model = PatientProfile
+	context_object_name = "patient"
+	template_name = "kokoro/patient_detail.html"
+	login_url = "account_login"
+	permission_required = "kokoro.access_sensible_info"
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         return context
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		# patient_samples = Sample.objects.filter(patient=self.object)
+		# context["sample_table"] = SampleTable(patient_samples)
+		# patient_analyses = Analysis.objects.filter(samples__in=patient_samples).distinct()
+		# context["analysis_table"] = AnalysisTable(patient_analyses)
+		return context
 
 
 #def download_filtered_csv(request):
@@ -141,11 +145,11 @@ class RemoteMonirotingView(LoginRequiredMixin, SingleTableMixin, FilterView):
 #    filtered_patients_qs = get_filtered_patients(request).prefetch_related("samples", "samples__analyses")
 #    # Convert the queryset to a list to avoid re-querying.
 #    filtered_patients = list(filtered_patients_qs)
-    
-    # Compute filtered sample and analysis IDs by iterating over the already prefetched data.
+	
+	# Compute filtered sample and analysis IDs by iterating over the already prefetched data.
 #    filtered_sample_ids = { sample.id for patient in filtered_patients for sample in patient.samples.all() }
 #    filtered_analysis_ids = { analysis.id for patient in filtered_patients for sample in patient.samples.all() for analysis in sample.analyses.all() }
-    
+	
 #    response = HttpResponse(content_type="text/csv")
 #    response["Content-Disposition"] = 'attachment; filename="filtered_patients_with_samples_and_analyses.csv"'
 #    writer = csv.writer(response)
@@ -154,47 +158,47 @@ class RemoteMonirotingView(LoginRequiredMixin, SingleTableMixin, FilterView):
 #        "Sample UUID", "Sample ID", "Sample Type", "Collection Date", "Storage Location", "Sample Status",
 #        "Analysis Type", "Date Performed", "Result Files"
 #    ])
-    
+	
 	#######
-    # Iterate over filtered patients
-    #for patient in filtered_patients:
-    #    # Get only those samples whose IDs are in the filtered set.
-    #    valid_samples = [sample for sample in patient.samples.all() if sample.id in filtered_sample_ids]
-    #    if valid_samples:
-    #        for sample in valid_samples:
-    #            # For each sample, get only those analyses whose IDs are in the filtered set.
-    #            valid_analyses = [analysis for analysis in sample.analyses.all() if analysis.id in filtered_analysis_ids]
-    #            if valid_analyses:
-    #                for analysis in valid_analyses:
-    #                    writer.writerow([
-    #                        patient.id, patient.last_name, patient.first_name, patient.date_of_birth,
-    #                        patient.sex, patient.patient_type, patient.nation,
-    #                        sample.id, sample.internal_id, sample.type, sample.collection_date,
-    #                        sample.freezer_location, sample.get_status_display(),
-    #                        analysis.type, analysis.date_performed, analysis.result_files
-    #                    ])
-    #            else:
-    #                # Write row if sample has no valid analyses.
-    #                writer.writerow([
-    #                    patient.id, patient.last_name, patient.first_name, patient.date_of_birth,
-    #                    patient.sex, patient.patient_type, patient.nation,
-    #                    sample.id, sample.internal_id, sample.type, sample.collection_date,
-    #                    sample.freezer_location, sample.get_status_display(),
-    #                    "None", "None", "None"
-    #                ])
-    #    else:
-    #        # Write a row with patient info if there are no valid samples.
-    #        writer.writerow([
-    #            patient.id, patient.last_name, patient.first_name, patient.date_of_birth,
-    #            patient.sex, patient.patient_type, patient.nation,
-    #            "None", "None", "None", "None", "None", "None",
-    #            "None", "None", "None"
-    #        ])
-    #return response
+	# Iterate over filtered patients
+	#for patient in filtered_patients:
+	#    # Get only those samples whose IDs are in the filtered set.
+	#    valid_samples = [sample for sample in patient.samples.all() if sample.id in filtered_sample_ids]
+	#    if valid_samples:
+	#        for sample in valid_samples:
+	#            # For each sample, get only those analyses whose IDs are in the filtered set.
+	#            valid_analyses = [analysis for analysis in sample.analyses.all() if analysis.id in filtered_analysis_ids]
+	#            if valid_analyses:
+	#                for analysis in valid_analyses:
+	#                    writer.writerow([
+	#                        patient.id, patient.last_name, patient.first_name, patient.date_of_birth,
+	#                        patient.sex, patient.patient_type, patient.nation,
+	#                        sample.id, sample.internal_id, sample.type, sample.collection_date,
+	#                        sample.freezer_location, sample.get_status_display(),
+	#                        analysis.type, analysis.date_performed, analysis.result_files
+	#                    ])
+	#            else:
+	#                # Write row if sample has no valid analyses.
+	#                writer.writerow([
+	#                    patient.id, patient.last_name, patient.first_name, patient.date_of_birth,
+	#                    patient.sex, patient.patient_type, patient.nation,
+	#                    sample.id, sample.internal_id, sample.type, sample.collection_date,
+	#                    sample.freezer_location, sample.get_status_display(),
+	#                    "None", "None", "None"
+	#                ])
+	#    else:
+	#        # Write a row with patient info if there are no valid samples.
+	#        writer.writerow([
+	#            patient.id, patient.last_name, patient.first_name, patient.date_of_birth,
+	#            patient.sex, patient.patient_type, patient.nation,
+	#            "None", "None", "None", "None", "None", "None",
+	#            "None", "None", "None"
+	#        ])
+	#return response
 
 def filter_counts_partial(request):
-    """
-    Returns a partial template with updated filter counts.
-    """
-    filter_counts = get_filter_counts(request)
-    return render(request, "kokoro/filter_counts.html", {"filter_counts": filter_counts})
+	"""
+	Returns a partial template with updated filter counts.
+	"""
+	filter_counts = get_filter_counts(request)
+	return render(request, "kokoro/filter_counts.html", {"filter_counts": filter_counts})

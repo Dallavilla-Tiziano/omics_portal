@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (KokoroHomeView, TherapyAutocomplete, AllergyAutocomplete,
 					StudyAutocomplete, PatientProfileAutocomplete, PatientSpecificResearchView,
-					AdvancedResearchView, RemoteMonirotingView, filter_counts_partial,
+					AdvancedResearchView, RemoteMonirotingView, filter_counts_partial, PatientDetailView
 				)
 
 urlpatterns = [
@@ -14,4 +14,5 @@ urlpatterns = [
     path("remote-monitoring/", RemoteMonirotingView.as_view(), name="remote monitoring"),
     path("filter_counts/", filter_counts_partial, name="filter_counts_partial"),
 	path("", KokoroHomeView.as_view(), name="kokoro_patient_list"),
+	path("<uuid:pk>/", PatientDetailView.as_view(), name="patient_detail"),
 ]

@@ -119,6 +119,9 @@ class PatientProfile(models.Model):
 		("access_sensible_info", "Can view patient sensible info")
 		]
 
+	def get_absolute_url(self):
+		return reverse("kokoro:patient_detail", kwargs={"pk": self.pk})
+
 	def __str__(self):
 		parts = [self.last_name, self.first_name]
 		if self.cardioref_id:
