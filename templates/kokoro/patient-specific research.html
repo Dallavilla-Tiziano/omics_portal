@@ -3,16 +3,14 @@
 {% load widget_tweaks %}
 
 {% block title %}Patient specific research{% endblock title %}
-
 {% block body_class %}patient-specific-research-page{% endblock body_class %}
-
 
 {% block content %}
 <div class="container-fluid mt-4">
-  <div class="row">
+  <div class="row gx-3">
 
-    <!-- Left Sidebar (Combined Filters) -->
-    <div class="col-lg-2">
+    <!-- Filters Sidebar -->
+    <div class="col-lg-2 col-md-3 mb-4">
       <form method="get"
             autocomplete="off"
             hx-get="{% url 'patient-specific research' %}"
@@ -21,74 +19,67 @@
             hx-push-url="true"
             hx-params="*"
             id="combined-filter-form">
-          
-          <!-- Demographic Filters -->
-          <div class="card shadow-sm mb-3">
-              <div class="card-header">
-                  Demographic Filters
-              </div>
-              <div class="card-body">
-                  {{ demographic_filter.form.as_p }}
-              </div>
-          </div>
-        
-          <!-- Reset All Filters Button -->
-          <button type="button" class="btn btn-secondary mt-3 w-100"
-                  onclick="resetCombinedForm();">
-              Reset All Filters
-          </button>
-      </form>
-    </div> <!-- End Left Sidebar -->
 
-    <div class="col-lg-8">
-        <div id="table-container">
-            {% render_table table %}
-        </div>
-    </div>
-
-    <!-- Right Sidebar (Display Settings, Export, and Filter Counts) -->
-    <div class="col-lg-2 d-flex flex-column">
         <div class="card shadow-sm mb-3">
-            <div class="card-header">
-                Table Display Settings
-            </div>
+            <div class="card-header">Demographic Filters</div>
             <div class="card-body">
-                <label for="rows">Rows per page:</label>
-                <select name="rows" id="rows" class="form-select"
-                        hx-get="{% url 'patient-specific research' %}"
-                        hx-target="#table-container"
-                        hx-trigger="change"
-                        hx-vals="js:{ rows: document.getElementById('rows').value }">
-                    <option value="10">10</option>
-                    <option value="20" selected>20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+                {{ demographic_filter.form.as_p }}
             </div>
         </div>
-
-        <!-- Export Cohort Box -->
-        <div class="card shadow-sm mt-3">
-            <div class="card-header">
-                Export Cohort
-            </div>
-            <div class="card-body">
-                <a id="download-link" href="{% url 'patient_list_csv' %}" class="btn btn-primary w-100">
-                    Download CSV
-                </a>
-            </div>
+      </form>
+        <!-- Table Display Settings -->
+        <div class="card shadow-sm flex-grow-1" style="min-width: 250px;">
+          <div class="card-header">Table Display Settings</div>
+          <div class="card-body">
+            <label for="rows">Rows per page:</label>
+            <select name="rows" id="rows" class="form-select"
+                    hx-get="{% url 'patient-specific research' %}"
+                    hx-target="#table-container"
+                    hx-trigger="change"
+                    hx-vals="js:{ rows: document.getElementById('rows').value }">
+                <option value="10">10</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Filter Counts Box -->
-        <div id="filter-counts"
+        <!-- Export Cohort -->
+        <div class="card shadow-sm flex-grow-1" style="min-width: 250px;">
+          <div class="card-header">Export Cohort</div>
+          <div class="card-body">
+            <a id="download-link" href="{% url 'patient_list_csv' %}" class="btn btn-primary w-100">
+              Download CSV
+            </a>
+          </div>
+        </div>
+
+        <!-- Filtered Count Box -->
+        <div class="card shadow-sm flex-grow-1" style="min-width: 250px;"
+             id="filter-counts"
              hx-get="{% url 'filter_counts_partial' %}"
              hx-trigger="load, change from:#combined-filter-form"
              hx-include="#combined-filter-form">
           {% include "kokoro/filter_counts.html" %}
         </div>
-    </div> <!-- End Right Sidebar -->
+        <button type="button" class="btn btn-secondary mt-3 w-100"
+                onclick="resetCombinedForm();">Reset All Filters
+        </button>
+    </div>
 
-  </div> <!-- End Main Row -->
+    <!-- Main Content: Table + Settings + Export + Counts -->
+    <div class="col-lg-9 col-md-8">
+
+      <!-- Table -->
+      <div id="table-container" class="table-responsive table-wrapper mb-4" style="overflow-x: auto;">
+        {% render_table table %}
+      </div>
+
+      <!-- Settings + Export + Counts stacked below -->
+    </div> <!-- End Main Content -->
+
+  </div> <!-- End Row -->
 </div> <!-- End Container -->
 
 <script>
@@ -105,24 +96,16 @@ function resetCombinedForm() {
     htmx.trigger(form, 'change');
 }
 
-// Function to update the download link using the current URL query parameters.
 function updateDownloadLink() {
     let downloadLink = document.getElementById("download-link");
     downloadLink.href = "{% url 'patient_list_csv' %}" + window.location.search;
-    console.log("Download link updated:", downloadLink.href);
 }
 
-// Update the download link when the page loads.
 document.addEventListener("DOMContentLoaded", updateDownloadLink);
-
-// Listen for afterSettle events on the document body.
 document.body.addEventListener("htmx:afterSettle", function(event) {
-    // Check if the target is our table container.
     if (event.detail.target && event.detail.target.id === "table-container") {
-        // Delay slightly to ensure the URL has updated.
         setTimeout(updateDownloadLink, 100);
     }
 });
 </script>
-
 {% endblock content %}

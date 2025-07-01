@@ -1,143 +1,195 @@
 from dal import autocomplete
-from django.views.generic import TemplateView
-from .models import Therapy, Study, PatientProfile
+from django.views.generic import TemplateView, DetailView
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from django.shortcuts import render
-from django.views.generic import DetailView
 from django.http import HttpResponse
-from .models import PatientProfile
+
+from .models import (
+    PatientProfile,
+    Sample,
+    ClinicalEvent,
+    DeviceInstance,
+    DeviceEvent,
+    Ablation,
+    DeviceImplant,
+    ValveIntervention,
+    CoronaryIntervention,
+    Therapy,
+    Study,
+    PatientStudy,
+    ResearchAnalysis,
+    Clinical_evaluation,
+    EP_study,
+    Flecainide_test,
+    Adrenaline_test,
+    Ajmaline_test,
+    ECG,
+    ECHO,
+    Late_potentials,
+    RMN_TC_PH,
+    Genetic_profile,
+    Genetic_status,
+    Genetic_sample,
+    Genetic_test,
+)
 from .tables import PatientTable
 from .filters import DemographicFilter
 from .query_helpers import get_filtered_patients
 import csv
 
-# class KokoroHome(TemplateView):
-# 	template_name = "kokoro/kokoro.html"
-
 class TherapyAutocomplete(autocomplete.Select2QuerySetView):
-	def get_queryset(self):
-		qs = Therapy.objects.all()
-		# Support both 'q' and 'term' (DAL uses 'q', but Select2 might use 'term')
-		search = self.q or self.request.GET.get('term')
-		if search:
-			qs = qs.filter(name__icontains=search)
-		return qs
+    def get_queryset(self):
+        qs = Therapy.objects.all()
+        search = self.q or self.request.GET.get('term')
+        if search:
+            qs = qs.filter(name__icontains=search)
+        return qs
 
 class AllergyAutocomplete(autocomplete.Select2QuerySetView):
-	def get_queryset(self):
-		qs = Therapy.objects.all()
-		# Support both 'q' and 'term' (DAL uses 'q', but Select2 might use 'term')
-		search = self.q or self.request.GET.get('term')
-		if search:
-			qs = qs.filter(name__icontains=search)
-		return qs
+    def get_queryset(self):
+        qs = Therapy.objects.all()
+        search = self.q or self.request.GET.get('term')
+        if search:
+            qs = qs.filter(name__icontains=search)
+        return qs
 
 class StudyAutocomplete(autocomplete.Select2QuerySetView):
-	def get_queryset(self):
-		qs = Study.objects.all()
-		# Support both 'q' and 'term' (DAL uses 'q', but Select2 might use 'term')
-		search = self.q or self.request.GET.get('term')
-		if search:
-			qs = qs.filter(name__icontains=search)
-		return qs
+    def get_queryset(self):
+        qs = Study.objects.all()
+        search = self.q or self.request.GET.get('term')
+        if search:
+            qs = qs.filter(name__icontains=search)
+        return qs
 
 class PatientProfileAutocomplete(autocomplete.Select2QuerySetView):
-	def get_queryset(self):
-		qs = PatientProfile.objects.all()
-		search = self.q or self.request.GET.get('term')
-		if search:
-			qs = qs.filter(
-				Q(last_name__icontains=search) |
-				Q(first_name__icontains=search) |
-				Q(cardioref_id__icontains=search)
-			)
-		return qs
+    def get_queryset(self):
+        qs = PatientProfile.objects.all()
+        search = self.q or self.request.GET.get('term')
+        if search:
+            qs = qs.filter(
+                Q(last_name__icontains=search) |
+                Q(first_name__icontains=search) |
+                Q(cardioref_id__icontains=search)
+            )
+        return qs
 
 
 def get_filter_counts(request):
-	"""
-	Returns a dictionary with the counts of filtered patients, samples, and analyses.
-	"""
-	filtered_patients = get_filtered_patients(request)
-	return {
-		"patients": filtered_patients.count(),
-	}
+    filtered_patients = get_filtered_patients(request)
+    return {
+        "patients": filtered_patients.count(),
+    }
 
 class KokoroHomeView(LoginRequiredMixin, SingleTableMixin, FilterView):
-	model = PatientProfile
-	table_class = PatientTable
-	context_object_name = "kokoro_patient_list"
-	template_name = "kokoro/kokoro.html"
-	login_url = "account_login"
+    model = PatientProfile
+    table_class = PatientTable
+    context_object_name = "kokoro_patient_list"
+    template_name = "kokoro/kokoro.html"
+    login_url = "account_login"
 
-		
 class PatientSpecificResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
-	model = PatientProfile
-	table_class = PatientTable
-	context_object_name = "patient-specific research"
-	template_name = "kokoro/patient-specific research.html"
-	login_url = "account_login"
+    model = PatientProfile
+    table_class = PatientTable
+    context_object_name = "patient-specific research"
+    template_name = "kokoro/patient-specific research.html"
+    login_url = "account_login"
 
-	def get_queryset(self):
-		# Use the unified filtering helper to build the queryset.
-		return get_filtered_patients(self.request)
+    def get_queryset(self):
+        return get_filtered_patients(self.request)
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context["demographic_filter"] = DemographicFilter(self.request.GET, queryset=PatientProfile.objects.all())
-		context["filter_counts"] = get_filter_counts(self.request)
-		return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["demographic_filter"] = DemographicFilter(self.request.GET, queryset=PatientProfile.objects.all())
+        context["filter_counts"] = get_filter_counts(self.request)
+        return context
 
-	def render_to_response(self, context, **response_kwargs):
-		# If the request is from HTMX, render only the table partial.
-		if self.request.headers.get("HX-Request"):
-			return render(self.request, "kokoro/_table.html", context)
-		return super().render_to_response(context, **response_kwargs)
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get("HX-Request"):
+            return render(self.request, "kokoro/_table.html", context)
+        return super().render_to_response(context, **response_kwargs)
 
-	def get_table_pagination(self, table):
-		rows_per_page = self.request.GET.get("rows", "20")
-		if self.request.GET.get("paginate") == "false":
-			return False
-		try:
-			rows_per_page = int(rows_per_page)
-			return {"per_page": rows_per_page}
-		except ValueError:
-			return {"per_page": 20}
-
+    def get_table_pagination(self, table):
+        rows_per_page = self.request.GET.get("rows", "20")
+        if self.request.GET.get("paginate") == "false":
+            return False
+        try:
+            rows_per_page = int(rows_per_page)
+            return {"per_page": rows_per_page}
+        except ValueError:
+            return {"per_page": 20}
 
 class AdvancedResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
-	model = PatientProfile
-	table_class = PatientTable
-	context_object_name = "advanced research"
-	template_name = "kokoro/advanced research.html"
-	login_url = "account_login"
+    model = PatientProfile
+    table_class = PatientTable
+    context_object_name = "advanced research"
+    template_name = "kokoro/advanced research.html"
+    login_url = "account_login"
 
 class RemoteMonirotingView(LoginRequiredMixin, SingleTableMixin, FilterView):
-	model = PatientProfile
-	table_class = PatientTable
-	context_object_name = "remote monitoring"
-	template_name = "kokoro/remote monitoring.html"
-	login_url = "account_login"  
-
-	
+    model = PatientProfile
+    table_class = PatientTable
+    context_object_name = "remote monitoring"
+    template_name = "kokoro/remote monitoring.html"
+    login_url = "account_login"
 
 class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-	model = PatientProfile
-	context_object_name = "patient"
-	template_name = "kokoro/patient_detail.html"
-	login_url = "account_login"
-	permission_required = "kokoro.access_sensible_info"
+    model = PatientProfile
+    context_object_name = "patient"
+    template_name = "kokoro/patient_detail.html"
+    permission_required = "kokoro.access_sensible_info"
+    login_url = "account_login"
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		# patient_samples = Sample.objects.filter(patient=self.object)
-		# context["sample_table"] = SampleTable(patient_samples)
-		# patient_analyses = Analysis.objects.filter(samples__in=patient_samples).distinct()
-		# context["analysis_table"] = AnalysisTable(patient_analyses)
-		return context
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        p = self.object
+
+        # Direct M2M & FK relations
+        ctx["samples"] = p.samples.all()
+        ctx["clinical_events"] = p.clinical_event.all()
+        ctx["devices"] = p.patient.all()
+        ctx["device_events"] = DeviceEvent.objects.filter(device__patient=p)
+
+        # Procedures
+        ctx["ablations"] = p.ablation_set.all()
+        ctx["device_implants"] = p.deviceimplant_set.all()
+        ctx["valve_interventions"] = p.valveintervention_set.all()
+        ctx["coronary_interventions"] = p.coronaryintervention_set.all()
+
+        # Therapies, Allergies, Studies
+        ctx["therapies"] = p.therapies.all()
+        ctx["allergies"] = p.allergies.all()
+        ctx["studies"] = p.studies.all()
+        ctx["patient_studies"] = p.patient_studies.all()
+
+        # Research analyses (via Sample → ResearchAnalysis)
+        ctx["research_analyses"] = ResearchAnalysis.objects.filter(samples__patient=p).distinct()
+
+        # Provocative tests
+        ctx["ep_studies"] = p.ep_study_set.all()
+        ctx["flecainide_tests"] = p.flecainide_test_set.all()
+        ctx["adrenaline_tests"] = p.adrenaline_test_set.all()
+        ctx["ajmaline_tests"] = p.ajmaline_test_set.all()
+
+        # Diagnostic exams
+        ctx["ecgs"] = p.ecg_set.all()
+        ctx["echos"] = p.echo_set.all()
+        ctx["late_potentials"] = p.late_potentials_set.all()
+        ctx["rmn_tc_ph"] = p.rmn_tc_ph_set.all()
+
+        # Genetics
+        ctx["genetic_profiles"] = p.genetic_profile_set.all()
+        ctx["genetic_statuses"] = p.genetic_status_set.all()
+        ctx["genetic_samples"] = p.genetic_sample_set.all()
+        ctx["genetic_tests"] = p.genetic_test_set.all()
+
+        # Clinical evaluations
+        ctx["clinical_evaluations"] = p.clinical_evaluation_set.all()
+
+        return ctx
+
 
 
 #def download_filtered_csv(request):

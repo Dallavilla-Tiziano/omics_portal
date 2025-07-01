@@ -28,5 +28,5 @@ class PatientTable(BaseTable):
 
     class Meta(BaseTable.Meta):
         model = PatientProfile
-        fields = ("id", "date_of_birth", "sex", "patient_type", "fin", "nation")
+        fields = ("id", "date_of_birth", "sex", "nation")
         sequence = ("...", "details")

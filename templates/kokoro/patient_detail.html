@@ -1,31 +1,611 @@
 {% extends "_base.html" %}
-{% load render_table from django_tables2 %}
-
-{% block title %}{{ patient.last_name }} {{ patient.first_name }}{% endblock title %}
-{% block body_class %}patient-detail-page{% endblock body_class %}
-
 {% block content %}
-<div class="container mt-4">
-  <div class="row">
-    <!-- Patient Info Card -->
-    <div class="col-lg-12 offset-lg-2">
-      <div class="card shadow-sm mb-4">
-        <div class="card-header">
-          <h2 class="mb-0">{{ patient.last_name }} {{ patient.first_name }}</h2>
-        </div>
-        <div class="card-body">
-          <p><strong>Sex:</strong> {{ patient.sex }}</p>
-          <p><strong>Date of birth:</strong> {{ patient.date_of_birth }}</p>
-          <p><strong>Nation:</strong> {{ patient.nation }}</p>
-          <p><strong>Region:</strong> {{ patient.region }}</p>
-          <p><strong>Province:</strong> {{ patient.province }}</p>
-          <p><strong>Type:</strong> {{ patient.patient_type }}</p>
-          <p><strong>FIN:</strong> {{ patient.fin }}</p>
+
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
+
+<div class="container my-4">
+  <h2 class="mb-4">Patient Detail: {{ patient }}</h2>
+
+  <div class="accordion" id="patientAccordion">
+
+    <!-- DEMOGRAPHICS -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingDemographics">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDemographics">
+          Demographic Information
+        </button>
+      </h2>
+      <div id="collapseDemographics" class="accordion-collapse collapse show">
+        <div class="accordion-body">
+          <ul class="list-group">
+            <li class="list-group-item"><strong>First Name:</strong> {{ patient.first_name }}</li>
+            <li class="list-group-item"><strong>Last Name:</strong> {{ patient.last_name }}</li>
+            <li class="list-group-item"><strong>Sex:</strong> {{ patient.get_sex_display }}</li>
+            <li class="list-group-item"><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</li>
+            <li class="list-group-item"><strong>Nation:</strong> {{ patient.nation }}</li>
+            <li class="list-group-item"><strong>Region:</strong> {{ patient.region }}</li>
+            <li class="list-group-item"><strong>Province:</strong> {{ patient.province }}</li>
+            <li class="list-group-item"><strong>Height:</strong> {{ patient.height }} cm</li>
+            <li class="list-group-item"><strong>Weight:</strong> {{ patient.weight }} kg</li>
+          </ul>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Primary Samples Section -->
+    <!-- SAMPLES -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingSamples">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSamples">
+          Samples
+        </button>
+      </h2>
+      <div id="collapseSamples" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if samples %}
+          <ul class="list-group">
+            {% for item in samples %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No samples recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- CLINICAL EVENTS -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingClinicalEvents">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseClinicalEvents">
+          Clinical Events
+        </button>
+      </h2>
+      <div id="collapseClinicalEvents" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if clinical_events %}
+          <ul class="list-group">
+            {% for item in clinical_events %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No clinical events recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Devices -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingdevices">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsedevices">
+          Devices
+        </button>
+      </h2>
+      <div id="collapsedevices" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if devices %}
+          <ul class="list-group">
+            {% for item in devices %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No devices recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Ablations -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingablations">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseablations">
+          Ablations
+        </button>
+      </h2>
+      <div id="collapseablations" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if ablations %}
+          <ul class="list-group">
+            {% for item in ablations %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No ablations recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Device Implants -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingdeviceimplants">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsedeviceimplants">
+          Device Implants
+        </button>
+      </h2>
+      <div id="collapsedeviceimplants" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if device_implants %}
+          <ul class="list-group">
+            {% for item in device_implants %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No device implants recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Valve Interventions -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingvalveinterventions">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsevalveinterventions">
+          Valve Interventions
+        </button>
+      </h2>
+      <div id="collapsevalveinterventions" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if valve_interventions %}
+          <ul class="list-group">
+            {% for item in valve_interventions %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No valve interventions recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Coronary Interventions -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingcoronaryinterventions">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsecoronaryinterventions">
+          Coronary Interventions
+        </button>
+      </h2>
+      <div id="collapsecoronaryinterventions" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if coronary_interventions %}
+          <ul class="list-group">
+            {% for item in coronary_interventions %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No coronary interventions recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Therapies -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingtherapies">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsetherapies">
+          Therapies
+        </button>
+      </h2>
+      <div id="collapsetherapies" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if therapies %}
+          <ul class="list-group">
+            {% for item in therapies %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No therapies recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Allergies -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingallergies">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseallergies">
+          Allergies
+        </button>
+      </h2>
+      <div id="collapseallergies" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if allergies %}
+          <ul class="list-group">
+            {% for item in allergies %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No allergies recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Studies -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingstudies">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsestudies">
+          Studies
+        </button>
+      </h2>
+      <div id="collapsestudies" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if studies %}
+          <ul class="list-group">
+            {% for item in studies %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No studies recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Studies -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingpatientstudies">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsepatientstudies">
+          Patient Studies
+        </button>
+      </h2>
+      <div id="collapsepatientstudies" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if patient_studies %}
+          <ul class="list-group">
+            {% for item in patient_studies %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No patient studies recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Research Analyses -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingresearchanalyses">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseresearchanalyses">
+          Research Analyses
+        </button>
+      </h2>
+      <div id="collapseresearchanalyses" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if research_analyses %}
+          <ul class="list-group">
+            {% for item in research_analyses %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No research analyses recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Symptoms -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingsymptoms">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsesymptoms">
+          Symptoms
+        </button>
+      </h2>
+      <div id="collapsesymptoms" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if symptoms %}
+          <ul class="list-group">
+            {% for item in symptoms %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No symptoms recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- EP Studies -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingepstudies">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseepstudies">
+          EP Studies
+        </button>
+      </h2>
+      <div id="collapseepstudies" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if ep_studies %}
+          <ul class="list-group">
+            {% for item in ep_studies %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No ep studies recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Flecainide Tests -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingflecainidetests">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseflecainidetests">
+          Flecainide Tests
+        </button>
+      </h2>
+      <div id="collapseflecainidetests" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if flecainide_tests %}
+          <ul class="list-group">
+            {% for item in flecainide_tests %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No flecainide tests recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Adrenaline Tests -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingadrenalinetests">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseadrenalinetests">
+          Adrenaline Tests
+        </button>
+      </h2>
+      <div id="collapseadrenalinetests" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if adrenaline_tests %}
+          <ul class="list-group">
+            {% for item in adrenaline_tests %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No adrenaline tests recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Ajmaline Tests -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingajmalinetests">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseajmalinetests">
+          Ajmaline Tests
+        </button>
+      </h2>
+      <div id="collapseajmalinetests" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if ajmaline_tests %}
+          <ul class="list-group">
+            {% for item in ajmaline_tests %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No ajmaline tests recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ECGs -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingecgs">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseecgs">
+          ECGs
+        </button>
+      </h2>
+      <div id="collapseecgs" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if ecgs %}
+          <ul class="list-group">
+            {% for item in ecgs %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No ecgs recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Echocardiographies -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingechos">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseechos">
+          Echocardiographies
+        </button>
+      </h2>
+      <div id="collapseechos" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if echos %}
+          <ul class="list-group">
+            {% for item in echos %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No echocardiographies recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Late Potentials -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headinglatepotentials">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapselatepotentials">
+          Late Potentials
+        </button>
+      </h2>
+      <div id="collapselatepotentials" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if late_potentials %}
+          <ul class="list-group">
+            {% for item in late_potentials %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No late potentials recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- RMN / TC / PH Exams -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingrmntcph">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsermntcph">
+          RMN / TC / PH Exams
+        </button>
+      </h2>
+      <div id="collapsermntcph" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if rmn_tc_ph %}
+          <ul class="list-group">
+            {% for item in rmn_tc_ph %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No rmn / tc / ph exams recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Genetic Profiles -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headinggeneticprofiles">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegeneticprofiles">
+          Genetic Profiles
+        </button>
+      </h2>
+      <div id="collapsegeneticprofiles" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if genetic_profiles %}
+          <ul class="list-group">
+            {% for item in genetic_profiles %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No genetic profiles recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Genetic Statuses -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headinggeneticstatuses">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegeneticstatuses">
+          Genetic Statuses
+        </button>
+      </h2>
+      <div id="collapsegeneticstatuses" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if genetic_statuses %}
+          <ul class="list-group">
+            {% for item in genetic_statuses %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No genetic statuses recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Genetic Samples -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headinggeneticsamples">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegeneticsamples">
+          Genetic Samples
+        </button>
+      </h2>
+      <div id="collapsegeneticsamples" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if genetic_samples %}
+          <ul class="list-group">
+            {% for item in genetic_samples %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No genetic samples recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Genetic Tests -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headinggenetictests">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegenetictests">
+          Genetic Tests
+        </button>
+      </h2>
+      <div id="collapsegenetictests" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if genetic_tests %}
+          <ul class="list-group">
+            {% for item in genetic_tests %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No genetic tests recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Clinical Evaluations -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingclinicalevaluations">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseclinicalevaluations">
+          Clinical Evaluations
+        </button>
+      </h2>
+      <div id="collapseclinicalevaluations" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          {% if clinical_evaluations %}
+          <ul class="list-group">
+            {% for item in clinical_evaluations %}
+            <li class="list-group-item">{{ item }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted">No clinical evaluations recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
-{% endblock content %}
+
+{% endblock %}
