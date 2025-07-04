@@ -10,7 +10,7 @@ from .views import (KokoroHomeView, TherapyAutocomplete,
     LatePotentialsUpdateView,RMNTCPhUpdateView,GeneticProfileUpdateView,
     GeneticStatusUpdateView, GeneticTestUpdateView, #GeneticSampleUpdateView
     StudyUpdateView, TherapyUpdateView, ResearchAnalysisUpdateView, #PatientStudyUpdateView
-    SymptomUpdateView,
+    SymptomUpdateView, download_filtered_csv
 )
   
 app_name = "kokoro"
@@ -59,4 +59,5 @@ urlpatterns = [
     # path("patient-study/<uuid:pk>/edit/", PatientStudyUpdateView.as_view(), name="patientstudy-edit"),
     path("research-analysis/<uuid:pk>/edit/", ResearchAnalysisUpdateView.as_view(), name="researchanalysis-edit"),
     path("symptoms/<int:pk>/edit/", SymptomUpdateView.as_view(), name="symptom-edit"),
+    path("download/", download_filtered_csv, name="patient_list_csv"),
 ]

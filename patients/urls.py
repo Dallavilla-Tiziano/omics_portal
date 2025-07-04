@@ -10,5 +10,5 @@ urlpatterns = [
 	path("", PatientListView.as_view(), name="patient_list"),
 	# path("<uuid:pk>/", PatientDetailView.as_view(), name="patient_detail"),
 	path("reset/", PatientListView.as_view(), name="patient_reset"),
-	path("download/", download_filtered_csv, name="patient_list_csv"),
+	# path("download/", download_filtered_csv, name="patient_list_csv"),
 ]
