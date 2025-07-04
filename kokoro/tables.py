@@ -20,7 +20,7 @@ class PatientTable(BaseTable):
     details = tables.Column(empty_values=(), verbose_name="", orderable=False)
 
     def render_details(self, record):
-        url = reverse("patient_detail", args=[record.pk])
+        url = reverse("kokoro:patient_detail", args=[record.pk])
         return format_html(
             '<a href="{}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye-fill"></i></a>',
             url
@@ -28,5 +28,5 @@ class PatientTable(BaseTable):
 
     class Meta(BaseTable.Meta):
         model = PatientProfile
-        fields = ("id", "date_of_birth", "sex", "patient_type", "fin", "nation")
+        fields = ("id", "date_of_birth", "sex", "nation")
         sequence = ("...", "details")

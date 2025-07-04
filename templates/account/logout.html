@@ -6,11 +6,15 @@
 {% block body_class %}logout-page{% endblock body_class %}
 
 {% block content %}
-  <h1>Log Out</h1>
-  <p>Are you sure you want to log out?</p>
-  <form method="post" action="{% url 'account_logout' %}">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <button class="btn btn-danger" type="submit">Log Out</button>
-  </form>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="login-container text-center">
+      <h1>Log Out</h1>
+      <p>Are you sure you want to log out?</p>
+      <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-danger" type="submit">Log Out</button>
+      </form>
+    </div>
+</div>
 {% endblock content %}

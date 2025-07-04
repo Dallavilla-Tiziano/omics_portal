@@ -30,15 +30,9 @@
     <a class="navbar-brand d-block py-3 px-3 text-white" href="{% url 'home' %}">Home</a>
     <ul class="nav flex-column w-80 px-3">
       <li class="nav-item">
-        <a class="nav-link text-white" href="{% url 'about' %}">About</a>
+        <a class="nav-link text-white" href="https://af-ablation.org/en/about-us-2/">About</a>
       </li>
       {% if user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link text-white" href="{% url 'patient_list' %}">Patients</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="{% url 'kokoro_patient_list' %}">Kokoro</a>
-      </li>
       <li class="nav-item">
         <a class="nav-link text-white" href="{% url 'account_logout' %}">Log Out</a>
       </li>
@@ -68,13 +62,13 @@
       <div class="collapse navbar-collapse" id="topNavbar">
         <ul class="navbar-nav d-flex flex-row mb-0">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'patient-specific research' %}">Patient-specific research</a>
+            <a class="nav-link" href="{% url 'kokoro:patient-specific research' %}">Patient-specific research</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'advanced research' %}">Advanced research</a>
+            <a class="nav-link" href="{% url 'kokoro:advanced research' %}">Advanced research</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'remote monitoring' %}">Remore monitoring</a>
+            <a class="nav-link" href="{% url 'kokoro:remote monitoring' %}">Remote monitoring</a>
           </li>
         </ul>
       </div>
@@ -82,7 +76,7 @@
   </nav>
 
   <!-- CONTENUTO PRINCIPALE -->
-  <div class="container-fluid" style="margin-left: 200px; padding-top: 56px;">
+  <div class="container-fluid" style="margin-left: 170px; padding-top: 56px;">
     <main class="table-container">
       {% block content %}
       {% endblock content %}

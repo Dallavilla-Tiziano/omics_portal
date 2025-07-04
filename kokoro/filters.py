@@ -1,5 +1,6 @@
 import django_filters
 from .models import PatientProfile
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 
 # Salviamo il modello utente in una variabile chiamata User, 
@@ -22,32 +23,33 @@ class StrictChoiceFilter(django_filters.ChoiceFilter):
 # Inizia una classe FilterSet, ovvero una collezione di filtri applicabili a un modello: in questo caso, il modello è Patient Profile.
 class DemographicFilter(django_filters.FilterSet):
     """ Filters for patient demographics """
-    sex = django_filters.ChoiceFilter(choices=PatientProfile.Sex.choices, label="sex")
-    # nationality: filtro personalizzato con method="filter_nationality" → definito più sotto.
-    nationality = django_filters.ChoiceFilter(label="nation", method="filter_nationality")
+    search = django_filters.CharFilter(method="filter_search", label="Search")
+    sex = django_filters.ChoiceFilter(choices=PatientProfile.Sex.choices, label="Sex")
+    nationality = django_filters.ChoiceFilter(label="Nation", method="filter_nationality")
 
-    #Sovrascrive il costruttore __init__ per costruire dinamicamente la lista di nazionalità presenti nel database:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Get distinct nation values from the Patient records (ignoring empty ones).
-        # exclude(nation=""): ignora i record con campo vuoto.
+
+        # Dynamically populate nationality choices
         distinct_nations = PatientProfile.objects.exclude(nation="").values_list("nation", flat=True).distinct()
-        # Build choices list: include a blank choice for no selection.
-        # values_list(..., flat=True).distinct(): ottiene una lista dei valori univoci del campo nation.
-        # [("", "---------")] + [...]: aggiunge una scelta vuota (per non selezionare nulla).
         choices = [("", "---------")] + [(nation, nation) for nation in distinct_nations]
-        # Aggiorna le scelte del filtro nationality dinamicamente, sia in .extra che in .field.
         self.filters["nationality"].extra["choices"] = choices
         self.filters["nationality"].field.choices = choices
 
-    # Metodo associato al filtro nationality.
     def filter_nationality(self, qs, name, value):
         if value:
-               # Filtra per nation=value solo se il valore non è vuoto.
             return qs.filter(nation=value)
-        # Altrimenti ritorna l'intero queryset (nessun filtro applicato).
+        return qs
+
+    def filter_search(self, qs, name, value):
+        if value:
+            return qs.filter(
+                Q(first_name__icontains=value) |
+                Q(last_name__icontains=value) |
+                Q(cardioref_id__icontains=value)
+            )
         return qs
 
     class Meta:
         model = PatientProfile
-        fields = ["sex", "nationality"]
+        fields = ["sex", "nationality", "search"]

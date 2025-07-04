@@ -3,7 +3,7 @@ from django.shortcuts import redirect  # used to redirect the user to another pa
 from django.db.models import Count  # a Django function useful to count objects directly at the database query level.
 from collections import Counter  # Python class used to count occurrences of elements in a list or iterable. It is used to calculate distributions (e.g., how many patients per nation, sex, etc.).
 import json
-from kokoro.models import PatientProfile, ProcedureBase
+from kokoro.models import PatientProfile, ProcedureBase, Ajmaline_test, Sample, ResearchAnalysis
 from patients.models import Patient, Sample, Analysis
 
 
@@ -26,7 +26,9 @@ class HomePageView(TemplateView):
 
         ### NEW ###
         total_patientProfiles = PatientProfile.objects.count()
-        print(total_patientProfiles)
+        total_ajmalineTests = Ajmaline_test.objects.count()
+        total_Samples = Sample.objects.count()
+        total_researchAnalysis  = ResearchAnalysis.objects.count()
         #total_procedures = ProcedureBase.objects.count()
 
         # Get distribution data
@@ -59,11 +61,14 @@ class HomePageView(TemplateView):
 
         ### NEW ###
         context.update({
-            "total_kokoroPatients": total_patientProfiles,
+            'total_kokoroPatients': total_patientProfiles,
+            'total_ajmalineTests': total_ajmalineTests,
+            'total_Samples': total_Samples,
+            'total_researchAnalysis': total_researchAnalysis,
             #"total_procedures": total_procedures,
-            "sex_kokoroDistribution": json.dumps(sexProfiles_distribution),
-            "nation_distribution": json.dumps(nationProfiles_distribution),
-            "dob_distribution": json.dumps(dob_distribution),
+            'sex_kokoroDistribution': json.dumps(sexProfiles_distribution),
+            'nation_distribution': json.dumps(nationProfiles_distribution),
+            'dob_distribution': json.dumps(dob_distribution),
         })
 
         return context

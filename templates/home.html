@@ -8,37 +8,61 @@
 {% block content %}
 
 <div class="container">
-  <div class="col-12">
+  <div class="row">
+    <div class="col-12">
 
-    <!-- Statistiche Pazienti -->
-    <div class="row mb-3">
-      <div class="col-md-3">
-        <div class="stat-card stats">
-          <p>Total Patient Profiles</p>
-          <h2 id="total-patients-profiles">{{ total_kokoroPatients }}</h2>
+      <!-- Statistiche Pazienti -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="stat-card stats">
+            <p>Total Patient Profiles</p>
+            <h2 id="total-patients-profiles">{{ total_kokoroPatients }}</h2>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="stat-card stats">
+            <p>Total Ajmamline Tests</p>
+            <h2 id="total-ajmalineTests">{{ total_ajmalineTests }}</h2>
+          </div>
         </div>
       </div>
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Nation</h5>
-          <canvas id="nationChart" style="height: 300px;"></canvas>
+
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="stat-card stats">
+            <p>Total Samples Collected</p>
+            <h2 id="total_Samples">{{ total_Samples }}</h2>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="stat-card stats">
+            <p>Total Omics Analyses</p>
+            <h2 id="total_researchAnalysis">{{ total_researchAnalysis }}</h2>
+          </div>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Sex</h5>
-          <canvas id="sexChart" style="height: 300px;"></canvas>
+  <!--     <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="stat-card">
+            <h5>Distribution by Nation</h5>
+            <canvas id="nationChart" style="height: 300px;"></canvas>
+          </div>
         </div>
-      </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Date of Birth Distribution</h5>
-          <canvas id="dobChart" style="height: 300px;"></canvas>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <h5>Distribution by Sex</h5>
+            <canvas id="sexChart" style="height: 300px;"></canvas>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>   
+        <div class="col-md-3">
+          <div class="stat-card">
+            <h5>Date of Birth Distribution</h5>
+            <canvas id="dobChart" style="height: 300px;"></canvas>
+          </div>
+        </div>
+      </div> -->
+    </div>   
+  </div> 
     <!--
       <div class="col-md-3">
         <div class="stat-card stats">
@@ -115,7 +139,7 @@
   </div>
 </div>
 -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const nationData = JSON.parse('{{ nation_distribution|escapejs }}');
@@ -159,7 +183,7 @@
       }
     });
   });
-</script>
+</script> -->
 {% endblock content %}
 <!-- 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
