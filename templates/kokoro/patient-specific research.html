@@ -131,5 +131,16 @@ document.body.addEventListener("htmx:afterSettle", function(event) {
         setTimeout(updateDownloadLink, 100);
     }
 });
+
+// Intercept pagination link clicks for HTMX
+document.body.addEventListener('click', function(e) {
+    const link = e.target.closest('#table-container .pagination a');
+    if (!link) return;
+    e.preventDefault();
+    htmx.ajax('GET', link.href, {
+        target: '#table-container',
+        swap: 'innerHTML'
+    });
+});
 </script>
 {% endblock content %}

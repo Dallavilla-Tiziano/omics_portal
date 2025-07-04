@@ -204,7 +204,7 @@ class PatientDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView)
 							"time", "I", "II", "III", "aVR", "aVL", "aVF",
 							"V1", "V2", "V3", "V4", "V5", "V6"
 						]
-						df["time"] = df["time"] / 1000.0  # ✅ Fix: milliseconds to seconds
+						df["time"] = df["time"] / 2000.0  # ✅ Fix: milliseconds to seconds
 						lead_cols = [
 							"I", "II", "III", "aVR", "aVL", "aVF",
 							"V1", "V2", "V3", "V4", "V5", "V6"
