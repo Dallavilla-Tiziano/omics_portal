@@ -974,6 +974,7 @@ class ECG(Diagnostic_exams):
 		default=''
 	)
 
+	ecg_file = models.FileField(upload_to='ecg_data/', null=True, blank=True)
 	hr = models.FloatField(null=True, blank=True)
 	rr = models.FloatField(null=True, blank=True) # measure unit in ms
 	pq = models.FloatField(null=True, blank=True) # measure unit in ms

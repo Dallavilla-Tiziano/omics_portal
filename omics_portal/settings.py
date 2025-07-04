@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from environs import Env
+import os
 
 # Environs set up
 env = Env()
@@ -205,3 +206,6 @@ ADMIN_TOOLS_INDEX_DASHBOARD = 'pages.dashboard.CustomIndexDashboard'
 ADMIN_TOOLS_MENU = 'pages.menu.CustomMenu'
 
 TABBED_ADMIN_USE_JQUERY_UI = True
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

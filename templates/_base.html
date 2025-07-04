@@ -37,7 +37,7 @@
         <a class="nav-link text-white" href="{% url 'patient_list' %}">Patients</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link text-white" href="{% url 'kokoro_patient_list' %}">Kokoro</a>
+        <a class="nav-link text-white" href="{% url 'kokoro:kokoro_patient_list' %}">Kokoro</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-white" href="{% url 'account_logout' %}">Log Out</a>
@@ -68,13 +68,13 @@
       <div class="collapse navbar-collapse" id="topNavbar">
         <ul class="navbar-nav d-flex flex-row mb-0">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'patient-specific research' %}">Patient-specific research</a>
+            <a class="nav-link" href="{% url 'kokoro:patient-specific research' %}">Patient-specific research</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'advanced research' %}">Advanced research</a>
+            <a class="nav-link" href="{% url 'kokoro:advanced research' %}">Advanced research</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'remote monitoring' %}">Remore monitoring</a>
+            <a class="nav-link" href="{% url 'kokoro:remote monitoring' %}">Remore monitoring</a>
           </li>
         </ul>
       </div>

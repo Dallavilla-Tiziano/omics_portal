@@ -1,611 +1,969 @@
 {% extends "_base.html" %}
 {% block content %}
-
-<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <div class="container my-4">
-  <h2 class="mb-4">Patient Detail: {{ patient }}</h2>
+	<h2 class="mb-4">Patient Detail: {{ patient }}</h2>
 
-  <div class="accordion" id="patientAccordion">
+	<div class="accordion" id="patientAccordion">
 
-    <!-- DEMOGRAPHICS -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingDemographics">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDemographics">
-          Demographic Information
-        </button>
-      </h2>
-      <div id="collapseDemographics" class="accordion-collapse collapse show">
-        <div class="accordion-body">
-          <ul class="list-group">
-            <li class="list-group-item"><strong>First Name:</strong> {{ patient.first_name }}</li>
-            <li class="list-group-item"><strong>Last Name:</strong> {{ patient.last_name }}</li>
-            <li class="list-group-item"><strong>Sex:</strong> {{ patient.get_sex_display }}</li>
-            <li class="list-group-item"><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</li>
-            <li class="list-group-item"><strong>Nation:</strong> {{ patient.nation }}</li>
-            <li class="list-group-item"><strong>Region:</strong> {{ patient.region }}</li>
-            <li class="list-group-item"><strong>Province:</strong> {{ patient.province }}</li>
-            <li class="list-group-item"><strong>Height:</strong> {{ patient.height }} cm</li>
-            <li class="list-group-item"><strong>Weight:</strong> {{ patient.weight }} kg</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+		<!-- DEMOGRAPHICS (always visible) -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingDemographics">
+				<button class="accordion-button" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseDemographics"
+								aria-expanded="true"
+								aria-controls="collapseDemographics">
+					Demographic Information
+				</button>
+			</h2>
+			<div id="collapseDemographics"
+					 class="accordion-collapse collapse show"
+					 aria-labelledby="headingDemographics"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						<li class="list-group-item"><strong>First Name:</strong> {{ patient.first_name }}</li>
+						<li class="list-group-item"><strong>Last Name:</strong> {{ patient.last_name }}</li>
+						<li class="list-group-item"><strong>Sex:</strong> {{ patient.get_sex_display }}</li>
+						<li class="list-group-item"><strong>Date of Birth:</strong> {{ patient.date_of_birth }}</li>
+						<li class="list-group-item"><strong>Nation:</strong> {{ patient.nation }}</li>
+						<li class="list-group-item"><strong>Region:</strong> {{ patient.region }}</li>
+						<li class="list-group-item"><strong>Province:</strong> {{ patient.province }}</li>
+						<li class="list-group-item"><strong>Height:</strong> {{ patient.height }} cm</li>
+						<li class="list-group-item"><strong>Weight:</strong> {{ patient.weight }} kg</li>
+					</ul>
+				</div>
+			</div>
+		</div>
 
-    <!-- SAMPLES -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingSamples">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSamples">
-          Samples
-        </button>
-      </h2>
-      <div id="collapseSamples" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if samples %}
-          <ul class="list-group">
-            {% for item in samples %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No samples recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if samples %}
+		<!-- SAMPLES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingSamples">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseSamples"
+								aria-expanded="false"
+								aria-controls="collapseSamples">
+					Samples
+				</button>
+			</h2>
+			<div id="collapseSamples"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingSamples"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for s in samples %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<span>{{ s }}</span>
+								<a href="{% url 'kokoro:sample-edit' s.pk %}"
+									 class="btn btn-sm btn-outline-primary"
+									 title="Edit sample">
+									<i class="bi bi-pencil"></i>
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- CLINICAL EVENTS -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingClinicalEvents">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseClinicalEvents">
-          Clinical Events
-        </button>
-      </h2>
-      <div id="collapseClinicalEvents" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if clinical_events %}
-          <ul class="list-group">
-            {% for item in clinical_events %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No clinical events recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if clinical_events %}
+		<!-- CLINICAL EVENTS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingClinicalEvents">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseClinicalEvents"
+								aria-expanded="false"
+								aria-controls="collapseClinicalEvents">
+					Clinical Events
+				</button>
+			</h2>
+			<div id="collapseClinicalEvents"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingClinicalEvents"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ev in clinical_events %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<span>{{ ev }}</span>
+								<a href="{% url 'kokoro:clinicalevent-edit' ev.pk %}"
+									 class="btn btn-sm btn-outline-primary"
+									 title="Edit event">
+									<i class="bi bi-pencil"></i>
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Devices -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingdevices">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsedevices">
-          Devices
-        </button>
-      </h2>
-      <div id="collapsedevices" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if devices %}
-          <ul class="list-group">
-            {% for item in devices %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No devices recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if devices %}
+		<!-- DEVICES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingDevices">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseDevices"
+								aria-expanded="false"
+								aria-controls="collapseDevices">
+					Devices
+				</button>
+			</h2>
+			<div id="collapseDevices"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingDevices">
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for d in devices %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ d }}</span>
+							<a href="{% url 'kokoro:deviceinstance-edit' d.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Ablations -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingablations">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseablations">
-          Ablations
-        </button>
-      </h2>
-      <div id="collapseablations" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if ablations %}
-          <ul class="list-group">
-            {% for item in ablations %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No ablations recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if ablations %}
+		<!-- ABLATIONS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingAblations">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseAblations"
+								aria-expanded="false"
+								aria-controls="collapseAblations">
+					Ablations
+				</button>
+			</h2>
+			<div id="collapseAblations"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingAblations"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for a in ablations %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ a }}</span>
+							<a href="{% url 'kokoro:ablation-edit' a.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Device Implants -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingdeviceimplants">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsedeviceimplants">
-          Device Implants
-        </button>
-      </h2>
-      <div id="collapsedeviceimplants" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if device_implants %}
-          <ul class="list-group">
-            {% for item in device_implants %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No device implants recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if device_implants %}
+		<!-- DEVICE IMPLANTS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingDeviceImplants">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseDeviceImplants"
+								aria-expanded="false"
+								aria-controls="collapseDeviceImplants">
+					Device Implants
+				</button>
+			</h2>
+			<div id="collapseDeviceImplants"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingDeviceImplants"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for di in device_implants %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ di }}</span>
+							<a href="{% url 'kokoro:deviceimplant-edit' di.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Valve Interventions -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingvalveinterventions">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsevalveinterventions">
-          Valve Interventions
-        </button>
-      </h2>
-      <div id="collapsevalveinterventions" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if valve_interventions %}
-          <ul class="list-group">
-            {% for item in valve_interventions %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No valve interventions recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if valve_interventions %}
+		<!-- VALVE INTERVENTIONS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingValveInterventions">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseValveInterventions"
+								aria-expanded="false"
+								aria-controls="collapseValveInterventions">
+					Valve Interventions
+				</button>
+			</h2>
+			<div id="collapseValveInterventions"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingValveInterventions"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for vi in valve_interventions %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ vi }}</span>
+							<a href="{% url 'kokoro:valveintervention-edit' vi.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Coronary Interventions -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingcoronaryinterventions">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsecoronaryinterventions">
-          Coronary Interventions
-        </button>
-      </h2>
-      <div id="collapsecoronaryinterventions" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if coronary_interventions %}
-          <ul class="list-group">
-            {% for item in coronary_interventions %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No coronary interventions recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if coronary_interventions %}
+		<!-- CORONARY INTERVENTIONS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingCoronaryInterventions">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseCoronaryInterventions"
+								aria-expanded="false"
+								aria-controls="collapseCoronaryInterventions">
+					Coronary Interventions
+				</button>
+			</h2>
+			<div id="collapseCoronaryInterventions"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingCoronaryInterventions"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ci in coronary_interventions %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ ci }}</span>
+							<a href="{% url 'kokoro:coronaryintervention-edit' ci.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Therapies -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingtherapies">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsetherapies">
-          Therapies
-        </button>
-      </h2>
-      <div id="collapsetherapies" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if therapies %}
-          <ul class="list-group">
-            {% for item in therapies %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No therapies recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if therapies %}
+		<!-- THERAPIES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingTherapies">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseTherapies"
+								aria-expanded="false"
+								aria-controls="collapseTherapies">
+					Therapies
+				</button>
+			</h2>
+			<div id="collapseTherapies"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingTherapies"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for t in therapies %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ t }}</span>
+							<a href="{% url 'kokoro:therapy-edit' t.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Allergies -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingallergies">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseallergies">
-          Allergies
-        </button>
-      </h2>
-      <div id="collapseallergies" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if allergies %}
-          <ul class="list-group">
-            {% for item in allergies %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No allergies recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if allergies %}
+		<!-- ALLERGIES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingAllergies">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseAllergies"
+								aria-expanded="false"
+								aria-controls="collapseAllergies">
+					Allergies
+				</button>
+			</h2>
+			<div id="collapseAllergies"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingAllergies"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for al in allergies %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ al }}</span>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Studies -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingstudies">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsestudies">
-          Studies
-        </button>
-      </h2>
-      <div id="collapsestudies" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if studies %}
-          <ul class="list-group">
-            {% for item in studies %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No studies recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if studies %}
+		<!-- STUDIES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingStudies">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseStudies"
+								aria-expanded="false"
+								aria-controls="collapseStudies">
+					Studies
+				</button>
+			</h2>
+			<div id="collapseStudies"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingStudies"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for st in studies %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ st }}</span>
+							<a href="{% url 'kokoro:study-edit' st.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Patient Studies -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingpatientstudies">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsepatientstudies">
-          Patient Studies
-        </button>
-      </h2>
-      <div id="collapsepatientstudies" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if patient_studies %}
-          <ul class="list-group">
-            {% for item in patient_studies %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No patient studies recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		<!-- {% if patient_studies %} -->
+		<!-- PATIENT STUDIES -->
+<!--     <div class="accordion-item">
+			<h2 class="accordion-header" id="headingPatientStudies">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapsePatientStudies"
+								aria-expanded="false"
+								aria-controls="collapsePatientStudies">
+					Patient Studies
+				</button>
+			</h2>
+			<div id="collapsePatientStudies"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingPatientStudies"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ps in patient_studies %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ ps }}</span>
+							<a href="{% url 'kokoro:deviceinstance-edit' ps.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div> -->
+		<!-- {% endif %} -->
 
-    <!-- Research Analyses -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingresearchanalyses">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseresearchanalyses">
-          Research Analyses
-        </button>
-      </h2>
-      <div id="collapseresearchanalyses" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if research_analyses %}
-          <ul class="list-group">
-            {% for item in research_analyses %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No research analyses recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if research_analyses %}
+		<!-- RESEARCH ANALYSES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingResearchAnalyses">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseResearchAnalyses"
+								aria-expanded="false"
+								aria-controls="collapseResearchAnalyses">
+					Research Analyses
+				</button>
+			</h2>
+			<div id="collapseResearchAnalyses"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingResearchAnalyses"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ra in research_analyses %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ ra }}</span>
+							<a href="{% url 'kokoro:researchanalysis-edit' ra.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Symptoms -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingsymptoms">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsesymptoms">
-          Symptoms
-        </button>
-      </h2>
-      <div id="collapsesymptoms" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if symptoms %}
-          <ul class="list-group">
-            {% for item in symptoms %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No symptoms recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if symptoms %}
+		<!-- SYMPTOMS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingSymptoms">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseSymptoms"
+								aria-expanded="false"
+								aria-controls="collapseSymptoms">
+					Symptoms
+				</button>
+			</h2>
+			<div id="collapseSymptoms"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingSymptoms"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for s in symptoms %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ s }}</span>
+							<a href="{% url 'kokoro:symptom-edit' s.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- EP Studies -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingepstudies">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseepstudies">
-          EP Studies
-        </button>
-      </h2>
-      <div id="collapseepstudies" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if ep_studies %}
-          <ul class="list-group">
-            {% for item in ep_studies %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No ep studies recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if ep_studies %}
+		<!-- EP STUDIES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingEPStudies">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseEPStudies"
+								aria-expanded="false"
+								aria-controls="collapseEPStudies">
+					EP Studies
+				</button>
+			</h2>
+			<div id="collapseEPStudies"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingEPStudies"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ep in ep_studies %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ ep }}</span>
+							<a href="{% url 'kokoro:epstudy-edit' ep.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Flecainide Tests -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingflecainidetests">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseflecainidetests">
-          Flecainide Tests
-        </button>
-      </h2>
-      <div id="collapseflecainidetests" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if flecainide_tests %}
-          <ul class="list-group">
-            {% for item in flecainide_tests %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No flecainide tests recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if flecainide_tests %}
+		<!-- FLECAINIDE TESTS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingFlecTests">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseFlecTests"
+								aria-expanded="false"
+								aria-controls="collapseFlecTests">
+					Flecainide Tests
+				</button>
+			</h2>
+			<div id="collapseFlecTests"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingFlecTests"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ft in flecainide_tests %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ ft }}</span>
+							<a href="{% url 'kokoro:flecainidetest-edit' ft.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Adrenaline Tests -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingadrenalinetests">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseadrenalinetests">
-          Adrenaline Tests
-        </button>
-      </h2>
-      <div id="collapseadrenalinetests" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if adrenaline_tests %}
-          <ul class="list-group">
-            {% for item in adrenaline_tests %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No adrenaline tests recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if adrenaline_tests %}
+		<!-- ADRENALINE TESTS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingAdrTests">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseAdrTests"
+								aria-expanded="false"
+								aria-controls="collapseAdrTests">
+					Adrenaline Tests
+				</button>
+			</h2>
+			<div id="collapseAdrTests"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingAdrTests"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for at in adrenaline_tests %}
+							<li class="list-group-item">{{ at }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Ajmaline Tests -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingajmalinetests">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseajmalinetests">
-          Ajmaline Tests
-        </button>
-      </h2>
-      <div id="collapseajmalinetests" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if ajmaline_tests %}
-          <ul class="list-group">
-            {% for item in ajmaline_tests %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No ajmaline tests recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if ajmaline_tests %}
+		<!-- AJMALINE TESTS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingAjmTests">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseAjmTests"
+								aria-expanded="false"
+								aria-controls="collapseAjmTests">
+					Ajmaline Tests
+				</button>
+			</h2>
+			<div id="collapseAjmTests"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingAjmTests"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for at in ajmaline_tests %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ at }}</span>
+							<a href="{% url 'kokoro:ajmalinetest-edit' at.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- ECGs -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingecgs">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseecgs">
-          ECGs
-        </button>
-      </h2>
-      <div id="collapseecgs" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if ecgs %}
-          <ul class="list-group">
-            {% for item in ecgs %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No ecgs recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+		{% if ecgs %}
+		<!-- ECGs -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingECGs">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseECGs"
+								aria-expanded="false"
+								aria-controls="collapseECGs">
+					ECGs
+				</button>
+			</h2>
+			<div id="collapseECGs"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingECGs">
+				<div class="accordion-body">
 
-    <!-- Echocardiographies -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingechos">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseechos">
-          Echocardiographies
-        </button>
-      </h2>
-      <div id="collapseechos" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if echos %}
-          <ul class="list-group">
-            {% for item in echos %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No echocardiographies recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+					<ul class="list-group mb-4">
+						{% for e in ecgs %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<span>{{ e }}</span>
+								<a href="{% url 'kokoro:ecg-edit' e.pk %}"
+									 class="btn btn-sm btn-outline-primary"
+									 title="Edit ECG">
+									<i class="bi bi-pencil"></i>
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
 
-    <!-- Late Potentials -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headinglatepotentials">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapselatepotentials">
-          Late Potentials
-        </button>
-      </h2>
-      <div id="collapselatepotentials" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if late_potentials %}
-          <ul class="list-group">
-            {% for item in late_potentials %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No late potentials recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+					{% if ecg_plot_data %}
+					  <hr>
+					  <h5>ECG Plot(s)</h5>
+					  <div id="ecg-plots">
+						{% for ecg in ecg_plot_data %}
+						<div class="ecg-plot mb-4">
+						  <h6>{{ ecg.label }}</h6>
+						  <div id="plot-{{ ecg.id }}"></div>
+						  <script>
+						    (function() {
+						      const data = JSON.parse('{{ ecg.data|escapejs }}');
+						      const time = data.map(d => d.time);
+						      const leads = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"];
+						      const colors = [
+						        "blue", "orange", "green", "red", "purple", "brown",
+						        "magenta", "black", "olive", "teal", "dodgerblue", "coral"
+						      ];
 
-    <!-- RMN / TC / PH Exams -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingrmntcph">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsermntcph">
-          RMN / TC / PH Exams
-        </button>
-      </h2>
-      <div id="collapsermntcph" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if rmn_tc_ph %}
-          <ul class="list-group">
-            {% for item in rmn_tc_ph %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No rmn / tc / ph exams recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+						      const traces = leads.map((lead, i) => {
+						        return {
+						          x: time,
+						          y: data.map(d => d[lead]),
+						          mode: 'lines',
+						          line: { color: colors[i], width: 1 },
+						          name: lead,
+						          xaxis: 'x',
+						          yaxis: 'y' + (i + 1)
+						        };
+						      });
 
-    <!-- Genetic Profiles -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headinggeneticprofiles">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegeneticprofiles">
-          Genetic Profiles
-        </button>
-      </h2>
-      <div id="collapsegeneticprofiles" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if genetic_profiles %}
-          <ul class="list-group">
-            {% for item in genetic_profiles %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No genetic profiles recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+						      const layout = {
+						        title: '12-Lead ECG',
+						        height: 1200,
+						        showlegend: false,
+						        grid: { rows: 12, columns: 1, pattern: 'independent' },
+						        margin: { l: 50, r: 10, t: 40, b: 30 },
+						      };
 
-    <!-- Genetic Statuses -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headinggeneticstatuses">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegeneticstatuses">
-          Genetic Statuses
-        </button>
-      </h2>
-      <div id="collapsegeneticstatuses" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if genetic_statuses %}
-          <ul class="list-group">
-            {% for item in genetic_statuses %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No genetic statuses recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+						      // Add individual y-axes
+						      leads.forEach((lead, i) => {
+						        layout['yaxis' + (i + 1)] = {
+						          title: lead,
+						          range: [-2.5, 2.5],
+						          domain: [(11 - i) / 12, (12 - i) / 12],
+						          showgrid: true
+						        };
+						      });
 
-    <!-- Genetic Samples -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headinggeneticsamples">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegeneticsamples">
-          Genetic Samples
-        </button>
-      </h2>
-      <div id="collapsegeneticsamples" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if genetic_samples %}
-          <ul class="list-group">
-            {% for item in genetic_samples %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No genetic samples recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+						      layout.xaxis = { title: "Time (seconds)", showgrid: true };
 
-    <!-- Genetic Tests -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headinggenetictests">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsegenetictests">
-          Genetic Tests
-        </button>
-      </h2>
-      <div id="collapsegenetictests" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if genetic_tests %}
-          <ul class="list-group">
-            {% for item in genetic_tests %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No genetic tests recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+						      Plotly.newPlot("plot-{{ ecg.id }}", traces, layout);
+						    })();
+						  </script>
+						</div>
+						{% endfor %}
+					  </div>
+					{% else %}
+					  <p class="text-muted">No ECG plots available.</p>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		{% endif %}
 
-    <!-- Clinical Evaluations -->
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingclinicalevaluations">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseclinicalevaluations">
-          Clinical Evaluations
-        </button>
-      </h2>
-      <div id="collapseclinicalevaluations" class="accordion-collapse collapse">
-        <div class="accordion-body">
-          {% if clinical_evaluations %}
-          <ul class="list-group">
-            {% for item in clinical_evaluations %}
-            <li class="list-group-item">{{ item }}</li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-muted">No clinical evaluations recorded.</p>
-          {% endif %}
-        </div>
-      </div>
-    </div>
 
-  </div>
+
+		{% if echos %}
+		<!-- ECHOS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingEchos">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseEchos"
+								aria-expanded="false"
+								aria-controls="collapseEchos">
+					Echocardiographies
+				</button>
+			</h2>
+			<div id="collapseEchos"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingEchos"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ec in echos %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ ec }}</span>
+							<a href="{% url 'kokoro:echo-edit' ec.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if late_potentials %}
+		<!-- LATE POTENTIALS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingLatePot">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseLatePot"
+								aria-expanded="false"
+								aria-controls="collapseLatePot">
+					Late Potentials
+				</button>
+			</h2>
+			<div id="collapseLatePot"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingLatePot"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for lp in late_potentials %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ lp }}</span>
+							<a href="{% url 'kokoro:latepotentials-edit' lp.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if rmn_tc_ph %}
+		<!-- RMN / TC / PH -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingRMN">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseRMN"
+								aria-expanded="false"
+								aria-controls="collapseRMN">
+					RMN / TC / PH Exams
+				</button>
+			</h2>
+			<div id="collapseRMN"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingRMN">
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for x in rmn_tc_ph %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ x }}</span>
+							<a href="{% url 'kokoro:rmn_tc_ph-edit' x.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if genetic_profiles %}
+		<!-- GENETIC PROFILES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingGenProfiles">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseGenProfiles"
+								aria-expanded="false"
+								aria-controls="collapseGenProfiles">
+					Genetic Profiles
+				</button>
+			</h2>
+			<div id="collapseGenProfiles"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingGenProfiles"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for gp in genetic_profiles %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ gp }}</span>
+							<a href="{% url 'kokoro:geneticprofile-edit' gp.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if genetic_statuses %}
+		<!-- GENETIC STATUSES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingGenStatuses">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseGenStatuses"
+								aria-expanded="false"
+								aria-controls="collapseGenStatuses">
+					Genetic Statuses
+				</button>
+			</h2>
+			<div id="collapseGenStatuses"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingGenStatuses"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for gs in genetic_statuses %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ gs }}</span>
+							<a href="{% url 'kokoro:geneticstatus-edit' gs.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if genetic_samples %}
+		<!-- GENETIC SAMPLES -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingGenSamples">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseGenSamples"
+								aria-expanded="false"
+								aria-controls="collapseGenSamples">
+					Genetic Samples
+				</button>
+			</h2>
+			<div id="collapseGenSamples"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingGenSamples"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for gsmp in genetic_samples %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ gsmp }}</span>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if genetic_tests %}
+		<!-- GENETIC TESTS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingGenTests">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseGenTests"
+								aria-expanded="false"
+								aria-controls="collapseGenTests">
+					Genetic Tests
+				</button>
+			</h2>
+			<div id="collapseGenTests"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingGenTests">
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for gt in genetic_tests %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ gt }}</span>
+							<a href="{% url 'kokoro:genetictest-edit' gt.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+		{% if clinical_evaluations %}
+		<!-- CLINICAL EVALUATIONS -->
+		<div class="accordion-item">
+			<h2 class="accordion-header" id="headingClinEvals">
+				<button class="accordion-button collapsed" type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#collapseClinEvals"
+								aria-expanded="false"
+								aria-controls="collapseClinEvals">
+					Clinical Evaluations
+				</button>
+			</h2>
+			<div id="collapseClinEvals"
+					 class="accordion-collapse collapse"
+					 aria-labelledby="headingClinEvals"
+					 >
+				<div class="accordion-body">
+					<ul class="list-group">
+						{% for ce in clinical_evaluations %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+							<span>{{ ce }}</span>
+							<a href="{% url 'kokoro:clinicalevaluation-edit' ce.pk %}"
+								 class="btn btn-sm btn-outline-primary"
+								 title="Edit sample">
+								<i class="bi bi-pencil"></i>
+							</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+	</div>
 </div>
 
 {% endblock %}

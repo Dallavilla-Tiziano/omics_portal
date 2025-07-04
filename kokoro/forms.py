@@ -5,7 +5,7 @@ from .models import (PatientProfile, Late_potentials, Study,
 						DeviceEvent, DeviceImplant, DeviceInstance,
 						EP_study, ECG, ECHO,
 						Flecainide_test, Genetic_profile, Genetic_status,
-						Genetic_test, RMN_TC_PH, Sample, ValveIntervention
+						Genetic_test, RMN_TC_PH, Sample, ValveIntervention, Therapy, Symptoms, ResearchAnalysis
 					)
 from .validators import (validate_not_in_future, clean_positive_float, clean_start_end_date,
 							clean_positive_int
@@ -241,6 +241,31 @@ class ECGForm(forms.ModelForm):
 	def clean_date_of_exam(self):
 		return validate_not_in_future(self.cleaned_data.get('date_of_exam'))
 
+	def clean_csv_file(self):
+		csv_file = self.cleaned_data.get('csv_file')
+
+		if not csv_file:
+			return csv_file  # Allow blank if optional
+
+		try:
+			# Read CSV with no header
+			df = pd.read_csv(csv_file, header=None)
+		except Exception as e:
+			raise ValidationError(f"Unable to read CSV file: {e}")
+
+		# Expected 13 columns: time + 12 leads
+		if df.shape[1] != 13:
+			raise ValidationError(f"CSV must have exactly 13 columns (time + 12 leads). Found: {df.shape[1]}")
+
+		# Assign expected column names
+		expected_columns = [
+			"time", "I", "II", "III", "aVR", "aVL", "aVF",
+			"V1", "V2", "V3", "V4", "V5", "V6"
+		]
+		df.columns = expected_columns
+
+		return csv_file
+
 	class Meta:
 		model = ECG
 		fields = '__all__'
@@ -274,6 +299,24 @@ class DeviceInstanceForm(forms.ModelForm):
 
 	class Meta:
 		model = DeviceInstance
+		fields = '__all__'
+
+class TherapyForm(forms.ModelForm):
+
+	class Meta:
+		model = Therapy
+		fields = '__all__'
+
+class ResearchAnalysisForm(forms.ModelForm):
+
+	class Meta:
+		model = ResearchAnalysis
+		fields = '__all__'
+
+class SymptomForm(forms.ModelForm):
+
+	class Meta:
+		model = Symptoms
 		fields = '__all__'
 
 class DeviceImplantForm(forms.ModelForm):

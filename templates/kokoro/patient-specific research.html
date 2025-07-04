@@ -13,7 +13,7 @@
     <div class="col-lg-2 col-md-3 mb-4">
       <form method="get"
             autocomplete="off"
-            hx-get="{% url 'patient-specific research' %}"
+            hx-get="{% url 'kokoro:patient-specific research' %}"
             hx-target="#table-container"
             hx-trigger="change delay:500ms"
             hx-push-url="true"
@@ -33,7 +33,7 @@
           <div class="card-body">
             <label for="rows">Rows per page:</label>
             <select name="rows" id="rows" class="form-select"
-                    hx-get="{% url 'patient-specific research' %}"
+                    hx-get="{% url 'kokoro:patient-specific research' %}"
                     hx-target="#table-container"
                     hx-trigger="change"
                     hx-vals="js:{ rows: document.getElementById('rows').value }">
@@ -58,7 +58,7 @@
         <!-- Filtered Count Box -->
         <div class="card shadow-sm flex-grow-1" style="min-width: 250px;"
              id="filter-counts"
-             hx-get="{% url 'filter_counts_partial' %}"
+             hx-get="{% url 'kokoro:filter_counts_partial' %}"
              hx-trigger="load, change from:#combined-filter-form"
              hx-include="#combined-filter-form">
           {% include "kokoro/filter_counts.html" %}
