@@ -84,34 +84,50 @@ class KokoroHomeView(LoginRequiredMixin, SingleTableMixin, FilterView):
 	login_url = "account_login"
 
 class PatientSpecificResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
-	model = PatientProfile
-	table_class = PatientTable
-	context_object_name = "patient-specific research"
-	template_name = "kokoro/patient-specific research.html"
-	login_url = "account_login"
+    model = PatientProfile
+    table_class = PatientTable
+    # context_object_name = "patient-specific research"
+    template_name = "kokoro/patient-specific research.html"
+    login_url = "account_login"
 
-	def get_queryset(self):
-		return get_filtered_patients(self.request)
+    def get_queryset(self):
+        # Start with base queryset
+        qs = PatientProfile.objects.all()
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context["demographic_filter"] = DemographicFilter(self.request.GET, queryset=PatientProfile.objects.all())
-		context["filter_counts"] = get_filter_counts(self.request)
-		return context
+        # Apply demographic filter
+        self.demographic_filter = DemographicFilter(self.request.GET, queryset=qs)
+        qs = self.demographic_filter.qs
 
-	def render_to_response(self, context, **response_kwargs):
-		if self.request.headers.get("HX-Request"):
-			return render(self.request, "kokoro/_table.html", context)
-		return super().render_to_response(context, **response_kwargs)
+        # Future: apply other filters here
+        # self.sample_filter = SampleFilter(self.request.GET, queryset=qs)
+        # qs = self.sample_filter.qs
 
-	def get_table_pagination(self, table):
-		rows = self.request.GET.get("rows", "20")
-		if self.request.GET.get("paginate") == "false":
-			return False
-		try:
-			return {"per_page": int(rows)}
-		except ValueError:
-			return {"per_page": 20}
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Reuse filters from get_queryset (already applied)
+        context["demographic_filter"] = getattr(self, "demographic_filter", DemographicFilter(self.request.GET))
+        # context["sample_filter"] = getattr(self, "sample_filter", SampleFilter(self.request.GET))
+        context["filter_counts"] = get_filter_counts(self.request)
+
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get("HX-Request"):
+            return render(self.request, "kokoro/_table.html", context)
+        return super().render_to_response(context, **response_kwargs)
+
+    def get_table_pagination(self, table):
+        rows = self.request.GET.get("rows", "20")
+        if self.request.GET.get("paginate") == "false":
+            return False
+        try:
+            return {"per_page": int(rows)}
+        except ValueError:
+            return {"per_page": 20}
+
 
 class AdvancedResearchView(LoginRequiredMixin, SingleTableMixin, FilterView):
 	model = PatientProfile

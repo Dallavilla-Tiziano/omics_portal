@@ -34,12 +34,6 @@
       </li>
       {% if user.is_authenticated %}
       <li class="nav-item">
-        <a class="nav-link text-white" href="{% url 'patient_list' %}">Patients</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-white" href="{% url 'kokoro:kokoro_patient_list' %}">Kokoro</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link text-white" href="{% url 'account_logout' %}">Log Out</a>
       </li>
       {% else %}

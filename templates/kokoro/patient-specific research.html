@@ -15,57 +15,81 @@
             autocomplete="off"
             hx-get="{% url 'kokoro:patient-specific research' %}"
             hx-target="#table-container"
-            hx-trigger="change delay:500ms"
+            hx-trigger="load, keyup from:#combined-filter-form, change from:#combined-filter-form delay:500ms"
             hx-push-url="true"
             hx-params="*"
             id="combined-filter-form">
 
         <div class="card shadow-sm mb-3">
-            <div class="card-header">Demographic Filters</div>
-            <div class="card-body">
-                {{ demographic_filter.form.as_p }}
+          <div class="card-header">Demographic Filters</div>
+          <div class="card-body">
+
+            <!-- Search Bar -->
+            <div class="mb-3">
+              <label for="id_search" class="form-label">Search</label>
+              <input type="text"
+                     name="search"
+                     id="id_search"
+                     class="form-control"
+                     placeholder="Name, Surname or CardioRef ID"
+                     value="{{ request.GET.search }}">
             </div>
+
+            <!-- Sex Field -->
+            <div class="mb-3">
+              <label for="{{ demographic_filter.form.sex.id_for_label }}">Sex</label>
+              {{ demographic_filter.form.sex|add_class:"form-select" }}
+            </div>
+
+            <!-- Nation Field -->
+            <div class="mb-3">
+              <label for="{{ demographic_filter.form.nationality.id_for_label }}">Nation</label>
+              {{ demographic_filter.form.nationality|add_class:"form-select" }}
+            </div>
+
+          </div>
         </div>
       </form>
-        <!-- Table Display Settings -->
-        <div class="card shadow-sm flex-grow-1" style="min-width: 250px;">
-          <div class="card-header">Table Display Settings</div>
-          <div class="card-body">
-            <label for="rows">Rows per page:</label>
-            <select name="rows" id="rows" class="form-select"
-                    hx-get="{% url 'kokoro:patient-specific research' %}"
-                    hx-target="#table-container"
-                    hx-trigger="change"
-                    hx-vals="js:{ rows: document.getElementById('rows').value }">
-                <option value="10">10</option>
-                <option value="20" selected>20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-          </div>
-        </div>
 
-        <!-- Export Cohort -->
-        <div class="card shadow-sm flex-grow-1" style="min-width: 250px;">
-          <div class="card-header">Export Cohort</div>
-          <div class="card-body">
-            <a id="download-link" href="{% url 'patient_list_csv' %}" class="btn btn-primary w-100">
-              Download CSV
-            </a>
-          </div>
+      <!-- Table Display Settings -->
+      <div class="card shadow-sm flex-grow-1" style="min-width: 250px;">
+        <div class="card-header">Table Display Settings</div>
+        <div class="card-body">
+          <label for="rows">Rows per page:</label>
+          <select name="rows" id="rows" class="form-select"
+                  hx-get="{% url 'kokoro:patient-specific research' %}"
+                  hx-target="#table-container"
+                  hx-trigger="change"
+                  hx-vals="js:{ rows: document.getElementById('rows').value }">
+              <option value="10">10</option>
+              <option value="20" selected>20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+          </select>
         </div>
+      </div>
 
-        <!-- Filtered Count Box -->
-        <div class="card shadow-sm flex-grow-1" style="min-width: 250px;"
-             id="filter-counts"
-             hx-get="{% url 'kokoro:filter_counts_partial' %}"
-             hx-trigger="load, change from:#combined-filter-form"
-             hx-include="#combined-filter-form">
-          {% include "kokoro/filter_counts.html" %}
+      <!-- Export Cohort -->
+      <div class="card shadow-sm flex-grow-1" style="min-width: 250px;">
+        <div class="card-header">Export Cohort</div>
+        <div class="card-body">
+          <a id="download-link" href="{% url 'patient_list_csv' %}" class="btn btn-primary w-100">
+            Download CSV
+          </a>
         </div>
-        <button type="button" class="btn btn-secondary mt-3 w-100"
-                onclick="resetCombinedForm();">Reset All Filters
-        </button>
+      </div>
+
+      <!-- Filtered Count Box -->
+      <div class="card shadow-sm flex-grow-1" style="min-width: 250px;"
+           id="filter-counts"
+           hx-get="{% url 'kokoro:filter_counts_partial' %}"
+           hx-trigger="load, change from:#combined-filter-form"
+           hx-include="#combined-filter-form">
+        {% include "kokoro/filter_counts.html" %}
+      </div>
+
+      <button type="button" class="btn btn-secondary mt-3 w-100"
+              onclick="resetCombinedForm();">Reset All Filters</button>
     </div>
 
     <!-- Main Content: Table + Settings + Export + Counts -->
