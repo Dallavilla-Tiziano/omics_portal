@@ -2,211 +2,280 @@
 {% load static %}
 
 {% block title %}Home{% endblock title %}
-
 {% block body_class %}home-page{% endblock body_class %}
 
 {% block content %}
-
 <div class="container">
   <div class="row">
     <div class="col-12">
 
-      <!-- Statistiche Pazienti -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <div class="stat-card stats">
-            <p>Total Patient Profiles</p>
-            <h2 id="total-patients-profiles">{{ total_kokoroPatients }}</h2>
+      <!-- 1ST SECTION: All our patients -->
+      <div class="card p-4 mb-5 mt-5 border rounded shadow-sm" style="background-color: rgba(255,255,255,0.85);">
+        <h4 class="mb-4 fw-bold">Patients from Clinical Arrhythmology and Electrophysiology Unit</h4>
+        <div class="row align-items-center">
+          <div class="col-md-4 mb-4 mb-md-0 text-center">
+            <h6>Total Patients</h6>
+            <h2 class="fw-bold text-primary">{{ total_patients }}</h2>
+            <p class="text-muted small">
+              Average Age: <strong>{{ avg_age }}</strong><br>
+              Males: <strong>{{ n_male }}</strong> &nbsp;&nbsp; Females: <strong>{{ n_female }}</strong>
+            </p>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="stat-card stats">
-            <p>Total Ajmamline Tests</p>
-            <h2 id="total-ajmalineTests">{{ total_ajmalineTests }}</h2>
+          <div class="col-md-4">
+            <h6 class="text-center">Age Distribution</h6>
+            <canvas id="ageChart" height="180" style="max-height: 220px;"></canvas>
+            <button class="btn btn-outline-secondary btn-sm mt-2 d-block mx-auto" onclick="downloadChart('ageChart', 'age_distribution')">Download chart</button>
+          </div>
+          <div class="col-md-4">
+            <h6 class="text-center">Sex Distribution</h6>
+            <canvas id="sexChart" height="180" style="max-height: 220px;"></canvas>
+            <button class="btn btn-outline-secondary btn-sm mt-2 d-block mx-auto" onclick="downloadChart('sexChart', 'sex_distribution')">Download chart</button>
           </div>
         </div>
       </div>
 
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <div class="stat-card stats">
-            <p>Total Samples Collected</p>
-            <h2 id="total_Samples">{{ total_Samples }}</h2>
+      <!-- PROCEDURE SECTION -->
+      <div class="card p-4 mb-5 border rounded shadow-sm" style="background-color: rgba(255,255,255,0.85);">
+        <h4 class="mb-4 fw-bold">Performed Electrophysiology Procedures</h4>
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <ul class="list-group list-group-flush fs-6">
+              <li class="list-group-item d-flex justify-content-between hoverable" data-type="ablation">
+                <span>Ablations</span> <strong>{{ n_ablation }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between hoverable" data-type="device">
+                <span>Device Implants</span> <strong>{{ n_devices }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between hoverable" data-type="valve">
+                <span>Valve Interventions</span> <strong>{{ n_valve }}</strong>
+              </li>
+              <li class="list-group-item d-flex justify-content-between hoverable" data-type="coronary">
+                <span>Coronary Interventions</span> <strong>{{ n_coro }}</strong>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-center" id="procedureChartTitle">Procedures per Year</h6>
+            <canvas id="procedureTrendChart" height="250"></canvas>
+            <button class="btn btn-outline-secondary btn-sm mt-2 d-block mx-auto" onclick="downloadChart('procedureTrendChart', 'procedure_chart')">Download chart</button>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="stat-card stats">
-            <p>Total Omics Analyses</p>
-            <h2 id="total_researchAnalysis">{{ total_researchAnalysis }}</h2>
-          </div>
-        </div>
       </div>
-  <!--     <div class="row mb-4">
-        <div class="col-md-3">
-          <div class="stat-card">
-            <h5>Distribution by Nation</h5>
-            <canvas id="nationChart" style="height: 300px;"></canvas>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <h5>Distribution by Sex</h5>
-            <canvas id="sexChart" style="height: 300px;"></canvas>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="stat-card">
-            <h5>Date of Birth Distribution</h5>
-            <canvas id="dobChart" style="height: 300px;"></canvas>
-          </div>
-        </div>
-      </div> -->
-    </div>   
-  </div> 
-    <!--
-      <div class="col-md-3">
-        <div class="stat-card stats">
-          <p>Total Patients</p>
-          <h2 id="total-patients">{{ total_patients }}</h2>
-        </div>
-      </div>
-    </div>
-    -->
-    <!-- Statistiche Campioni
-    <div class="row mb-3">
-      <div class="col-md-3">
-        <div class="stat-card stats">
-          <p>Total Samples</p>
-          <h2>{{ total_samples }}</h2>
-        </div>
-      </div>
-    </div>
--->
-    <!-- Grafici Campioni
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Nation</h5>
-          <canvas id="nationChartSamples"></canvas>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Sex</h5>
-          <canvas id="sexChartSamples"></canvas>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Date of Birth Distribution</h5>
-          <canvas id="dobChartSamples"></canvas>
-        </div>
-      </div>
-    </div>
--->
-    <!-- Statistiche Analisi
-    <div class="row mb-3">
-      <div class="col-md-3">
-        <div class="stat-card stats">
-          <p>Total Analysis</p>
-          <h2>{{ total_analysis }}</h2>
-        </div>
-      </div>
-    </div>
--->
-    <!-- Grafici Analisi
-    <div class="row mb-4">
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Nation</h5>
-          <canvas id="nationChartAnalysis"></canvas>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Distribution by Sex</h5>
-          <canvas id="sexChartAnalysis"></canvas>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="stat-card">
-          <h5>Date of Birth Distribution</h5>
-          <canvas id="dobChartAnalysis"></canvas>
-        </div>
-      </div>
-    </div>
 
+      <!-- PROVOCATIVE TESTS -->
+      <div class="card p-4 mb-5 border rounded shadow-sm" style="background-color: rgba(255,255,255,0.85);">
+        <h4 class="mb-4 fw-bold">Provocative Tests</h4>
+        <div class="row text-center">
+          <div class="col-md-3">
+            <h6 class="fw-bold">EP Studies</h6>
+            <h2 class="text-primary">{{ n_ep }}</h2>
+            <p class="small text-muted mb-0">
+              <span class="d-block">Positive: <strong>{{ n_ep_pos }}</strong></span>
+              <span>Negative: <strong>{{ n_ep_neg }}</strong></span>
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="fw-bold">Flecainide Tests</h6>
+            <h2 class="text-primary">{{ n_flec }}</h2>
+            <p class="small text-muted mb-0">
+              <span class="d-block">Positive: <strong>{{ n_flec_pos }}</strong></span>
+              <span>Negative: <strong>{{ n_flec_neg }}</strong></span>
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="fw-bold">Adrenaline Tests</h6>
+            <h2 class="text-primary">{{ n_adr }}</h2>
+            <p class="small text-muted mb-0">
+              <span class="d-block">Positive: <strong>{{ n_adr_pos }}</strong></span>
+              <span class="d-block">Negative: <strong>{{ n_adr_neg }}</strong></span>
+              <span>Weakly Positive: <strong>{{ n_adr_sosp }}</strong></span>
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="fw-bold">Ajmaline Test</h6>
+            <h2 class="text-primary">{{ n_ajmaline }}</h2>
+            <p class="small text-muted mb-0">
+              <span class="d-block">Positive: <strong>{{ n_aj_pos }}</strong></span>
+              <span class="d-block">Negative: <strong>{{ n_aj_neg }}</strong></span>
+              <span>Weakly Positive: <strong>{{ n_aj_sosp }}</strong></span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GENETIC MUTATIONS & SAMPLES -->
+      <div class="card p-4 mb-5 border rounded shadow-sm" style="background-color: rgba(255,255,255,0.85);">
+        <h4 class="mb-4 fw-bold">Genetic Mutations & Samples</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="fw-bold mb-3">Most Frequent Pathogenic Variants</h6>
+            <ul class="list-group small">
+              {% for item in common_mutations %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ item.var_p__name }}
+                <span class="badge bg-primary rounded-pill">{{ item.count }}</span>
+              </li>
+              {% empty %}
+              <li class="list-group-item">No mutations available.</li>
+              {% endfor %}
+            </ul>
+            <p class="mt-3 text-muted small">
+              <strong>{{ n_patients_with_mutation }}</strong> patients have at least one known pathogenic mutation.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <h6 class="text-center">Sample Collection Over Time</h6>
+            <canvas id="sampleTrendChart" height="180"></canvas>
+            <button class="btn btn-outline-secondary btn-sm mt-2 d-block mx-auto" onclick="downloadChart('sampleTrendChart', 'sample_trend')">Download chart</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
--->
-<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  // Download function
+  function downloadChart(chartId, fileName) {
+    const canvas = document.getElementById(chartId);
+    const link = document.createElement('a');
+    link.download = `${fileName}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
-    const nationData = JSON.parse('{{ nation_distribution|escapejs }}');
-    const sexData = JSON.parse('{{ sex_kokoroDistribution|escapejs }}');
-    const dobData = JSON.parse('{{ dob_distribution|escapejs }}');
+    // Sex Chart
+    const sexData = JSON.parse('{{ sex_distribution|escapejs }}');
+    new Chart(document.getElementById("sexChart"), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(sexData),
+        datasets: [{ data: Object.values(sexData), backgroundColor: ['#36A2EB', '#FF6384'] }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
 
-    const createChart = (id, data, type = 'doughnut') => {
-      new Chart(document.getElementById(id), {
-        type,
-        data: {
-          labels: Object.keys(data),
-          datasets: [{
-            data: Object.values(data),
-            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, layout: { padding: 20 } }
-      });
-    };
-
-    createChart("nationChart", nationData);
-    createChart("sexChart", sexData);
-
-    new Chart(document.getElementById("dobChart"), {
+    // Age Chart
+    const ageData = JSON.parse('{{ age_distribution|escapejs }}');
+    new Chart(document.getElementById("ageChart"), {
       type: 'bar',
       data: {
-        labels: Object.keys(dobData),
+        labels: Object.keys(ageData),
+        datasets: [{ label: 'Patients', data: Object.values(ageData), backgroundColor: '#4BC0C0' }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { title: { display: true, text: 'Age Range' }},
+          y: { beginAtZero: true, title: { display: true, text: 'Number of Patients' }}
+        }
+      }
+    });
+
+    // Procedure Chart 
+    const trendCanvas = document.getElementById("procedureTrendChart");
+    const trendData = {
+      ablation: JSON.parse('{{ ablation_by_year|escapejs }}'),
+      device: JSON.parse('{{ device_by_year|escapejs }}'),
+      valve: JSON.parse('{{ valve_by_year|escapejs }}'),
+      coronary: JSON.parse('{{ coronary_by_year|escapejs }}'),
+    };
+
+    const ctx = trendCanvas.getContext("2d");
+    let currentType = "ablation";
+    let locked = false;
+
+    const procedureChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(trendData.ablation),
+        datasets: [{ label: 'Ablations', data: Object.values(trendData.ablation), backgroundColor: '#8E44AD' }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { title: { display: true, text: 'Year' }},
+          y: { beginAtZero: true, title: { display: true, text: 'Number of Procedures' }}
+        }
+      }
+    });
+
+    function updateChart(type) {
+      const data = trendData[type];
+      procedureChart.data.labels = Object.keys(data);
+      procedureChart.data.datasets[0].data = Object.values(data);
+      procedureChart.data.datasets[0].label = type.charAt(0).toUpperCase() + type.slice(1) + "s";
+      procedureChart.update();
+    }
+
+    document.querySelectorAll(".hoverable").forEach(item => {
+      item.addEventListener("mouseenter", () => { if (!locked) updateChart(item.getAttribute("data-type")); });
+      item.addEventListener("mouseleave", () => { if (!locked) updateChart(currentType); });
+      item.addEventListener("click", () => {
+        const type = item.getAttribute("data-type");
+        if (locked && currentType === type) {
+          locked = false;
+          currentType = "ablation";
+          updateChart("ablation");
+        } else {
+          locked = true;
+          currentType = type;
+          updateChart(type);
+        }
+      });
+    });
+
+    // Genetic test chart
+    const testData = JSON.parse('{{ test_distribution|escapejs }}');
+    new Chart(document.getElementById("geneticTestChart"), {
+      type: 'pie',
+      data: {
+        labels: Object.keys(testData),
         datasets: [{
-          label: 'Patients by Year of Birth',
-          data: Object.values(dobData),
-          backgroundColor: '#36A2EB'
+          data: Object.values(testData),
+          backgroundColor: ['#36A2EB', '#FF6384']
         }]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { enabled: true }
+        }
+      }
+    });
+
+    // Sample trend chart
+    const sampleTrendData = JSON.parse('{{ sample_by_year|escapejs }}');
+    new Chart(document.getElementById("sampleTrendChart"), {
+      type: 'bar',
+      data: {
+        labels: Object.keys(sampleTrendData),
+        datasets: [{
+          label: 'Samples per Year',
+          data: Object.values(sampleTrendData),
+          backgroundColor: '#3498DB'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }},
         scales: {
-          x: { title: { display: true, text: 'Year' } },
-          y: { title: { display: true, text: 'Number of Patients' } }
+          x: { title: { display: true, text: 'Year' }},
+          y: { beginAtZero: true, title: { display: true, text: 'Samples' }}
         }
       }
     });
   });
-</script> -->
-{% endblock content %}
-<!-- 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const sexData = JSON.parse('{{ sex_kokoroDistribution|escapejs }}');
-
-    const createChart = (id, data, type = 'doughnut') => {
-      new Chart(document.getElementById(id), {
-        type,
-        data: {
-          labels: Object.keys(data),
-          datasets: [{
-            data: Object.values(data),
-            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, layout: { padding: 20 } }
-      });
-    };
-
-    createChart("sexChart", sexData);
-  });
 </script>
 
-
+{% endblock content %}
