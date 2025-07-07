@@ -1,5 +1,5 @@
 from dal import autocomplete
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, UpdateView, TemplateView
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django_filters.views import FilterView
