@@ -1,7 +1,11 @@
 {% load widget_tweaks %}
 
-<form method="post" novalidate>
+<form method="post" action="{{ request.path }}" novalidate>
   {% csrf_token %}
+  {# Render hidden fields (parent FK, etc.) #}
+  {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %}
   <div class="container px-4 py-3">
 
     <h2 class="mb-4">{{ title|default:"Submit Form" }}</h2>

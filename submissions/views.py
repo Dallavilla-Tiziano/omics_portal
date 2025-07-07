@@ -1,349 +1,254 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse_lazy
+from django.views.generic import TemplateView
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
+from django import forms
 from kokoro.models import (
-						PatientProfile, Late_potentials, Study,
-						Ablation, Adrenaline_test, Ajmaline_test,
-						Clinical_evaluation, ClinicalEvent, CoronaryIntervention,
-						DeviceEvent, DeviceImplant, DeviceInstance,
-						EP_study, ECG, ECHO,
-						Flecainide_test, Genetic_profile, Genetic_status,
-						Genetic_test, RMN_TC_PH, Sample,
-						ValveIntervention,
-					)
+	PatientProfile, Late_potentials, Study,
+	Ablation, Adrenaline_test, Ajmaline_test,
+	Clinical_evaluation, ClinicalEvent, CoronaryIntervention,
+	DeviceEvent, DeviceImplant, DeviceInstance,
+	EP_study, ECG, ECHO,
+	Flecainide_test, Genetic_profile, Genetic_status,
+	Genetic_test, RMN_TC_PH, Sample, ResearchAnalysis,
+	ValveIntervention,
+)
 from kokoro.forms import (
-						PatientProfileForm, LatePotentialForm, StudyForm,
-						AblationForm, AdrenalineTestForm, AjmalineTestForm,
-						Clinical_evaluationForm, ClinicalEventForm, CoronaryInterventionForm,
-						DeviceEventForm, DeviceImplantForm, DeviceInstanceForm,
-						EP_studyForm, ECGForm, ECHOForm,
-						Flecainide_testForm, Genetic_profileForm, Genetic_statusForm,
-						Genetic_testForm, RMN_TC_PHTest, SampleForm,
-						ValveInterventionForm,
-					)
+	PatientProfileForm, LatePotentialForm, StudyForm,
+	AblationForm, AdrenalineTestForm, AjmalineTestForm,
+	Clinical_evaluationForm, ClinicalEventForm, CoronaryInterventionForm,
+	DeviceEventForm, DeviceImplantForm, DeviceInstanceForm,
+	EP_studyForm, ECGForm, ECHOForm,
+	Flecainide_testForm, Genetic_profileForm, Genetic_statusForm,
+	Genetic_testForm, RMN_TC_PHTest, SampleForm, ResearchAnalysisForm,
+	ValveInterventionForm,
+)
 
+# Parent search configuration
+PARENT_CONFIG = {
+	'patientprofile': {
+		'model': PatientProfile,
+		'search_fields': ['last_name__icontains', 'first_name__icontains', 'cardioref_id__icontains'],
+	},
+	'deviceinstance': {
+		'model': DeviceInstance,
+		'search_fields': ['serial_number__icontains'],
+	},
+	'sample': {
+		'model': Sample,
+		'search_fields': ['imtc_id__icontains'],
+	},
+	'study': {
+		'model': Study,
+		'search_fields': ['project_id__icontains', 'project_code__icontains'],
+	},
+}
 
-class ValveInterventionCreateView(LoginRequiredMixin, CreateView):
-	model = ValveIntervention
-	form_class = ValveInterventionForm
-	template_name = 'submissions/valveintervention_form.html'
+# Mapping of parent to child types
+PARENT_CHILD_MAP = {
+	'patientprofile': [
+		('ablation', 'Ablation', 'add_ablation'),
+		('adrenaline_test', 'Adrenaline Test', 'add_adrenaline_test'),
+		('ajmaline_test', 'Ajmaline Test', 'add_ajmaline_test'),
+		('clinicalevent', 'Clinical Event', 'add_clinicalevent'),
+		('clinical_evaluation', 'Clinical Evaluation', 'add_clinical_evaluation'),
+		('coronaryintervention', 'Coronary Intervention', 'add_coronaryintervention'),
+		('deviceinstance', 'Device Instance', 'add_deviceinstance'),
+		('deviceimplant', 'Device Implant', 'add_deviceimplant'),
+		('deviceevent', 'Device Event', 'add_deviceevent'),
+		('ecg', 'ECG', 'add_ecg'),
+		('echo', 'ECHO', 'add_echo'),
+		('ep_study', 'EP Study', 'add_ep_study'),
+		('flecainide_test', 'Flecainide Test', 'add_flecainide_test'),
+		('latepotential', 'Late Potentials', 'add_latepotential'),
+		('genetic_profile', 'Genetic Profile', 'add_genetic_profile'),
+		('genetic_status', 'Genetic Status', 'add_genetic_status'),
+		('genetic_test', 'Genetic Test', 'add_genetic_test'),
+		('sample', 'Sample', 'add_sample'),
+		('valveintervention', 'Valve Intervention', 'add_valveintervention'),
+	],
+	'deviceinstance': [
+		('deviceevent', 'Device Event', 'add_deviceevent'),
+		('deviceimplant', 'Device Implant', 'add_deviceimplant'),
+	],
+	'sample': [
+		('researchanalysis', 'Research Analysis', 'add_researchanalysis'),
+	],
+	'study': [
+		('studyenrollment', 'Patient Study Enrollment', 'add_patientstudy'),
+	],
+}
+
+class ParentAttachMixin:
+	"""
+	Mixin to attach a parent to a new child instance.
+	Requires each CreateView to define `parent_field`.
+	"""
+	parent_field: str
+
+	def dispatch(self, request, *args, **kwargs):
+		cfg = PARENT_CONFIG[kwargs['parent_type']]
+		self.parent_obj = get_object_or_404(cfg['model'], pk=kwargs['parent_id'])
+		return super().dispatch(request, *args, **kwargs)
+
+	def form_valid(self, form):
+		setattr(form.instance, self.parent_field, self.parent_obj)
+		return super().form_valid(form)
+
+class ChildTypeListView(TemplateView):
+	template_name = 'submissions/parent_children.html'
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		parent_type = kwargs['parent_type']
+		parent_id = kwargs['parent_id']
+		parent_obj = get_object_or_404(PARENT_CONFIG[parent_type]['model'], pk=parent_id)
+		children = []
+		for key, label, url_name in PARENT_CHILD_MAP[parent_type]:
+			url = reverse(f'submissions:{url_name}', args=[parent_type, parent_id])
+			children.append({'label': label, 'url': url})
+		context.update({'parent_obj': parent_obj, 'children': children})
+		return context
+
+class ParentAttachMixin:
+    parent_field: str
+
+    def dispatch(self, request, *args, **kwargs):
+        cfg = PARENT_CONFIG[kwargs['parent_type']]
+        self.parent_obj = get_object_or_404(cfg['model'], pk=kwargs['parent_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        # set initial & hide the parent dropdown
+        if self.parent_field in form.fields:
+            form.fields[self.parent_field].initial = self.parent_obj.pk
+            form.fields[self.parent_field].widget = forms.HiddenInput()
+        return form
+
+    def form_valid(self, form):
+        setattr(form.instance, self.parent_field, self.parent_obj)
+        return super().form_valid(form)
+
+class ParentSearchView(TemplateView):
+	template_name = 'submissions/parent_search.html'
+
+	def get_context_data(self, **kwargs):
+		from django.db.models import Q
+		context = super().get_context_data(**kwargs)
+		parent_type = self.request.GET.get('parent_type')
+		q = self.request.GET.get('q')
+		results = []
+		if parent_type and q:
+			cfg = PARENT_CONFIG.get(parent_type)
+			qs = cfg['model'].objects.all()
+			# Combine filters with OR across search_fields
+			query = Q()
+			for field in cfg['search_fields']:
+				query |= Q(**{field: q})
+			results = qs.filter(query)
+		context.update({'results': results, 'parent_type': parent_type})
+		return context
+
+class ChildTypeListView(TemplateView):
+	template_name = 'submissions/parent_children.html'
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		parent_type = kwargs['parent_type']; parent_id = kwargs['parent_id']
+		parent_obj = get_object_or_404(PARENT_CONFIG[parent_type]['model'], pk=parent_id)
+		children = []
+		for key, label, url_name in PARENT_CHILD_MAP[parent_type]:
+			url = reverse(f'submissions:{url_name}', args=[parent_type, parent_id])
+			children.append({'label': label, 'url': url})
+		context.update({'parent_obj': parent_obj, 'children': children})
+		return context
+
+# -------------------- CREATE VIEWS --------------------
+for cls in [
+	(Ablation, AblationForm, 'ablation_form.html', 'patient'),
+	(Adrenaline_test, AdrenalineTestForm, 'adrenaline_test_form.html', 'patient'),
+	(Ajmaline_test, AjmalineTestForm, 'ajmaline_test_form.html', 'patient'),
+	(ClinicalEvent, ClinicalEventForm, 'clinicalevent_form.html', 'patient'),
+	(Clinical_evaluation, Clinical_evaluationForm, 'clinical_evaluation_form.html', 'patient'),
+	(CoronaryIntervention, CoronaryInterventionForm, 'coronaryintervention_form.html', 'patient'),
+	(DeviceInstance, DeviceInstanceForm, 'deviceinstance_form.html', 'patient'),
+	(DeviceImplant, DeviceImplantForm, 'deviceimplant_form.html', 'patient'),
+	(DeviceEvent, DeviceEventForm, 'deviceevent_form.html', 'device'),
+	(ECG, ECGForm, 'ecg_form.html', 'patient'),
+	(ECHO, ECHOForm, 'echo_form.html', 'patient'),
+	(EP_study, EP_studyForm, 'ep_study_form.html', 'patient'),
+	(Flecainide_test, Flecainide_testForm, 'flecainide_test_form.html', 'patient'),
+	(Late_potentials, LatePotentialForm, 'latepotential_form.html', 'patient'),
+	(Genetic_profile, Genetic_profileForm, 'genetic_profile_form.html', 'patient'),
+	(Genetic_status, Genetic_statusForm, 'genetic_status_form.html', 'patient'),
+	(Genetic_test, Genetic_testForm, 'genetic_test_form.html', 'patient'),
+	(RMN_TC_PH, RMN_TC_PHTest, 'rmn_tc_phtest_form.html', 'patient'),
+	(Sample, SampleForm, 'sample_form.html', 'patient'),
+	(ValveIntervention, ValveInterventionForm, 'valveintervention_form.html', 'patient'),
+	(ResearchAnalysis, ResearchAnalysisForm, 'researchanalysis_form.html', 'samples'),
+]:
+	name = f"{cls[0].__name__}CreateView"
+	globals()[name] = type(
+		name,
+		(LoginRequiredMixin, ParentAttachMixin, CreateView),
+		{
+			'model': cls[0],
+			'form_class': cls[1],
+			'parent_field': cls[3],
+			'template_name': f"submissions/{cls[2]}",
+			'success_url': reverse_lazy('submissions:submission_success'),
+		}
+	)
+
+# -------------------- UPDATE VIEWS --------------------
+for cls in [
+	(Ablation, AblationForm, 'ablation_form.html'),
+	(Adrenaline_test, AdrenalineTestForm, 'adrenaline_test_form.html'),
+	(Ajmaline_test, AjmalineTestForm, 'ajmaline_test_form.html'),
+	(ClinicalEvent, ClinicalEventForm, 'clinicalevent_form.html'),
+	(Clinical_evaluation, Clinical_evaluationForm, 'clinical_evaluation_form.html'),
+	(CoronaryIntervention, CoronaryInterventionForm, 'coronaryintervention_form.html'),
+	(DeviceInstance, DeviceInstanceForm, 'deviceinstance_form.html'),
+	(DeviceImplant, DeviceImplantForm, 'deviceimplant_form.html'),
+	(DeviceEvent, DeviceEventForm, 'deviceevent_form.html'),
+	(ECG, ECGForm, 'ecg_form.html'),
+	(ECHO, ECHOForm, 'echo_form.html'),
+	(EP_study, EP_studyForm, 'ep_study_form.html'),
+	(Flecainide_test, Flecainide_testForm, 'flecainide_test_form.html'),
+	(Late_potentials, LatePotentialForm, 'latepotential_form.html'),
+	(Genetic_profile, Genetic_profileForm, 'genetic_profile_form.html'),
+	(Genetic_status, Genetic_statusForm, 'genetic_status_form.html'),
+	(Genetic_test, Genetic_testForm, 'genetic_test_form.html'),
+	(RMN_TC_PH, RMN_TC_PHTest, 'rmn_tc_phtest_form.html'),
+	(Sample, SampleForm, 'sample_form.html'),
+	(ValveIntervention, ValveInterventionForm, 'valveintervention_form.html'),
+	(PatientProfile, PatientProfileForm, 'patientprofile_form.html'),
+]:
+	name = f"{cls[0].__name__}UpdateView"
+	globals()[name] = type(
+		name,
+		(LoginRequiredMixin, UpdateView),
+		{
+			'model': cls[0],
+			'form_class': cls[1],
+			'template_name': f"submissions/{cls[2]}",
+			'success_url': reverse_lazy('submissions:submission_success'),
+		}
+	)
+
+	# Standalone CreateView for PatientProfile (missing in dynamic loop)
+class PatientProfileCreateView(LoginRequiredMixin, CreateView):
+	model = PatientProfile
+	form_class = PatientProfileForm
+	template_name = 'submissions/patientprofile_form.html'
 	success_url = reverse_lazy('submissions:submission_success')
 
-class ValveInterventionUpdateView(LoginRequiredMixin, UpdateView):
-	model = ValveIntervention
-	form_class = ValveInterventionForm
-	template_name = 'submissions/valveintervention_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
+# Alias for Late_potentials views to match expected class names in urls.py
+LatePotentialCreateView = Late_potentialsCreateView
+LatePotentialUpdateView = Late_potentialsUpdateView
 
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return ValveIntervention.objects.all()
-
-class SampleCreateView(LoginRequiredMixin, CreateView):
-	model = Sample
-	form_class = SampleForm
-	template_name = 'submissions/sample_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class SampleUpdateView(LoginRequiredMixin, UpdateView):
-	model = Sample
-	form_class = SampleForm
-	template_name = 'submissions/sample_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Sample.objects.all()
-
-class RMN_TC_PHCreateView(LoginRequiredMixin, CreateView):
-	model = RMN_TC_PH
-	form_class = RMN_TC_PHTest
-	template_name = 'submissions/rmn_tc_phtest_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class RMN_TC_PHUpdateView(LoginRequiredMixin, UpdateView):
-	model = RMN_TC_PH
-	form_class = RMN_TC_PHTest
-	template_name = 'submissions/rmn_tc_phtest_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return RMN_TC_PH.objects.all()
-
-class Genetic_testCreateView(LoginRequiredMixin, CreateView):
-	model = Genetic_test
-	form_class = Genetic_testForm
-	template_name = 'submissions/genetic_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Genetic_testUpdateView(LoginRequiredMixin, UpdateView):
-	model = Genetic_test
-	form_class = Genetic_testForm
-	template_name = 'submissions/genetic_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Genetic_test.objects.all()
-
-class Genetic_statusCreateView(LoginRequiredMixin, CreateView):
-	model = Genetic_status
-	form_class = Genetic_statusForm
-	template_name = 'submissions/genetic_status_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Genetic_statusUpdateView(LoginRequiredMixin, UpdateView):
-	model = Genetic_status
-	form_class = Genetic_statusForm
-	template_name = 'submissions/genetic_status_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Genetic_status.objects.all()
-
-class Genetic_profileCreateView(LoginRequiredMixin, CreateView):
-	model = Genetic_profile
-	form_class = Genetic_profileForm
-	template_name = 'submissions/genetic_profile_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Genetic_profileUpdateView(LoginRequiredMixin, UpdateView):
-	model = Genetic_profile
-	form_class = Genetic_profileForm
-	template_name = 'submissions/genetic_profile_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Genetic_profile.objects.all()
-
-class Flecainide_testCreateView(LoginRequiredMixin, CreateView):
-	model = Flecainide_test
-	form_class = Flecainide_testForm
-	template_name = 'submissions/flecainide_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Flecainide_testUpdateView(LoginRequiredMixin, UpdateView):
-	model = Flecainide_test
-	form_class = Flecainide_testForm
-	template_name = 'submissions/flecainide_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Flecainide_test.objects.all()
-
-class ECHOCreateView(LoginRequiredMixin, CreateView):
-	model = ECHO
-	form_class = ECHOForm
-	template_name = 'submissions/echo_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class ECHOUpdateView(LoginRequiredMixin, UpdateView):
-	model = ECHO
-	form_class = ECHOForm
-	template_name = 'submissions/echo_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return ECHO.objects.all()
-
-class ECGCreateView(LoginRequiredMixin, CreateView):
-	model = ECG
-	form_class = ECGForm
-	template_name = 'submissions/ecg_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class ECGUpdateView(LoginRequiredMixin, UpdateView):
-	model = ECG
-	form_class = ECGForm
-	template_name = 'submissions/ecg_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return ECG.objects.all()
-
-class EP_studyCreateView(LoginRequiredMixin, CreateView):
-	model = EP_study
-	form_class = EP_studyForm
-	template_name = 'submissions/ep_study_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class EP_studyUpdateView(LoginRequiredMixin, UpdateView):
-	model = EP_study
-	form_class = EP_studyForm
-	template_name = 'submissions/ep_study_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return EP_studyForm.objects.all()
-
-class DeviceInstanceCreateView(LoginRequiredMixin, CreateView):
-	model = DeviceInstance
-	form_class = DeviceInstanceForm
-	template_name = 'submissions/deviceinstance_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class DeviceInstanceUpdateView(LoginRequiredMixin, UpdateView):
-	model = DeviceInstance
-	form_class = DeviceInstanceForm
-	template_name = 'submissions/deviceinstance_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return DeviceInstance.objects.all()
-
-class DeviceImplantCreateView(LoginRequiredMixin, CreateView):
-	model = DeviceImplant
-	form_class = DeviceImplantForm
-	template_name = 'submissions/deviceimplant_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class DeviceImplantUpdateView(LoginRequiredMixin, UpdateView):
-	model = DeviceImplant
-	form_class = DeviceImplantForm
-	template_name = 'submissions/deviceimplant_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return DeviceImplant.objects.all()
-
-class DeviceEventCreateView(LoginRequiredMixin, CreateView):
-	model = DeviceEvent
-	form_class = DeviceEventForm
-	template_name = 'submissions/deviceevent_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class DeviceEventUpdateView(LoginRequiredMixin, UpdateView):
-	model = DeviceEvent
-	form_class = DeviceEventForm
-	template_name = 'submissions/deviceevent_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return DeviceEvent.objects.all()
-
-class CoronaryInterventionCreateView(LoginRequiredMixin, CreateView):
-	model = CoronaryIntervention
-	form_class = CoronaryInterventionForm
-	template_name = 'submissions/coronaryintervention_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class CoronaryInterventionUpdateView(LoginRequiredMixin, UpdateView):
-	model = CoronaryIntervention
-	form_class = CoronaryInterventionForm
-	template_name = 'submissions/coronaryintervention_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return CoronaryIntervention.objects.all()
-
-class ClinicalEventCreateView(LoginRequiredMixin, CreateView):
-	model = ClinicalEvent
-	form_class = ClinicalEventForm
-	template_name = 'submissions/clinicalevent_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class ClinicalEventUpdateView(LoginRequiredMixin, UpdateView):
-	model = ClinicalEvent
-	form_class = ClinicalEventForm
-	template_name = 'submissions/clinicalevent_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return ClinicalEvent.objects.all()
-
-class Clinical_evaluationCreateView(LoginRequiredMixin, CreateView):
-	model = Clinical_evaluation
-	form_class = Clinical_evaluationForm
-	template_name = 'submissions/clinical_evaluation_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Clinical_evaluationUpdateView(LoginRequiredMixin, UpdateView):
-	model = Clinical_evaluation
-	form_class = Clinical_evaluationForm
-	template_name = 'submissions/clinical_evaluation_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Clinical_evaluation.objects.all()
-
-class Ajmaline_testCreateView(LoginRequiredMixin, CreateView):
-	model = Ajmaline_test
-	form_class = AjmalineTestForm
-	template_name = 'submissions/ajmaline_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Ajmaline_testUpdateView(LoginRequiredMixin, UpdateView):
-	model = Ajmaline_test
-	form_class = AjmalineTestForm
-	template_name = 'submissions/ajmaline_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Ajmaline_test.objects.all()
-
-class Ajmaline_testCreateView(LoginRequiredMixin, CreateView):
-	model = Ajmaline_test
-	form_class = AjmalineTestForm
-	template_name = 'submissions/ajmaline_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Ajmaline_testUpdateView(LoginRequiredMixin, UpdateView):
-	model = Ajmaline_test
-	form_class = AjmalineTestForm
-	template_name = 'submissions/ajmaline_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Ajmaline_test.objects.all()
-
-class Adrenaline_testCreateView(LoginRequiredMixin, CreateView):
-	model = Adrenaline_test
-	form_class = AdrenalineTestForm
-	template_name = 'submissions/adrenaline_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class Adrenaline_testUpdateView(LoginRequiredMixin, UpdateView):
-	model = Adrenaline_test
-	form_class = AdrenalineTestForm
-	template_name = 'submissions/adrenaline_test_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Adrenaline_test.objects.all()
-
-class AblationCreateView(LoginRequiredMixin, CreateView):
-	model = Ablation
-	form_class = AblationForm
-	template_name = 'submissions/ablation_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class AblationUpdateView(LoginRequiredMixin, UpdateView):
-	model = Ablation
-	form_class = AblationForm
-	template_name = 'submissions/ablation_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Ablation.objects.all()
-
+# Standalone Create/Update for Study model (missing)
 class StudyCreateView(LoginRequiredMixin, CreateView):
 	model = Study
 	form_class = StudyForm
@@ -355,39 +260,3 @@ class StudyUpdateView(LoginRequiredMixin, UpdateView):
 	form_class = StudyForm
 	template_name = 'submissions/study_form.html'
 	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Late_potentials.objects.all()
-
-class LatePotentialCreateView(LoginRequiredMixin, CreateView):
-	model = Late_potentials
-	form_class = LatePotentialForm
-	template_name = 'submissions/latepotential_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class LatePotentialUpdateView(LoginRequiredMixin, UpdateView):
-	model = Late_potentials
-	form_class = LatePotentialForm
-	template_name = 'submissions/latepotential_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return Late_potentials.objects.all()
-
-class PatientProfileCreateView(LoginRequiredMixin, CreateView):
-	model = PatientProfile
-	form_class = PatientProfileForm
-	template_name = 'submissions/patientprofile_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-class PatientProfileUpdateView(LoginRequiredMixin, UpdateView):
-	model = PatientProfile
-	form_class = PatientProfileForm
-	template_name = 'submissions/patientprofile_form.html'
-	success_url = reverse_lazy('submissions:submission_success')
-
-	def get_queryset(self):
-		# Optional: limit which profiles a user can edit
-		return PatientProfile.objects.all()
