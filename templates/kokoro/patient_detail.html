@@ -4,7 +4,10 @@
 
 <div class="container my-4">
 	<h2 class="mb-4">Patient Detail: {{ patient }}</h2>
-
+	<a href="{% url 'kokoro:patient-edit' patient.pk %}"
+	   class="btn btn-primary mb-4">
+	  <i class="bi bi-pencil"></i> Edit Patient
+	</a>
 	<div class="accordion" id="patientAccordion">
 
 		<!-- DEMOGRAPHICS (always visible) -->
@@ -33,6 +36,38 @@
 						<li class="list-group-item"><strong>Province:</strong> {{ patient.province }}</li>
 						<li class="list-group-item"><strong>Height:</strong> {{ patient.height }} cm</li>
 						<li class="list-group-item"><strong>Weight:</strong> {{ patient.weight }} kg</li>
+						<li class="list-group-item">
+						  <strong>Therapies:</strong>
+						  {% if patient.therapies.all %}
+						    {% for therapy in patient.therapies.all %}
+						      {{ therapy }}{% if not forloop.last %}, {% endif %}
+						    {% endfor %}
+						  {% else %}
+						    None
+						  {% endif %}
+						</li>
+
+						<li class="list-group-item">
+						  <strong>Allergies:</strong>
+						  {% if patient.allergies.all %}
+						    {% for allergy in patient.allergies.all %}
+						      {{ allergy }}{% if not forloop.last %}, {% endif %}
+						    {% endfor %}
+						  {% else %}
+						    None
+						  {% endif %}
+						</li>
+
+						<li class="list-group-item">
+						  <strong>Studies:</strong>
+						  {% if patient.studies.all %}
+						    {% for study in patient.studies.all %}
+						      {{ study }}{% if not forloop.last %}, {% endif %}
+						    {% endfor %}
+						  {% else %}
+						    None
+						  {% endif %}
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -274,136 +309,6 @@
 			</div>
 		</div>
 		{% endif %}
-
-		{% if therapies %}
-		<!-- THERAPIES -->
-		<div class="accordion-item">
-			<h2 class="accordion-header" id="headingTherapies">
-				<button class="accordion-button collapsed" type="button"
-								data-bs-toggle="collapse"
-								data-bs-target="#collapseTherapies"
-								aria-expanded="false"
-								aria-controls="collapseTherapies">
-					Therapies
-				</button>
-			</h2>
-			<div id="collapseTherapies"
-					 class="accordion-collapse collapse"
-					 aria-labelledby="headingTherapies"
-					 >
-				<div class="accordion-body">
-					<ul class="list-group">
-						{% for t in therapies %}
-							<li class="list-group-item d-flex justify-content-between align-items-center">
-							<span>{{ t }}</span>
-							<a href="{% url 'kokoro:therapy-edit' t.pk %}"
-								 class="btn btn-sm btn-outline-primary"
-								 title="Edit sample">
-								<i class="bi bi-pencil"></i>
-							</a>
-							</li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div>
-		{% endif %}
-
-		{% if allergies %}
-		<!-- ALLERGIES -->
-		<div class="accordion-item">
-			<h2 class="accordion-header" id="headingAllergies">
-				<button class="accordion-button collapsed" type="button"
-								data-bs-toggle="collapse"
-								data-bs-target="#collapseAllergies"
-								aria-expanded="false"
-								aria-controls="collapseAllergies">
-					Allergies
-				</button>
-			</h2>
-			<div id="collapseAllergies"
-					 class="accordion-collapse collapse"
-					 aria-labelledby="headingAllergies"
-					 >
-				<div class="accordion-body">
-					<ul class="list-group">
-						{% for al in allergies %}
-							<li class="list-group-item d-flex justify-content-between align-items-center">
-							<span>{{ al }}</span>
-							</li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div>
-		{% endif %}
-
-		{% if studies %}
-		<!-- STUDIES -->
-		<div class="accordion-item">
-			<h2 class="accordion-header" id="headingStudies">
-				<button class="accordion-button collapsed" type="button"
-								data-bs-toggle="collapse"
-								data-bs-target="#collapseStudies"
-								aria-expanded="false"
-								aria-controls="collapseStudies">
-					Studies
-				</button>
-			</h2>
-			<div id="collapseStudies"
-					 class="accordion-collapse collapse"
-					 aria-labelledby="headingStudies"
-					 >
-				<div class="accordion-body">
-					<ul class="list-group">
-						{% for st in studies %}
-							<li class="list-group-item d-flex justify-content-between align-items-center">
-							<span>{{ st }}</span>
-							<a href="{% url 'kokoro:study-edit' st.pk %}"
-								 class="btn btn-sm btn-outline-primary"
-								 title="Edit sample">
-								<i class="bi bi-pencil"></i>
-							</a>
-							</li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div>
-		{% endif %}
-
-		<!-- {% if patient_studies %} -->
-		<!-- PATIENT STUDIES -->
-<!--     <div class="accordion-item">
-			<h2 class="accordion-header" id="headingPatientStudies">
-				<button class="accordion-button collapsed" type="button"
-								data-bs-toggle="collapse"
-								data-bs-target="#collapsePatientStudies"
-								aria-expanded="false"
-								aria-controls="collapsePatientStudies">
-					Patient Studies
-				</button>
-			</h2>
-			<div id="collapsePatientStudies"
-					 class="accordion-collapse collapse"
-					 aria-labelledby="headingPatientStudies"
-					 >
-				<div class="accordion-body">
-					<ul class="list-group">
-						{% for ps in patient_studies %}
-							<li class="list-group-item d-flex justify-content-between align-items-center">
-							<span>{{ ps }}</span>
-							<a href="{% url 'kokoro:deviceinstance-edit' ps.pk %}"
-								 class="btn btn-sm btn-outline-primary"
-								 title="Edit sample">
-								<i class="bi bi-pencil"></i>
-							</a>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div> -->
-		<!-- {% endif %} -->
 
 		{% if research_analyses %}
 		<!-- RESEARCH ANALYSES -->

@@ -1,0 +1,14 @@
+{% extends '_base.html' %}
+{% block title %}Choose Submission Type{% endblock %}
+{% block content %}
+<h1>New Submission for {{ parent_obj }}</h1>
+<div class="list-group">
+  {% for child in children %}
+    <a href="{{ child.url }}" class="list-group-item list-group-item-action">
+      {{ child.label }}
+    </a>
+  {% empty %}
+    <p>No submission types available.</p>
+  {% endfor %}
+</div>
+{% endblock %}

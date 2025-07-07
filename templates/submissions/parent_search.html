@@ -1,0 +1,39 @@
+<!-- File: templates/submissions/parent_search.html -->
+{% extends '_base.html' %}
+
+{% block title %}New Submission{% endblock %}
+
+{% block content %}
+<h1>New Submission</h1>
+
+<form method="get" action="{% url 'submissions:submission' %}" class="form-inline mb-3">
+  <div class="form-group mr-2">
+    <label for="parent_type" class="mr-2">Select Type</label>
+    <select name="parent_type" id="parent_type" class="form-control">
+      <option value="patientprofile"{% if parent_type == 'patientprofile' %} selected{% endif %}>Patient Profile</option>
+      <option value="deviceinstance"{% if parent_type == 'deviceinstance' %} selected{% endif %}>Device Instance</option>
+      <option value="sample"{% if parent_type == 'sample' %} selected{% endif %}>Sample</option>
+      <option value="study"{% if parent_type == 'study' %} selected{% endif %}>Study</option>
+    </select>
+  </div>
+  <div class="form-group mr-2">
+    <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search..." required>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if results %}
+  <h2>Results</h2>
+  <ul class="list-group">
+    {% for obj in results %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ obj }}
+        <a href="{% url 'submissions:submission_children' parent_type=parent_type parent_id=obj.pk %}" class="btn btn-sm btn-outline-secondary">
+          Select
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endblock %}

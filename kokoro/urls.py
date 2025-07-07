@@ -1,22 +1,46 @@
 from django.urls import path
-from .views import (KokoroHomeView, TherapyAutocomplete,
-    AllergyAutocomplete, StudyAutocomplete, PatientProfileAutocomplete,
-    PatientSpecificResearchView, AdvancedResearchView, RemoteMonitoringView,
-    filter_counts_partial, PatientDetailView, SampleUpdateView,
-    ClinicalEventUpdateView, DeviceInstanceUpdateView, DeviceEventUpdateView,
-    AblationUpdateView,DeviceImplantUpdateView,ValveInterventionUpdateView,
-    CoronaryInterventionUpdateView,ClinicalEvaluationUpdateView,AjmalineTestUpdateView,
-    AdrenalineTestUpdateView,FlecainideTestUpdateView,EPStudyUpdateView,ECGUpdateView,ECHOUpdateView,
-    LatePotentialsUpdateView,RMNTCPhUpdateView,GeneticProfileUpdateView,
-    GeneticStatusUpdateView, GeneticTestUpdateView, #GeneticSampleUpdateView
-    StudyUpdateView, TherapyUpdateView, ResearchAnalysisUpdateView, #PatientStudyUpdateView
-    SymptomUpdateView, download_filtered_csv
+from .views import (
+    KokoroHomeView,
+    TherapyAutocomplete,
+    AllergyAutocomplete,
+    StudyAutocomplete,
+    PatientProfileAutocomplete,
+    PatientSpecificResearchView,
+    AdvancedResearchView,
+    RemoteMonitoringView,
+    filter_counts_partial,
+    PatientDetailView,
+    PatientProfileUpdateView,
+    SampleUpdateView,
+    ClinicalEventUpdateView,
+    DeviceInstanceUpdateView,
+    DeviceEventUpdateView,
+    AblationUpdateView,
+    DeviceImplantUpdateView,
+    ValveInterventionUpdateView,
+    CoronaryInterventionUpdateView,
+    ClinicalEvaluationUpdateView,
+    AjmalineTestUpdateView,
+    AdrenalineTestUpdateView,
+    FlecainideTestUpdateView,
+    EPStudyUpdateView,
+    ECGUpdateView,
+    ECHOUpdateView,
+    LatePotentialsUpdateView,
+    RMNTCPhUpdateView,
+    GeneticProfileUpdateView,
+    GeneticStatusUpdateView,
+    GeneticTestUpdateView,
+    StudyUpdateView,
+    ResearchAnalysisUpdateView,
+    SymptomUpdateView,
+    download_filtered_csv,
 )
-  
+
 app_name = "kokoro"
 
 urlpatterns = [
-    # Autocompletes & filters
+    # Autocomplete & filters
     path('therapy-autocomplete/', TherapyAutocomplete.as_view(), name='therapy-autocomplete'),
     path('allergy-autocomplete/', AllergyAutocomplete.as_view(), name='allergy-autocomplete'),
     path('study-autocomplete/', StudyAutocomplete.as_view(), name='study-autocomplete'),
@@ -29,10 +53,11 @@ urlpatterns = [
     path("advanced-research/", AdvancedResearchView.as_view(), name="advanced research"),
     path("remote-monitoring/", RemoteMonitoringView.as_view(), name="remote monitoring"),
 
-    # Patient detail
+    # Patient detail & single edit
     path("<uuid:pk>/", PatientDetailView.as_view(), name="patient_detail"),
+    path("<uuid:pk>/edit/", PatientProfileUpdateView.as_view(), name="patient-edit"),
 
-    # Edit routes for every section
+    # Per‐record edit routes
     path("sample/<uuid:pk>/edit/", SampleUpdateView.as_view(), name="sample-edit"),
     path("clinical-event/<int:pk>/edit/", ClinicalEventUpdateView.as_view(), name="clinicalevent-edit"),
     path("device-instance/<uuid:pk>/edit/", DeviceInstanceUpdateView.as_view(), name="deviceinstance-edit"),
@@ -52,12 +77,11 @@ urlpatterns = [
     path("rmn-tc-ph/<uuid:pk>/edit/", RMNTCPhUpdateView.as_view(), name="rmn_tc_ph-edit"),
     path("genetic-profile/<uuid:pk>/edit/", GeneticProfileUpdateView.as_view(), name="geneticprofile-edit"),
     path("genetic-status/<uuid:pk>/edit/", GeneticStatusUpdateView.as_view(), name="geneticstatus-edit"),
-    # path("genetic-sample/<uuid:pk>/edit/", GeneticSampleUpdateView.as_view(), name="geneticsample-edit"),
     path("genetic-test/<uuid:pk>/edit/", GeneticTestUpdateView.as_view(), name="genetictest-edit"),
     path("study/<uuid:pk>/edit/", StudyUpdateView.as_view(), name="study-edit"),
-    path("therapy/<int:pk>/edit/", TherapyUpdateView.as_view(), name="therapy-edit"),
-    # path("patient-study/<uuid:pk>/edit/", PatientStudyUpdateView.as_view(), name="patientstudy-edit"),
     path("research-analysis/<uuid:pk>/edit/", ResearchAnalysisUpdateView.as_view(), name="researchanalysis-edit"),
     path("symptoms/<int:pk>/edit/", SymptomUpdateView.as_view(), name="symptom-edit"),
+
+    # CSV export
     path("download/", download_filtered_csv, name="patient_list_csv"),
 ]
