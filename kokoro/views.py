@@ -232,23 +232,46 @@ class SymptomUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
 	def get_success_url(self):
 		return reverse_lazy("kokoro:patient_detail", args=[self.object.pk])
 
-class ResearchAnalysisUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-	model = ResearchAnalysis
-	form_class = ResearchAnalysisForm
-	template_name = "submissions/research_analysis_form.html"
-	permission_required = "kokoro.access_sensible_info"
+class ResearchAnalysisUpdateView(LoginRequiredMixin,
+                                 PermissionRequiredMixin,
+                                 UpdateView):
+    model = ResearchAnalysis
+    form_class = ResearchAnalysisForm
+    template_name = "submissions/research_analysis_form.html"
+    permission_required = "kokoro.access_sensible_info"
 
-	def get_success_url(self):
-		return reverse_lazy("kokoro:patient_detail", args=[self.object.pk])
+    def get_success_url(self):
+        # Pick the first sample on this analysis
+        first_sample = self.object.samples.first()
+        if not first_sample:
+            # No samples? send back to the patient list
+            return reverse_lazy("kokoro:kokoro_patient_list")
+        # Assume Sample has `patient` FK to PatientProfile
+        patient_id = first_sample.patient_id
+        return reverse_lazy(
+            "kokoro:patient_detail",
+            kwargs={"pk": patient_id}
+        )
 
-class TherapyUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-	model = Therapy
-	form_class = TherapyForm
-	template_name = "submissions/therapy_form.html"
-	permission_required = "kokoro.access_sensible_info"
+# class TherapyUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+# 	model = Therapy
+# 	form_class = TherapyForm
+# 	template_name = "submissions/therapy_form.html"
+# 	permission_required = "kokoro.access_sensible_info"
 
-	def get_success_url(self):
-		return reverse_lazy("kokoro:patient_detail", args=[self.object.pk])
+# 	def get_success_url(self):
+# 		return reverse_lazy("kokoro:patient_detail", args=[self.object.pk])
+
+class PatientTherapiesUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    model = PatientProfile
+    fields = ["therapies"]            # only the M2M field
+    template_name = "submissions/therapy_form.html"
+    permission_required = "kokoro.access_sensible_info"
+
+    def get_success_url(self):
+        # now `self.object` *is* a patient, so this works:
+        return reverse_lazy("kokoro:patient_detail",
+                            kwargs={"pk": self.object.pk})
 
 class PatientProfileUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 	model = PatientProfile

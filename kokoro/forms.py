@@ -528,13 +528,13 @@ class PatientProfileForm(forms.ModelForm):
 		fields = '__all__'
 		widgets = {
 			'therapies': autocomplete.ModelSelect2Multiple(
-				url='therapy-autocomplete'
+				url='kokoro:therapy-autocomplete'
 			),
 			'allergies': autocomplete.ModelSelect2Multiple(
-				url='allergy-autocomplete'
+				url='kokoro:allergy-autocomplete'
 			),
 			'studies': autocomplete.ModelSelect2Multiple(
-				url='study-autocomplete'
+				url='kokoro:study-autocomplete'
 			),
 		}
 
